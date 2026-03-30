@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gorgias AI Agent — Prototypes</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f6f7f9;
+      color: #1a1a2e;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+    .container {
+      max-width: 640px;
+      width: 100%;
+    }
+    .header {
+      margin-bottom: 40px;
+    }
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      background: #6c47ff;
+      border-radius: 10px;
+      color: #fff;
+      font-weight: 700;
+      font-size: 18px;
+      margin-bottom: 16px;
+    }
+    h1 {
+      font-size: 24px;
+      font-weight: 700;
+      color: #1a1a2e;
+      margin-bottom: 6px;
+    }
+    .subtitle {
+      font-size: 15px;
+      color: #5f6672;
+      line-height: 1.5;
+    }
+    .card-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .card {
+      background: #fff;
+      border: 1px solid #ebedf1;
+      border-radius: 12px;
+      padding: 20px 24px;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      display: block;
+    }
+    .card:hover {
+      border-color: #c4b5fd;
+      box-shadow: 0 2px 12px rgba(108, 71, 255, 0.08);
+    }
+    .card-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1a1a2e;
+      margin-bottom: 4px;
+    }
+    .card-desc {
+      font-size: 14px;
+      color: #5f6672;
+      line-height: 1.45;
+    }
+    .card-tag {
+      display: inline-block;
+      margin-top: 10px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: #f1ecff;
+      color: #5b3fc4;
+    }
+    .card-tag.alt {
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
+    .card-tag.eval {
+      background: #fff3e0;
+      color: #e65100;
+    }
+    .footer {
+      margin-top: 40px;
+      text-align: center;
+      font-size: 13px;
+      color: #999;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="logo">G</div>
+      <h1>AI Agent Prototypes</h1>
+      <p class="subtitle">Interactive prototypes for the Gorgias AI Agent vision. Click any card to launch.</p>
+    </div>
+
+    <div class="card-list">
+      <a class="card" href="vision-v2.html">
+        <div class="card-title">Vision v2 — AI Agent Dashboard</div>
+        <div class="card-desc">Full AI Agent experience with 4 customer journeys (UrbanStems). Includes conversation view, guidance panel, and performance metrics.</div>
+        <span class="card-tag">Latest</span>
+      </a>
+
+      <a class="card" href="preview-v2.html">
+        <div class="card-title">Vision v2 — Standalone Preview</div>
+        <div class="card-desc">Self-contained preview of the v2 prototype with all components inline.</div>
+        <span class="card-tag alt">Standalone</span>
+      </a>
+
+      <a class="card" href="eval-flow-prototype.html">
+        <div class="card-title">Evaluations Flow</div>
+        <div class="card-desc">AI Agent evaluation and testing interface for reviewing agent performance and conversation quality.</div>
+        <span class="card-tag eval">Evaluations</span>
+      </a>
+    </div>
+
+    <div class="footer">
+      Gorgias Product Design
+    </div>
+  </div>
+</body>
+</html>

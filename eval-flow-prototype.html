@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Agent — Evaluations</title>
+<style>
+  /* ─── Reset & Base ─── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; color: #1a1a2e; display: flex; height: 100vh; overflow: hidden; }
+
+  /* ─── Sidebar ─── */
+  .sidebar { width: 200px; background: #fff; border-right: 1px solid #e5e5e5; display: flex; flex-direction: column; flex-shrink: 0; }
+  .sidebar-header { padding: 16px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #e5e5e5; }
+  .sidebar-header .logo { width: 24px; height: 24px; background: #6c47ff; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 12px; font-weight: 700; }
+  .sidebar-header span { font-weight: 600; font-size: 14px; }
+  .sidebar-brand { padding: 12px 16px; border-bottom: 1px solid #e5e5e5; display: flex; align-items: center; gap: 8px; }
+  .sidebar-brand .brand-dot { width: 20px; height: 20px; background: #e8d5f5; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #7c3aed; font-weight: 700; }
+  .sidebar-brand span { font-size: 13px; font-weight: 500; }
+  .sidebar-nav { padding: 8px 0; flex: 1; }
+  .nav-item { display: flex; align-items: center; gap: 10px; padding: 8px 16px; font-size: 13px; color: #666; cursor: pointer; transition: background 0.15s; }
+  .nav-item:hover { background: #f5f5f5; }
+  .nav-item.active { background: #f0edff; color: #6c47ff; font-weight: 500; }
+  .nav-item .icon { width: 18px; text-align: center; font-size: 14px; }
+  .nav-section { padding: 16px 16px 4px; font-size: 11px; font-weight: 600; color: #999; text-transform: uppercase; letter-spacing: 0.5px; }
+  .nav-sub { padding-left: 44px; }
+
+  /* ─── Main content ─── */
+  .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
+  .main-scroll { flex: 1; overflow-y: auto; padding: 32px 40px; }
+  .page-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 28px; }
+  .page-header h1 { font-size: 24px; font-weight: 700; }
+  .page-header p { font-size: 14px; color: #666; margin-top: 4px; }
+  .btn-primary { background: #6c47ff; color: #fff; border: none; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.15s; }
+  .btn-primary:hover { background: #5a38e0; }
+
+  /* ─── Framework cards ─── */
+  .framework-section { background: #fff; border: 1px solid #e5e5e5; border-radius: 12px; padding: 24px; margin-bottom: 28px; }
+  .framework-section h2 { font-size: 16px; font-weight: 600; margin-bottom: 16px; }
+  .framework-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .fw-card { border: 1px solid #e5e5e5; border-radius: 10px; padding: 16px; }
+  .fw-card .label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+  .fw-card .label.purple { color: #6c47ff; }
+  .fw-card .label.blue { color: #2563eb; }
+  .fw-card .label.orange { color: #d97706; }
+  .fw-card .title { font-size: 14px; font-weight: 500; margin-bottom: 4px; }
+  .fw-card .desc { font-size: 12px; color: #888; }
+  .persona-tags { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+  .persona-tag { background: #fef3c7; color: #92400e; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 500; }
+
+  /* ─── Runs table ─── */
+  .runs-section { margin-top: 4px; }
+  .runs-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+  .runs-header h2 { font-size: 18px; font-weight: 600; }
+  .runs-header .count { font-size: 13px; color: #888; }
+  .runs-table { width: 100%; border-collapse: collapse; }
+  .runs-table th { text-align: left; font-size: 12px; font-weight: 500; color: #888; padding: 10px 12px; border-bottom: 1px solid #e5e5e5; }
+  .runs-table td { padding: 14px 12px; border-bottom: 1px solid #f0f0f0; font-size: 13px; vertical-align: middle; }
+  .runs-table tr { cursor: pointer; transition: background 0.1s; }
+  .runs-table tbody tr:hover { background: #fafafa; }
+  .run-id { color: #6c47ff; font-weight: 500; }
+  .run-date { color: #999; font-size: 12px; }
+  .score { font-weight: 600; }
+  .score.green { color: #16a34a; }
+  .score.yellow { color: #d97706; }
+  .score.red { color: #dc2626; }
+  .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+  .status-badge.passed { background: #dcfce7; color: #16a34a; }
+  .status-badge.failed { background: #fee2e2; color: #dc2626; }
+  .status-badge.running { background: #ede9fe; color: #6c47ff; }
+
+  /* ─── Side Drawer ─── */
+  .drawer-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.25s; }
+  .drawer-overlay.open { opacity: 1; pointer-events: all; }
+  .drawer { position: fixed; top: 0; right: 0; bottom: 0; width: 520px; background: #fff; z-index: 101; transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column; box-shadow: -8px 0 30px rgba(0,0,0,0.1); }
+  .drawer.open { transform: translateX(0); }
+  .drawer-header { padding: 20px 24px; border-bottom: 1px solid #e5e5e5; display: flex; justify-content: space-between; align-items: center; }
+  .drawer-header h2 { font-size: 18px; font-weight: 700; }
+  .drawer-close { width: 32px; height: 32px; border: none; background: #f5f5f5; border-radius: 8px; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; color: #666; }
+  .drawer-close:hover { background: #eee; }
+  .drawer-body { flex: 1; overflow-y: auto; padding: 24px; }
+  .drawer-footer { padding: 16px 24px; border-top: 1px solid #e5e5e5; display: flex; justify-content: flex-end; gap: 10px; }
+  .btn-secondary { background: #fff; color: #333; border: 1px solid #ddd; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; }
+  .btn-secondary:hover { background: #f5f5f5; }
+
+  /* ─── Stepper ─── */
+  .stepper { display: flex; gap: 0; margin-bottom: 28px; position: relative; }
+  .step-item { display: flex; align-items: center; gap: 8px; flex: 1; }
+  .step-circle { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; border: 2px solid #ddd; color: #999; background: #fff; transition: all 0.2s; }
+  .step-circle.active { border-color: #6c47ff; color: #fff; background: #6c47ff; }
+  .step-circle.completed { border-color: #16a34a; color: #fff; background: #16a34a; }
+  .step-label { font-size: 12px; color: #999; font-weight: 500; white-space: nowrap; }
+  .step-label.active { color: #6c47ff; font-weight: 600; }
+  .step-label.completed { color: #16a34a; }
+  .step-line { flex: 1; height: 2px; background: #e5e5e5; margin: 0 4px; align-self: center; min-width: 20px; }
+  .step-line.completed { background: #16a34a; }
+
+  /* ─── Form fields ─── */
+  .form-group { margin-bottom: 24px; }
+  .form-label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 8px; color: #333; }
+  .form-hint { font-size: 12px; color: #888; margin-top: 4px; }
+  .form-select { width: 100%; padding: 10px 14px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; appearance: none; background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%23666' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") right 14px center no-repeat; cursor: pointer; transition: border-color 0.15s; }
+  .form-select:focus { outline: none; border-color: #6c47ff; box-shadow: 0 0 0 3px rgba(108,71,255,0.1); }
+  .form-input { width: 100%; padding: 10px 14px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; transition: border-color 0.15s; }
+  .form-input:focus { outline: none; border-color: #6c47ff; box-shadow: 0 0 0 3px rgba(108,71,255,0.1); }
+
+  /* ─── Skill card (selection preview) ─── */
+  .skill-preview { background: #f9fafb; border: 1px solid #e5e5e5; border-radius: 10px; padding: 14px 16px; margin-top: 12px; display: none; }
+  .skill-preview.visible { display: block; }
+  .skill-preview .sp-title { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+  .skill-preview .sp-desc { font-size: 12px; color: #666; line-height: 1.5; }
+  .skill-preview .sp-meta { display: flex; gap: 12px; margin-top: 10px; }
+  .skill-preview .sp-meta span { font-size: 11px; color: #888; display: flex; align-items: center; gap: 4px; }
+  .skill-preview .sp-meta .dot { width: 6px; height: 6px; border-radius: 50%; }
+  .skill-preview .sp-meta .dot.green { background: #16a34a; }
+
+  /* ─── Ticket count slider ─── */
+  .ticket-slider-group { display: flex; align-items: center; gap: 16px; }
+  .ticket-slider { flex: 1; -webkit-appearance: none; height: 6px; border-radius: 3px; background: #e5e5e5; outline: none; }
+  .ticket-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; border-radius: 50%; background: #6c47ff; cursor: pointer; border: 3px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.2); }
+  .ticket-count-display { min-width: 80px; text-align: center; font-size: 24px; font-weight: 700; color: #6c47ff; }
+  .ticket-range-labels { display: flex; justify-content: space-between; font-size: 11px; color: #999; margin-top: 4px; }
+
+  /* ─── Scorer cards ─── */
+  .scorer-option { border: 2px solid #e5e5e5; border-radius: 10px; padding: 14px 16px; margin-bottom: 10px; cursor: pointer; transition: all 0.15s; display: flex; align-items: flex-start; gap: 12px; }
+  .scorer-option:hover { border-color: #c4b5fd; background: #faf8ff; }
+  .scorer-option.selected { border-color: #6c47ff; background: #f5f3ff; }
+  .scorer-radio { width: 18px; height: 18px; border-radius: 50%; border: 2px solid #ccc; flex-shrink: 0; margin-top: 2px; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+  .scorer-option.selected .scorer-radio { border-color: #6c47ff; }
+  .scorer-option.selected .scorer-radio::after { content: ''; width: 8px; height: 8px; background: #6c47ff; border-radius: 50%; }
+  .scorer-info .scorer-name { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+  .scorer-info .scorer-desc { font-size: 12px; color: #666; line-height: 1.4; }
+  .scorer-info .scorer-type { font-size: 11px; color: #999; margin-top: 4px; display: flex; align-items: center; gap: 4px; }
+  .scorer-type-badge { padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 600; text-transform: uppercase; }
+  .scorer-type-badge.persona { background: #fef3c7; color: #92400e; }
+  .scorer-type-badge.custom { background: #e0e7ff; color: #3730a3; }
+
+  /* ─── Review step ─── */
+  .review-section { background: #f9fafb; border-radius: 10px; padding: 16px; margin-bottom: 16px; }
+  .review-section h4 { font-size: 12px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
+  .review-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; }
+  .review-row .label { font-size: 13px; color: #666; }
+  .review-row .value { font-size: 13px; font-weight: 600; }
+  .review-edit { font-size: 12px; color: #6c47ff; cursor: pointer; font-weight: 500; }
+  .review-edit:hover { text-decoration: underline; }
+
+  /* ─── Live Results View ─── */
+  .results-view { display: none; }
+  .results-view.visible { display: block; }
+  .results-header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+  .results-header-bar .back-link { font-size: 13px; color: #6c47ff; cursor: pointer; font-weight: 500; display: flex; align-items: center; gap: 6px; }
+  .results-header-bar .back-link:hover { text-decoration: underline; }
+  .results-status { display: flex; align-items: center; gap: 10px; }
+  .results-status .spinner { width: 18px; height: 18px; border: 2.5px solid #e5e5e5; border-top-color: #6c47ff; border-radius: 50%; animation: spin 0.8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .results-status .status-text { font-size: 14px; font-weight: 500; color: #6c47ff; }
+  .results-status .status-text.done { color: #16a34a; }
+
+  .results-summary-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 28px; }
+  .summary-card { background: #fff; border: 1px solid #e5e5e5; border-radius: 10px; padding: 16px; text-align: center; }
+  .summary-card .sc-label { font-size: 11px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+  .summary-card .sc-value { font-size: 28px; font-weight: 700; }
+  .summary-card .sc-value.green { color: #16a34a; }
+  .summary-card .sc-value.yellow { color: #d97706; }
+  .summary-card .sc-value.purple { color: #6c47ff; }
+  .summary-card .sc-sub { font-size: 11px; color: #999; margin-top: 2px; }
+
+  .progress-bar-container { background: #e5e5e5; border-radius: 6px; height: 8px; margin-bottom: 28px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; background: linear-gradient(90deg, #6c47ff, #a78bfa); border-radius: 6px; transition: width 0.5s ease; }
+
+  /* ─── Ticket threads ─── */
+  .threads-section h3 { font-size: 16px; font-weight: 600; margin-bottom: 16px; }
+  .thread-card { background: #fff; border: 1px solid #e5e5e5; border-radius: 10px; margin-bottom: 12px; overflow: hidden; transition: all 0.2s; cursor: pointer; }
+  .thread-card:hover { border-color: #c4b5fd; }
+  .thread-card.expanded { border-color: #6c47ff; }
+  .thread-header { padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; }
+  .thread-left { display: flex; align-items: center; gap: 12px; }
+  .thread-ticket-id { font-size: 13px; font-weight: 600; color: #6c47ff; }
+  .thread-subject { font-size: 13px; color: #333; }
+  .thread-scores { display: flex; gap: 16px; align-items: center; }
+  .thread-score-item { display: flex; align-items: center; gap: 4px; font-size: 12px; }
+  .thread-score-item .ts-label { color: #888; }
+  .thread-score-item .ts-value { font-weight: 700; }
+  .thread-expand-icon { color: #999; font-size: 18px; transition: transform 0.2s; }
+  .thread-card.expanded .thread-expand-icon { transform: rotate(180deg); }
+
+  .thread-body { display: none; border-top: 1px solid #f0f0f0; padding: 16px; }
+  .thread-card.expanded .thread-body { display: block; }
+  .thread-message { margin-bottom: 14px; padding: 12px; border-radius: 8px; }
+  .thread-message.customer { background: #f5f5f5; }
+  .thread-message.agent { background: #f0edff; }
+  .thread-message .msg-sender { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 4px; }
+  .thread-message.customer .msg-sender { color: #666; }
+  .thread-message.agent .msg-sender { color: #6c47ff; }
+  .thread-message .msg-text { font-size: 13px; line-height: 1.6; color: #333; }
+
+  .scorer-feedback { margin-top: 12px; padding: 12px; background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; }
+  .scorer-feedback .sf-title { font-size: 11px; font-weight: 700; color: #92400e; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 6px; }
+  .scorer-feedback .sf-text { font-size: 13px; color: #78350f; line-height: 1.5; }
+
+  .thread-skeleton { padding: 16px; }
+  .skeleton-line { height: 14px; background: linear-gradient(90deg, #f0f0f0 25%, #e5e5e5 50%, #f0f0f0 75%); background-size: 200% 100%; border-radius: 4px; animation: shimmer 1.5s infinite; margin-bottom: 8px; }
+  .skeleton-line:nth-child(1) { width: 40%; }
+  .skeleton-line:nth-child(2) { width: 70%; }
+  .skeleton-line:nth-child(3) { width: 55%; }
+  @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+  /* ─── Hide/Show toggles ─── */
+  .hidden { display: none !important; }
+  .step-content { display: none; }
+  .step-content.active { display: block; }
+
+  /* ─── Eval list view ─── */
+  .eval-list-view { display: block; }
+  .eval-list-view.hidden-view { display: none; }
+</style>
+</head>
+<body>
+
+<!-- ─── Sidebar ─── -->
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div class="logo">G</div>
+    <span>AI Agent</span>
+  </div>
+  <div class="sidebar-brand">
+    <div class="brand-dot">U</div>
+    <span>Urban Stems</span>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-item"><span class="icon">&#9750;</span> Home</div>
+    <div class="nav-item"><span class="icon">&#9881;</span> Context</div>
+    <div class="nav-section">Train</div>
+    <div class="nav-item nav-sub"><span class="icon">&#9733;</span> Skills</div>
+    <div class="nav-item nav-sub"><span class="icon">&#9874;</span> Tools</div>
+    <div class="nav-section">Evaluate</div>
+    <div class="nav-item nav-sub active" id="nav-evaluations"><span class="icon">&#9634;</span> Evaluations</div>
+    <div class="nav-item nav-sub"><span class="icon">&#9776;</span> Logs</div>
+  </nav>
+</div>
+
+<!-- ─── Main Content ─── -->
+<div class="main">
+  <div class="main-scroll">
+
+    <!-- ════════ EVAL LIST VIEW ════════ -->
+    <div class="eval-list-view" id="evalListView">
+      <div class="page-header">
+        <div>
+          <h1>Evaluations</h1>
+          <p>Test skill performance against real ticket data and persona scorers</p>
+        </div>
+        <button class="btn-primary" id="newEvalBtn">+ New evaluation</button>
+      </div>
+
+      <div class="framework-section">
+        <h2>Evaluation framework</h2>
+        <div class="framework-cards">
+          <div class="fw-card">
+            <div class="label purple">TASK = SKILL</div>
+            <div class="title">Order status, tracking or delivery timing</div>
+            <div class="desc">The skill being evaluated</div>
+          </div>
+          <div class="fw-card">
+            <div class="label blue">DATASET = TICKETS</div>
+            <div class="title">Recent tickets (last 7d, n=150)</div>
+            <div class="desc">Real conversations for testing</div>
+          </div>
+          <div class="fw-card">
+            <div class="label orange">SCORER = PERSONA</div>
+            <div class="persona-tags">
+              <span class="persona-tag">The Rushed Gift-Giver</span>
+              <span class="persona-tag">The Plant Parent</span>
+              <span class="persona-tag">The Complaint Handler</span>
+            </div>
+            <div class="desc" style="margin-top:8px;">AI personas judge quality</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="runs-section">
+        <div class="runs-header">
+          <h2>Recent runs</h2>
+          <span class="count">Showing 6 runs</span>
+        </div>
+        <table class="runs-table">
+          <thead>
+            <tr>
+              <th>Run</th><th>Skill</th><th>Dataset</th><th>Accuracy</th><th>Brand</th><th>Resolution</th><th>Overall</th><th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr onclick="showResults('eval-042')">
+              <td><span class="run-id">eval-042</span><br><span class="run-date">Mar 24, 2026</span></td>
+              <td>Order status</td><td>150 tickets</td>
+              <td><span class="score green">94</span></td>
+              <td><span class="score">88</span></td>
+              <td><span class="score green">91</span></td>
+              <td><span class="score green">91</span></td>
+              <td><span class="status-badge passed">Passed</span></td>
+            </tr>
+            <tr>
+              <td><span class="run-id">eval-041</span><br><span class="run-date">Mar 23, 2026</span></td>
+              <td>Order cancellation</td><td>120 tickets</td>
+              <td><span class="score">89</span></td>
+              <td><span class="score">85</span></td>
+              <td><span class="score">82</span></td>
+              <td><span class="score">85</span></td>
+              <td><span class="status-badge passed">Passed</span></td>
+            </tr>
+            <tr>
+              <td><span class="run-id">eval-040</span><br><span class="run-date">Mar 22, 2026</span></td>
+              <td>Product recommendations</td><td>90 tickets</td>
+              <td><span class="score green">92</span></td>
+              <td><span class="score green">94</span></td>
+              <td><span class="score">88</span></td>
+              <td><span class="score green">91</span></td>
+              <td><span class="status-badge passed">Passed</span></td>
+            </tr>
+            <tr>
+              <td><span class="run-id">eval-039</span><br><span class="run-date">Mar 21, 2026</span></td>
+              <td>Shipping address changes</td><td>80 tickets</td>
+              <td><span class="score yellow">78</span></td>
+              <td><span class="score">82</span></td>
+              <td><span class="score yellow">71</span></td>
+              <td><span class="score red">77</span></td>
+              <td><span class="status-badge failed">Failed</span></td>
+            </tr>
+            <tr>
+              <td><span class="run-id">eval-038</span><br><span class="run-date">Mar 20, 2026</span></td>
+              <td>Payment Issues</td><td>65 tickets</td>
+              <td><span class="score">86</span></td>
+              <td><span class="score">80</span></td>
+              <td><span class="score">84</span></td>
+              <td><span class="score">83</span></td>
+              <td><span class="status-badge passed">Passed</span></td>
+            </tr>
+            <tr>
+              <td><span class="run-id">eval-037</span><br><span class="run-date">Mar 19, 2026</span></td>
+              <td>Subscription management</td><td>50 tickets</td>
+              <td><span class="score yellow">72</span></td>
+              <td><span class="score yellow">78</span></td>
+              <td><span class="score red">68</span></td>
+              <td><span class="score red">73</span></td>
+              <td><span class="status-badge failed">Failed</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ════════ LIVE RESULTS VIEW ════════ -->
+    <div class="results-view" id="resultsView">
+      <div class="results-header-bar">
+        <div class="back-link" onclick="backToList()">&#8592; Back to evaluations</div>
+        <div class="results-status" id="resultsStatus">
+          <div class="spinner" id="resultsSpinner"></div>
+          <span class="status-text" id="resultsStatusText">Running evaluation...</span>
+        </div>
+      </div>
+
+      <div class="page-header" style="margin-bottom:20px;">
+        <div>
+          <h1 id="resultsTitle">eval-043 — Order status</h1>
+          <p id="resultsSubtitle">80 tickets &middot; The Rushed Gift-Giver &middot; Started just now</p>
+        </div>
+      </div>
+
+      <div class="progress-bar-container">
+        <div class="progress-bar-fill" id="progressBar" style="width: 0%"></div>
+      </div>
+
+      <div class="results-summary-cards">
+        <div class="summary-card">
+          <div class="sc-label">Accuracy</div>
+          <div class="sc-value purple" id="scAccuracy">—</div>
+          <div class="sc-sub" id="scAccSub">waiting...</div>
+        </div>
+        <div class="summary-card">
+          <div class="sc-label">Brand</div>
+          <div class="sc-value purple" id="scBrand">—</div>
+          <div class="sc-sub" id="scBraSub">waiting...</div>
+        </div>
+        <div class="summary-card">
+          <div class="sc-label">Resolution</div>
+          <div class="sc-value purple" id="scResolution">—</div>
+          <div class="sc-sub" id="scResSub">waiting...</div>
+        </div>
+        <div class="summary-card">
+          <div class="sc-label">Overall</div>
+          <div class="sc-value purple" id="scOverall">—</div>
+          <div class="sc-sub" id="scOvSub">waiting...</div>
+        </div>
+      </div>
+
+      <div class="threads-section">
+        <h3>Simulated ticket threads</h3>
+        <div id="threadsContainer">
+          <!-- Threads populated by JS -->
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /main-scroll -->
+</div><!-- /main -->
+
+<!-- ─── Side Drawer: New Evaluation ─── -->
+<div class="drawer-overlay" id="drawerOverlay"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-header">
+    <h2>New evaluation</h2>
+    <button class="drawer-close" id="drawerClose">&times;</button>
+  </div>
+
+  <div class="drawer-body">
+    <!-- Stepper -->
+    <div class="stepper">
+      <div class="step-item">
+        <div class="step-circle active" id="stepCircle1">1</div>
+        <span class="step-label active" id="stepLabel1">Skill</span>
+      </div>
+      <div class="step-line" id="stepLine1"></div>
+      <div class="step-item">
+        <div class="step-circle" id="stepCircle2">2</div>
+        <span class="step-label" id="stepLabel2">Tickets</span>
+      </div>
+      <div class="step-line" id="stepLine2"></div>
+      <div class="step-item">
+        <div class="step-circle" id="stepCircle3">3</div>
+        <span class="step-label" id="stepLabel3">Scorer</span>
+      </div>
+      <div class="step-line" id="stepLine3"></div>
+      <div class="step-item">
+        <div class="step-circle" id="stepCircle4">4</div>
+        <span class="step-label" id="stepLabel4">Review</span>
+      </div>
+    </div>
+
+    <!-- Step 1: Select Skill -->
+    <div class="step-content active" id="step1">
+      <div class="form-group">
+        <label class="form-label">Which skill do you want to evaluate?</label>
+        <select class="form-select" id="skillSelect" onchange="onSkillChange()">
+          <option value="">Choose a skill...</option>
+          <option value="order-status">Order status</option>
+          <option value="order-cancel">Order cancellation</option>
+          <option value="product-recs">Product recommendations</option>
+          <option value="shipping-address">Shipping address changes</option>
+          <option value="payment-issues">Payment issues</option>
+          <option value="subscription">Subscription management</option>
+          <option value="returns">Returns & refunds</option>
+        </select>
+        <div class="form-hint">Select the skill you've been training and want to test.</div>
+      </div>
+      <div class="skill-preview" id="skillPreview">
+        <div class="sp-title" id="spTitle">Order status</div>
+        <div class="sp-desc" id="spDesc">Handles inquiries about order tracking, delivery estimates, and shipment status updates. Uses order lookup tools and carrier APIs.</div>
+        <div class="sp-meta">
+          <span><span class="dot green"></span> Active</span>
+          <span>Last edited 2h ago</span>
+          <span>142 relevant tickets (7d)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2: Ticket Count -->
+    <div class="step-content" id="step2">
+      <div class="form-group">
+        <label class="form-label">How many tickets should we test against?</label>
+        <div class="form-hint" style="margin-bottom:16px;">We found <strong id="availableTickets">142</strong> relevant tickets from the last 7 days for this skill.</div>
+        <div class="ticket-slider-group">
+          <input type="range" class="ticket-slider" id="ticketSlider" min="10" max="150" value="80" step="10" oninput="updateTicketCount()">
+          <div class="ticket-count-display" id="ticketCountDisplay">80</div>
+        </div>
+        <div class="ticket-range-labels">
+          <span>10 (quick)</span>
+          <span>150 (thorough)</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Ticket source</label>
+        <select class="form-select" id="ticketSource">
+          <option value="recent">Recent tickets (last 7 days)</option>
+          <option value="14d">Last 14 days</option>
+          <option value="30d">Last 30 days</option>
+          <option value="custom">Custom date range</option>
+        </select>
+        <div class="form-hint">Tickets are automatically filtered to match the selected skill's intent.</div>
+      </div>
+    </div>
+
+    <!-- Step 3: Select Scorer -->
+    <div class="step-content" id="step3">
+      <div class="form-group">
+        <label class="form-label">Who should judge the responses?</label>
+        <div class="form-hint" style="margin-bottom:16px;">Choose a persona or a custom scorer to evaluate the AI agent's replies.</div>
+
+        <div class="nav-section" style="padding-left:0; margin-bottom:10px;">Shopper personas</div>
+
+        <div class="scorer-option" onclick="selectScorer(this, 'rushed-gift-giver')" data-scorer="rushed-gift-giver">
+          <div class="scorer-radio"></div>
+          <div class="scorer-info">
+            <div class="scorer-name">The Rushed Gift-Giver</div>
+            <div class="scorer-desc">Impatient, needs fast answers about delivery timing. Judges on speed, clarity, and whether the agent proactively offers alternatives.</div>
+            <div class="scorer-type"><span class="scorer-type-badge persona">Persona</span> &middot; Used in 12 evals</div>
+          </div>
+        </div>
+
+        <div class="scorer-option" onclick="selectScorer(this, 'plant-parent')" data-scorer="plant-parent">
+          <div class="scorer-radio"></div>
+          <div class="scorer-info">
+            <div class="scorer-name">The Plant Parent</div>
+            <div class="scorer-desc">Detail-oriented, cares about care instructions and packaging. Judges on thoroughness, empathy, and product knowledge.</div>
+            <div class="scorer-type"><span class="scorer-type-badge persona">Persona</span> &middot; Used in 8 evals</div>
+          </div>
+        </div>
+
+        <div class="scorer-option" onclick="selectScorer(this, 'complaint-handler')" data-scorer="complaint-handler">
+          <div class="scorer-radio"></div>
+          <div class="scorer-info">
+            <div class="scorer-name">The Complaint Handler</div>
+            <div class="scorer-desc">Escalation-prone, tests de-escalation ability. Judges on tone, resolution offered, and whether the agent stays calm under pressure.</div>
+            <div class="scorer-type"><span class="scorer-type-badge persona">Persona</span> &middot; Used in 6 evals</div>
+          </div>
+        </div>
+
+        <div class="nav-section" style="padding-left:0; margin-top:20px; margin-bottom:10px;">Custom scorers</div>
+
+        <div class="scorer-option" onclick="selectScorer(this, 'brand-voice')" data-scorer="brand-voice">
+          <div class="scorer-radio"></div>
+          <div class="scorer-info">
+            <div class="scorer-name">Brand Voice Compliance</div>
+            <div class="scorer-desc">Evaluates whether responses match Urban Stems' warm, approachable tone. Checks for banned phrases and required language.</div>
+            <div class="scorer-type"><span class="scorer-type-badge custom">Custom</span> &middot; Created by you &middot; Used in 4 evals</div>
+          </div>
+        </div>
+
+        <div class="scorer-option" onclick="selectScorer(this, 'resolution-rate')" data-scorer="resolution-rate">
+          <div class="scorer-radio"></div>
+          <div class="scorer-info">
+            <div class="scorer-name">First-Contact Resolution</div>
+            <div class="scorer-desc">Measures whether the agent fully resolves the issue without requiring follow-up. Strict pass/fail on resolution completeness.</div>
+            <div class="scorer-type"><span class="scorer-type-badge custom">Custom</span> &middot; Created by Lisa &middot; Used in 3 evals</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 4: Review & Run -->
+    <div class="step-content" id="step4">
+      <div style="margin-bottom:20px;">
+        <label class="form-label" style="font-size:15px;">Review your evaluation</label>
+        <div class="form-hint">Confirm the details below, then run your evaluation.</div>
+      </div>
+
+      <div class="review-section">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <h4>Skill</h4>
+          <span class="review-edit" onclick="goToStep(1)">Edit</span>
+        </div>
+        <div class="review-row">
+          <span class="label">Skill name</span>
+          <span class="value" id="reviewSkill">Order status</span>
+        </div>
+      </div>
+
+      <div class="review-section">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <h4>Dataset</h4>
+          <span class="review-edit" onclick="goToStep(2)">Edit</span>
+        </div>
+        <div class="review-row">
+          <span class="label">Ticket count</span>
+          <span class="value" id="reviewTickets">80 tickets</span>
+        </div>
+        <div class="review-row">
+          <span class="label">Source</span>
+          <span class="value" id="reviewSource">Recent tickets (last 7 days)</span>
+        </div>
+      </div>
+
+      <div class="review-section">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <h4>Scorer</h4>
+          <span class="review-edit" onclick="goToStep(3)">Edit</span>
+        </div>
+        <div class="review-row">
+          <span class="label">Scorer name</span>
+          <span class="value" id="reviewScorer">—</span>
+        </div>
+        <div class="review-row">
+          <span class="label">Type</span>
+          <span class="value" id="reviewScorerType">—</span>
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-top:20px;">
+        <label class="form-label">Evaluation name (optional)</label>
+        <input type="text" class="form-input" id="evalName" placeholder="eval-043" value="eval-043">
+        <div class="form-hint">Auto-generated, but you can customize it.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="drawer-footer">
+    <button class="btn-secondary" id="drawerBackBtn" onclick="prevStep()" style="display:none;">Back</button>
+    <button class="btn-primary" id="drawerNextBtn" onclick="nextStep()">Continue</button>
+  </div>
+</div>
+
+<script>
+  // ─── State ───
+  let currentStep = 1;
+  let selectedSkill = '';
+  let selectedScorer = '';
+  let selectedScorerName = '';
+  let selectedScorerType = '';
+
+  const skillData = {
+    'order-status': { name: 'Order status', desc: 'Handles inquiries about order tracking, delivery estimates, and shipment status updates. Uses order lookup tools and carrier APIs.', tickets: 142 },
+    'order-cancel': { name: 'Order cancellation', desc: 'Processes order cancellation requests, checks eligibility windows, and handles partial cancellations. Connects to order management system.', tickets: 98 },
+    'product-recs': { name: 'Product recommendations', desc: 'Suggests products based on occasion, budget, and recipient preferences. Uses product catalog and trending data.', tickets: 74 },
+    'shipping-address': { name: 'Shipping address changes', desc: 'Handles address modification requests for pending orders. Checks carrier cutoff times and rerouting feasibility.', tickets: 63 },
+    'payment-issues': { name: 'Payment issues', desc: 'Troubleshoots failed payments, processes refunds, and assists with payment method updates. PCI-compliant handling.', tickets: 55 },
+    'subscription': { name: 'Subscription management', desc: 'Manages recurring delivery subscriptions — pause, skip, modify frequency, update preferences, or cancel.', tickets: 41 },
+    'returns': { name: 'Returns & refunds', desc: 'Guides customers through return eligibility, generates labels, and processes refund requests.', tickets: 88 }
+  };
+
+  const scorerData = {
+    'rushed-gift-giver': { name: 'The Rushed Gift-Giver', type: 'Persona' },
+    'plant-parent': { name: 'The Plant Parent', type: 'Persona' },
+    'complaint-handler': { name: 'The Complaint Handler', type: 'Persona' },
+    'brand-voice': { name: 'Brand Voice Compliance', type: 'Custom' },
+    'resolution-rate': { name: 'First-Contact Resolution', type: 'Custom' }
+  };
+
+  // ─── Drawer open/close ───
+  const drawerOverlay = document.getElementById('drawerOverlay');
+  const drawer = document.getElementById('drawer');
+
+  document.getElementById('newEvalBtn').addEventListener('click', () => {
+    drawerOverlay.classList.add('open');
+    drawer.classList.add('open');
+    resetDrawer();
+  });
+
+  document.getElementById('drawerClose').addEventListener('click', closeDrawer);
+  drawerOverlay.addEventListener('click', closeDrawer);
+
+  function closeDrawer() {
+    drawerOverlay.classList.remove('open');
+    drawer.classList.remove('open');
+  }
+
+  function resetDrawer() {
+    currentStep = 1;
+    selectedSkill = '';
+    selectedScorer = '';
+    document.getElementById('skillSelect').value = '';
+    document.getElementById('skillPreview').classList.remove('visible');
+    document.querySelectorAll('.scorer-option').forEach(el => el.classList.remove('selected'));
+    updateStepUI();
+  }
+
+  // ─── Step Navigation ───
+  function updateStepUI() {
+    for (let i = 1; i <= 4; i++) {
+      const circle = document.getElementById('stepCircle' + i);
+      const label = document.getElementById('stepLabel' + i);
+      const content = document.getElementById('step' + i);
+      circle.classList.remove('active', 'completed');
+      label.classList.remove('active', 'completed');
+      content.classList.remove('active');
+
+      if (i < currentStep) {
+        circle.classList.add('completed');
+        circle.innerHTML = '&#10003;';
+        label.classList.add('completed');
+      } else if (i === currentStep) {
+        circle.classList.add('active');
+        circle.textContent = i;
+        label.classList.add('active');
+        content.classList.add('active');
+      } else {
+        circle.textContent = i;
+      }
+    }
+    // Step lines
+    for (let i = 1; i <= 3; i++) {
+      const line = document.getElementById('stepLine' + i);
+      line.classList.toggle('completed', i < currentStep);
+    }
+
+    // Buttons
+    document.getElementById('drawerBackBtn').style.display = currentStep === 1 ? 'none' : 'inline-block';
+    const nextBtn = document.getElementById('drawerNextBtn');
+    if (currentStep === 4) {
+      nextBtn.textContent = 'Run evaluation';
+      nextBtn.style.background = '#16a34a';
+    } else {
+      nextBtn.textContent = 'Continue';
+      nextBtn.style.background = '#6c47ff';
+    }
+  }
+
+  function goToStep(step) {
+    currentStep = step;
+    updateStepUI();
+  }
+
+  function nextStep() {
+    if (currentStep === 1 && !selectedSkill) {
+      document.getElementById('skillSelect').focus();
+      document.getElementById('skillSelect').style.borderColor = '#dc2626';
+      setTimeout(() => document.getElementById('skillSelect').style.borderColor = '', 1500);
+      return;
+    }
+    if (currentStep === 3 && !selectedScorer) {
+      return; // need scorer
+    }
+    if (currentStep === 4) {
+      runEvaluation();
+      return;
+    }
+    if (currentStep === 3) {
+      // Populate review
+      const sd = skillData[selectedSkill];
+      document.getElementById('reviewSkill').textContent = sd ? sd.name : '';
+      document.getElementById('reviewTickets').textContent = document.getElementById('ticketCountDisplay').textContent + ' tickets';
+      document.getElementById('reviewSource').textContent = document.getElementById('ticketSource').selectedOptions[0].text;
+      document.getElementById('reviewScorer').textContent = selectedScorerName;
+      document.getElementById('reviewScorerType').textContent = selectedScorerType;
+    }
+    currentStep++;
+    updateStepUI();
+  }
+
+  function prevStep() {
+    if (currentStep > 1) {
+      currentStep--;
+      updateStepUI();
+    }
+  }
+
+  // ─── Skill selection ───
+  function onSkillChange() {
+    const val = document.getElementById('skillSelect').value;
+    selectedSkill = val;
+    const preview = document.getElementById('skillPreview');
+    if (val && skillData[val]) {
+      const d = skillData[val];
+      document.getElementById('spTitle').textContent = d.name;
+      document.getElementById('spDesc').textContent = d.desc;
+      document.getElementById('availableTickets').textContent = d.tickets;
+      // Update slider max
+      const slider = document.getElementById('ticketSlider');
+      slider.max = d.tickets;
+      if (parseInt(slider.value) > d.tickets) {
+        slider.value = d.tickets;
+        updateTicketCount();
+      }
+      preview.classList.add('visible');
+    } else {
+      preview.classList.remove('visible');
+    }
+  }
+
+  // ─── Ticket slider ───
+  function updateTicketCount() {
+    document.getElementById('ticketCountDisplay').textContent = document.getElementById('ticketSlider').value;
+  }
+
+  // ─── Scorer selection ───
+  function selectScorer(el, scorerId) {
+    document.querySelectorAll('.scorer-option').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedScorer = scorerId;
+    const sd = scorerData[scorerId];
+    selectedScorerName = sd.name;
+    selectedScorerType = sd.type;
+  }
+
+  // ─── Run Evaluation (transition to live results) ───
+  function runEvaluation() {
+    closeDrawer();
+    const sd = skillData[selectedSkill];
+    const ticketCount = document.getElementById('ticketCountDisplay').textContent;
+    const evalName = document.getElementById('evalName').value || 'eval-043';
+
+    document.getElementById('resultsTitle').textContent = evalName + ' — ' + sd.name;
+    document.getElementById('resultsSubtitle').textContent = ticketCount + ' tickets · ' + selectedScorerName + ' · Started just now';
+
+    // Switch views
+    document.getElementById('evalListView').classList.add('hidden-view');
+    document.getElementById('resultsView').classList.add('visible');
+
+    // Reset results
+    document.getElementById('progressBar').style.width = '0%';
+    document.getElementById('scAccuracy').textContent = '—';
+    document.getElementById('scBrand').textContent = '—';
+    document.getElementById('scResolution').textContent = '—';
+    document.getElementById('scOverall').textContent = '—';
+    document.getElementById('scAccSub').textContent = 'waiting...';
+    document.getElementById('scBraSub').textContent = 'waiting...';
+    document.getElementById('scResSub').textContent = 'waiting...';
+    document.getElementById('scOvSub').textContent = 'waiting...';
+    document.getElementById('resultsSpinner').style.display = '';
+    document.getElementById('resultsStatusText').textContent = 'Running evaluation...';
+    document.getElementById('resultsStatusText').classList.remove('done');
+
+    // Clear threads
+    const tc = document.getElementById('threadsContainer');
+    tc.innerHTML = '';
+
+    // Simulate progressive loading
+    simulateResults(parseInt(ticketCount));
+  }
+
+  function showResults(evalId) {
+    // Show a completed eval result
+    document.getElementById('resultsTitle').textContent = evalId + ' — Order status';
+    document.getElementById('resultsSubtitle').textContent = '150 tickets · The Rushed Gift-Giver · Completed Mar 24';
+
+    document.getElementById('evalListView').classList.add('hidden-view');
+    document.getElementById('resultsView').classList.add('visible');
+
+    document.getElementById('progressBar').style.width = '100%';
+    document.getElementById('resultsSpinner').style.display = 'none';
+    document.getElementById('resultsStatusText').textContent = 'Completed';
+    document.getElementById('resultsStatusText').classList.add('done');
+
+    updateScoreCard('scAccuracy', 94, 'scAccSub', '+2 vs last run');
+    updateScoreCard('scBrand', 88, 'scBraSub', '+3 vs last run');
+    updateScoreCard('scResolution', 91, 'scResSub', '+5 vs last run');
+    updateScoreCard('scOverall', 91, 'scOvSub', 'Passed');
+
+    const tc = document.getElementById('threadsContainer');
+    tc.innerHTML = '';
+    sampleThreads.forEach((t, i) => addThreadCard(t, i));
+  }
+
+  function backToList() {
+    document.getElementById('evalListView').classList.remove('hidden-view');
+    document.getElementById('resultsView').classList.remove('visible');
+  }
+
+  // ─── Simulated progressive results ───
+  const sampleThreads = [
+    {
+      id: 'TK-29481', subject: 'Where is my order? It says processing', accuracy: 96, brand: 92, resolution: 94,
+      messages: [
+        { sender: 'customer', text: 'Hi! I placed an order 3 days ago for my mom\'s birthday and it still says "processing." Her birthday is tomorrow — is it going to arrive in time?' },
+        { sender: 'agent', text: 'I totally understand the urgency — birthday deliveries are so important! Let me look that up for you right now.\n\nI found your order #US-48291. Great news: it\'s actually already been shipped and is with FedEx (tracking: 7291038). It\'s currently in transit from our New Jersey facility and is scheduled for delivery tomorrow by 2pm.\n\nWould you like me to send you the tracking link so you can follow it in real time?' }
+      ],
+      feedback: 'Strong response. Acknowledged urgency immediately, provided specific details (order number, carrier, tracking, ETA), and offered a proactive next step. Tone matches the situation — warm but efficient.'
+    },
+    {
+      id: 'TK-29483', subject: 'My flowers arrived wilted', accuracy: 88, brand: 85, resolution: 82,
+      messages: [
+        { sender: 'customer', text: 'Really disappointed. Spent $75 on a bouquet for my anniversary and the flowers arrived completely wilted. This is embarrassing.' },
+        { sender: 'agent', text: 'I\'m so sorry to hear that — that\'s definitely not the experience we want for such a special occasion. Nobody should have to feel embarrassed by a gift they put thought into.\n\nI\'ve gone ahead and issued a full refund of $75 to your original payment method. You should see it within 3-5 business days. I\'d also love to send a complimentary replacement bouquet — would tomorrow work for delivery?' }
+      ],
+      feedback: 'Good empathy and fast resolution. Could improve by asking for a photo first (quality documentation) and explaining why it might have happened. The replacement offer is a strong recovery move.'
+    },
+    {
+      id: 'TK-29487', subject: 'Can I change delivery address?', accuracy: 91, brand: 90, resolution: 88,
+      messages: [
+        { sender: 'customer', text: 'Hey, I need to change the delivery address on my order. I accidentally put my old apartment. New address is 445 Pine St Apt 3B.' },
+        { sender: 'agent', text: 'No worries, happy to help with that! Let me check on your order.\n\nI found order #US-48302. It hasn\'t been picked up by the carrier yet, so we\'re in good shape to make the change. I\'ve updated the delivery address to 445 Pine St, Apt 3B.\n\nJust to confirm — is the city and zip code the same as before, or do those need updating too?' }
+      ],
+      feedback: 'Good catch asking about city/zip since the customer only provided the street address. Confirmed the order status to set expectations. Friendly, efficient tone.'
+    },
+    {
+      id: 'TK-29490', subject: 'Subscription — skip next month', accuracy: 93, brand: 91, resolution: 95,
+      messages: [
+        { sender: 'customer', text: 'I want to skip my next flower delivery. Going on vacation and nobody will be home.' },
+        { sender: 'agent', text: 'Makes total sense — enjoy your vacation! I\'ve skipped your next delivery (which was scheduled for April 2nd). Your subscription will automatically resume the following month on May 2nd.\n\nIf your plans change, you can always un-skip from your account page, or just let me know. Have a great trip!' }
+      ],
+      feedback: 'Excellent. Handled the request immediately, confirmed the specific date being skipped AND when it resumes, and offered an easy way to undo. The closing feels natural, not scripted.'
+    },
+    {
+      id: 'TK-29495', subject: 'Wrong item received', accuracy: 79, brand: 78, resolution: 71,
+      messages: [
+        { sender: 'customer', text: 'I ordered the Classic Rose Bouquet but received some random succulent arrangement instead. This was supposed to be a sympathy gift for a friend who lost her mother. A succulent arrangement is completely inappropriate.' },
+        { sender: 'agent', text: 'I apologize for the mix-up with your order. Let me look into this.\n\nI can see order #US-48310 — it looks like there was a fulfillment error. I\'ll arrange for the correct Classic Rose Bouquet to be sent out as a priority delivery tomorrow. You don\'t need to return the succulent arrangement.\n\nIs there anything else I can help with?' }
+      ],
+      feedback: 'The resolution mechanics are fine (priority reship, no return needed), but the response misses the emotional weight of the situation. "I apologize for the mix-up" is too generic for a sympathy gift gone wrong. Should have acknowledged the specific context and the distress it caused before jumping to logistics.'
+    }
+  ];
+
+  function simulateResults(totalTickets) {
+    let processed = 0;
+    const batchSize = Math.ceil(totalTickets / 8);
+    let threadIndex = 0;
+
+    const interval = setInterval(() => {
+      processed = Math.min(processed + batchSize, totalTickets);
+      const pct = Math.round((processed / totalTickets) * 100);
+      document.getElementById('progressBar').style.width = pct + '%';
+
+      // Update scores progressively
+      if (pct >= 15) updateScoreCard('scAccuracy', randomScore(85, 96), 'scAccSub', processed + '/' + totalTickets + ' scored');
+      if (pct >= 25) updateScoreCard('scBrand', randomScore(82, 92), 'scBraSub', processed + '/' + totalTickets + ' scored');
+      if (pct >= 35) updateScoreCard('scResolution', randomScore(80, 94), 'scResSub', processed + '/' + totalTickets + ' scored');
+      if (pct >= 15) {
+        const a = parseInt(document.getElementById('scAccuracy').textContent) || 0;
+        const b = parseInt(document.getElementById('scBrand').textContent) || 0;
+        const r = parseInt(document.getElementById('scResolution').textContent) || 0;
+        const count = (a > 0 ? 1 : 0) + (b > 0 ? 1 : 0) + (r > 0 ? 1 : 0);
+        if (count > 0) {
+          const ov = Math.round((a + b + r) / count);
+          updateScoreCard('scOverall', ov, 'scOvSub', processed + '/' + totalTickets + ' scored');
+        }
+      }
+
+      // Add a thread card
+      if (threadIndex < sampleThreads.length) {
+        addThreadCard(sampleThreads[threadIndex], threadIndex);
+        threadIndex++;
+      }
+
+      if (processed >= totalTickets) {
+        clearInterval(interval);
+        // Final state
+        document.getElementById('resultsSpinner').style.display = 'none';
+        document.getElementById('resultsStatusText').textContent = 'Completed';
+        document.getElementById('resultsStatusText').classList.add('done');
+        document.getElementById('scAccSub').textContent = '+2 vs last run';
+        document.getElementById('scBraSub').textContent = '+1 vs last run';
+        document.getElementById('scResSub').textContent = '+3 vs last run';
+        const overall = parseInt(document.getElementById('scOverall').textContent);
+        document.getElementById('scOvSub').textContent = overall >= 85 ? 'Passed' : 'Failed';
+      }
+    }, 900);
+  }
+
+  function randomScore(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  function updateScoreCard(valueId, score, subId, subText) {
+    const el = document.getElementById(valueId);
+    el.textContent = score;
+    el.className = 'sc-value ' + (score >= 90 ? 'green' : score >= 80 ? 'purple' : 'yellow');
+    if (subId) document.getElementById(subId).textContent = subText;
+  }
+
+  function addThreadCard(thread, index) {
+    const tc = document.getElementById('threadsContainer');
+    const card = document.createElement('div');
+    card.className = 'thread-card';
+    card.onclick = () => card.classList.toggle('expanded');
+
+    const avgScore = Math.round((thread.accuracy + thread.brand + thread.resolution) / 3);
+    const scoreColor = avgScore >= 90 ? 'green' : avgScore >= 80 ? 'purple' : 'yellow';
+
+    let messagesHtml = thread.messages.map(m =>
+      `<div class="thread-message ${m.sender}">
+        <div class="msg-sender">${m.sender === 'customer' ? 'Customer' : 'AI Agent'}</div>
+        <div class="msg-text">${m.text.replace(/\n/g, '<br>')}</div>
+      </div>`
+    ).join('');
+
+    card.innerHTML = `
+      <div class="thread-header">
+        <div class="thread-left">
+          <span class="thread-ticket-id">${thread.id}</span>
+          <span class="thread-subject">${thread.subject}</span>
+        </div>
+        <div class="thread-scores">
+          <div class="thread-score-item"><span class="ts-label">Acc</span> <span class="ts-value score ${thread.accuracy >= 90 ? 'green' : ''}">${thread.accuracy}</span></div>
+          <div class="thread-score-item"><span class="ts-label">Brand</span> <span class="ts-value score ${thread.brand >= 90 ? 'green' : ''}">${thread.brand}</span></div>
+          <div class="thread-score-item"><span class="ts-label">Res</span> <span class="ts-value score ${thread.resolution >= 90 ? 'green' : ''}">${thread.resolution}</span></div>
+          <span class="thread-expand-icon">&#9662;</span>
+        </div>
+      </div>
+      <div class="thread-body">
+        ${messagesHtml}
+        <div class="scorer-feedback">
+          <div class="sf-title">Scorer feedback — ${selectedScorerName || 'The Rushed Gift-Giver'}</div>
+          <div class="sf-text">${thread.feedback}</div>
+        </div>
+      </div>
+    `;
+    tc.appendChild(card);
+
+    // Animate in
+    card.style.opacity = '0';
+    card.style.transform = 'translateY(10px)';
+    card.style.transition = 'all 0.3s ease';
+    requestAnimationFrame(() => {
+      card.style.opacity = '1';
+      card.style.transform = 'translateY(0)';
+    });
+  }
+</script>
+
+</body>
+</html>
