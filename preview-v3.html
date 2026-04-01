@@ -1,3 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gorgias AI Agent — Evaluations</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    #root { height: 100vh; }
+    @keyframes typingDot {
+      0%, 60%, 100% { opacity: 0.3; transform: translateY(0); }
+      30% { opacity: 1; transform: translateY(-3px); }
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+    input::placeholder { color: #5c6370; }
+    #loading-msg { display:flex; align-items:center; justify-content:center; height:100vh; font-size:16px; color:#5c6370; flex-direction:column; gap:12px; }
+    #loading-msg .spinner { width:24px; height:24px; border:3px solid #e5e5e5; border-top-color:#7E55F6; border-radius:50%; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+  <script crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.development.js"></script>
+  <script crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.development.js"></script>
+  <script crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+</head>
+<body>
+  <div id="root"><div id="loading-msg"><div class="spinner"></div><span>Loading prototype...</span></div></div>
+  <script>
+    window.addEventListener('DOMContentLoaded', function() {
+      try {
+        var jsxSource = document.getElementById('jsx-source').textContent;
+        var output = Babel.transform(jsxSource, { presets: ['react'] });
+        var fn = new Function('React', 'ReactDOM', output.code);
+        fn(React, ReactDOM);
+      } catch (e) {
+        document.getElementById('root').innerHTML =
+          '<div style="padding:40px;font-family:monospace;max-width:800px">' +
+          '<h2 style="color:#d32f2f;margin-bottom:16px">Prototype Error</h2>' +
+          '<p style="margin-bottom:8px;font-size:14px">' + (e.message || e) + '</p>' +
+          '<pre style="background:#f5f5f5;padding:16px;border-radius:8px;overflow:auto;font-size:12px;max-height:400px">' +
+          (e.stack || '') + '</pre></div>';
+        console.error(e);
+      }
+    });
+  </script>
+  <script id="jsx-source" type="text/plain">
 // Gorgias AI Agent — Vision v3: Two-Panel Evaluation Prototype
 // Left panel: Conversation flow with agent messages and user prompts
 // Right panel: Working area with evaluation results, tickets, skill diffs
@@ -2122,7 +2173,9 @@ const App = () => {
   );
 };
 
-export default App;
-if (typeof window !== 'undefined') {
-  window.__APP__ = App;
-}
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(React.createElement(App));
+
+  </script>
+</body>
+</html>
