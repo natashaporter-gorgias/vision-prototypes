@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gorgias AI Agent - Morning Briefing</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: #fafafa; color: #1e242e; overflow: hidden; }
+
+    /* Layout */
+    .container { display: flex; height: 100vh; }
+    .nav { width: 48px; background: #fff; border-right: 1px solid #00000014; display: flex; flex-direction: column; align-items: center; padding: 12px 0; gap: 8px; }
+    .nav-btn { width: 32px; height: 32px; border: none; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 6px; transition: all 150ms cubic-bezier(0.9, 0, 0, 1); color: #5c6370; }
+    .nav-btn.active { background: #f1ecff; color: #7E55F6; }
+    .nav-btn:hover { color: #7E55F6; }
+
+    .left-panel { width: 487px; background: #fafafa; display: flex; flex-direction: column; padding: 8px; overflow: hidden; position: relative; }
+    .left-inner { background: #fff; border-radius: 16px; border: 1px solid #00000014; flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
+    .left-frosted-header { position: absolute; top: 0; left: 0; right: 0; z-index: 10; background: linear-gradient(#ffffff 0%, #ffffffb2 100%); backdrop-filter: blur(1px); -webkit-backdrop-filter: blur(1px); padding: 24px; display: flex; align-items: center; min-height: 80px; }
+    .left-body { flex: 1; display: flex; flex-direction: column; justify-content: space-between; padding: 32px 24px; overflow-y: auto; }
+    .left-body-top { padding-top: 56px; }
+    .left-body-content { flex: 1; display: flex; flex-direction: column; gap: 16px; justify-content: flex-end; padding: 16px 0; }
+    .right-panel { flex: 1; background: #fafafa; padding: 8px; overflow: hidden; }
+    .right-inner { background: #fff; border-radius: 16px; border: 1px solid #00000014; height: 100%; display: flex; flex-direction: column; overflow: hidden; }
+    .right-header { padding: 24px; height: 80px; display: flex; align-items: center; }
+    .right-body { flex: 1; overflow-y: auto; padding: 32px 24px; display: flex; flex-direction: column; gap: 24px; }
+
+    /* Typography */
+    .heading-xxl { font-size: 24px; line-height: 32px; font-weight: 600; }
+    .heading-xl { font-size: 20px; line-height: 32px; font-weight: 600; }
+    .heading-md { font-size: 16px; line-height: 24px; font-weight: 600; }
+    .heading-sm { font-size: 14px; line-height: 20px; font-weight: 600; }
+    .medium-md { font-size: 14px; line-height: 20px; font-weight: 500; }
+    .regular-md { font-size: 14px; line-height: 20px; font-weight: 400; }
+    .bold-sm { font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: 0.01em; }
+    .regular-sm { font-size: 12px; line-height: 16px; font-weight: 400; letter-spacing: 0.01em; }
+
+    /* Colors */
+    .text-secondary { color: #5c6370; }
+    .text-tertiary { color: #6e7686; }
+
+    /* Home Screen */
+    .greeting { margin-bottom: 6px; }
+    .subtitle { color: #5c6370; margin-bottom: 24px; }
+
+    .task-list { display: flex; flex-direction: column; gap: 8px; }
+    .task-card { background: #fff; border: 1px solid #00000014; border-radius: 8px; padding: 12px 16px; cursor: pointer; transition: all 150ms cubic-bezier(0.9, 0, 0, 1); box-shadow: 0px 2px 20px 0px rgba(0,0,0,0.04); animation: fadeInUp 400ms cubic-bezier(0.6, 0, 0, 1) backwards; }
+    .task-card:hover { border-color: #7E55F6; box-shadow: 0px 2px 20px 0px rgba(0,0,0,0.08); }
+
+    .task-title { font-size: 14px; font-weight: 600; line-height: 20px; margin-bottom: 4px; }
+    .task-desc { font-size: 12px; line-height: 16px; letter-spacing: 0.01em; color: #5c6370; }
+
+    .input-card { background: #fff; border: 1px solid #00000014; border-radius: 8px; padding: 12px 16px; }
+    .input-card-text { font-size: 14px; color: #5c6370; line-height: 20px; margin-bottom: 24px; }
+    .input-card-buttons { display: flex; justify-content: space-between; align-items: center; }
+    .input-icon-btn { width: 24px; height: 24px; border-radius: 6px; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 150ms cubic-bezier(0.9, 0, 0, 1); }
+    .input-icon-btn.light { background: rgba(255,255,255,0.5); border: 0.5px solid rgba(103,113,131,0.5); box-shadow: 0px 2px 3px 0px rgba(0,0,0,0.05); }
+    .input-icon-btn.light:hover { border-color: #7E55F6; }
+    .input-icon-btn.dark { background: #1e242e; box-shadow: 0px 2px 3px 0px rgba(0,0,0,0.05); opacity: 0.5; }
+    .input-icon-btn.dark:hover { opacity: 0.8; }
+
+    /* Metric Cards */
+    .metrics-grid { display: flex; gap: 16px; }
+    .metric-card { flex: 1; background: #fff; border-radius: 12px; padding: 24px; border: 1px solid #00000014; box-shadow: 0px 2px 20px 0px rgba(0,0,0,0.04); animation: fadeInUp 400ms cubic-bezier(0.6, 0, 0, 1) backwards; }
+    .metric-label-row { display: flex; align-items: center; gap: 4px; margin-bottom: 2px; }
+    .metric-label { font-size: 12px; font-weight: 500; line-height: 16px; letter-spacing: 0.01em; color: #5c6370; }
+    .metric-info { width: 16px; height: 16px; color: #5c6370; }
+    .metric-stats { display: flex; align-items: center; gap: 4px; }
+    .metric-value { font-size: 24px; font-weight: 600; line-height: 32px; }
+    .metric-delta { display: inline-flex; align-items: center; gap: 2px; padding: 1px 4px 1px 2px; border-radius: 4px; }
+    .metric-delta svg { width: 12px; height: 12px; }
+    .metric-delta span { font-size: 12px; font-weight: 500; line-height: 16px; letter-spacing: 0.01em; color: #147656; }
+
+    /* Narrative */
+    .narrative-section { font-size: 14px; line-height: 20px; }
+    .narrative-section strong { font-weight: 600; }
+    .narrative-section .subtitle { color: #5c6370; margin-top: 4px; }
+
+    /* Chart */
+    .chart-card { background: #fff; border-radius: 12px; padding: 24px; border: 1px solid #00000014; box-shadow: 0px 2px 20px 0px rgba(0,0,0,0.04); animation: fadeInUp 400ms cubic-bezier(0.6, 0, 0, 1) backwards; }
+    .narrative-card { margin-bottom: 8px; }
+    .narrative-card h3 { font-size: 14px; line-height: 22px; font-weight: 600; margin-bottom: 4px; }
+    .narrative-card p { font-size: 14px; line-height: 20px; }
+    .chart-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+    .chart-title { font-size: 14px; font-weight: 600; color: #1e242e; margin-bottom: 4px; }
+    .chart-stat { font-size: 24px; font-weight: 600; line-height: 32px; }
+    .chart-change { font-size: 12px; color: #147656; display: flex; align-items: center; gap: 2px; }
+
+    /* Story Cards */
+    .story-card { background: #fff; border-radius: 12px; padding: 20px 24px; border: 1px solid #00000014; box-shadow: 0px 2px 20px 0px rgba(0,0,0,0.04); animation: fadeInUp 400ms cubic-bezier(0.6, 0, 0, 1) backwards; }
+    .story-label { display: inline-block; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; padding: 2px 8px; border-radius: 4px; margin-bottom: 12px; }
+    .story-label.problem { background: #fde8ec; color: #c4314b; }
+    .story-label.impact { background: #fef3e2; color: #b45309; }
+    .story-label.fix { background: #f1ecff; color: #7E55F6; }
+    .story-label.evaluation { background: #e8f4fd; color: #1d6fad; }
+    .story-label.result { background: #e9fbf5; color: #147656; }
+    .story-card .story-title { font-size: 14px; font-weight: 600; line-height: 20px; margin-bottom: 4px; }
+    .story-card .story-body { font-size: 14px; line-height: 22px; color: #5c6370; }
+    .story-card .story-body strong { color: #1e242e; font-weight: 600; }
+    .story-stat-row { display: flex; gap: 24px; margin-top: 12px; }
+    .story-stat { text-align: center; }
+    .story-stat-value { font-size: 20px; font-weight: 600; line-height: 28px; }
+    .story-stat-label { font-size: 12px; color: #5c6370; letter-spacing: 0.01em; }
+    .story-stat-value.red { color: #c4314b; }
+    .story-stat-value.green { color: #147656; }
+    .story-stat-value.purple { color: #7E55F6; }
+
+    /* Task Detail */
+    .back-nav { display: flex; align-items: center; gap: 8px; cursor: pointer; color: #7E55F6; margin-bottom: 16px; transition: all 150ms; }
+    .back-nav:hover { gap: 12px; }
+    .back-nav svg { width: 16px; height: 16px; }
+
+    .conversation { display: flex; flex-direction: column; gap: 16px; }
+    .message { animation: fadeInUp 400ms cubic-bezier(0.6, 0, 0, 1); }
+    .agent-msg { color: #1e242e; line-height: 1.6; }
+    .user-bubble { display: inline-block; background: #EBECEF; color: #1e242e; padding: 8px 14px; border-radius: 16px 16px 4px 16px; max-width: 85%; font-size: 14px; font-weight: 500; animation: scaleUp 350ms cubic-bezier(0.22, 1, 0.36, 1); }
+    .message-user { text-align: right; }
+
+    .prompt-buttons { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .prompt-btn { background: white; border: 1px solid #d0d4da; border-radius: 6px; padding: 0 12px; height: 32px; font-size: 14px; font-weight: 500; line-height: 20px; text-align: left; cursor: pointer; box-shadow: 0px 2px 3px 0px rgba(0,0,0,0.05); transition: all 150ms cubic-bezier(0.9, 0, 0, 1); animation: fadeInUp 400ms cubic-bezier(0.6, 0, 0, 1) backwards; font-family: 'Inter', sans-serif; }
+    .prompt-btn:hover { border-color: #7E55F6; background: #f1ecff; }
+
+    .ticket-card { background: #fff; border: 1px solid #00000014; border-radius: 12px; overflow: hidden; margin-bottom: 8px; box-shadow: 0px 2px 20px 0px rgba(0,0,0,0.04); }
+    .ticket-header { padding: 16px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 150ms; gap: 12px; }
+    .ticket-header:hover { background: #fafafa; }
+    .ticket-header-left { display: flex; flex-direction: column; gap: 2px; }
+    .ticket-header-name { font-size: 14px; font-weight: 600; line-height: 20px; }
+    .ticket-header-subject { font-size: 12px; color: #5c6370; line-height: 16px; letter-spacing: 0.01em; }
+    .ticket-header-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .ticket-tag { font-size: 11px; font-weight: 500; letter-spacing: 0.02em; padding: 2px 8px; border-radius: 4px; background: #fde8ec; color: #c4314b; }
+    .ticket-chevron { width: 16px; height: 16px; color: #5c6370; transition: transform 300ms cubic-bezier(0.6, 0, 0, 1); }
+    .ticket-card.open .ticket-chevron { transform: rotate(180deg); }
+    .ticket-content { padding: 0 16px; max-height: 0; overflow: hidden; transition: max-height 400ms cubic-bezier(0.6, 0, 0, 1); }
+    .ticket-card.open .ticket-content { max-height: 400px; padding-bottom: 16px; }
+    .ticket-msg { padding: 10px 12px; border-radius: 8px; font-size: 13px; line-height: 20px; margin-bottom: 8px; }
+    .ticket-msg:last-child { margin-bottom: 0; }
+    .ticket-msg-customer { background: #f5f6f7; }
+    .ticket-msg-agent { background: #fde8ec; border: 1px solid #f5c6cf; }
+    .ticket-msg-label { font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 4px; }
+    .ticket-msg-label.customer { color: #5c6370; }
+    .ticket-msg-label.agent { color: #c4314b; }
+
+    .eval-results { background: #fff; border: 1px solid #00000014; border-radius: 8px; padding: 20px; margin-bottom: 16px; }
+    .eval-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .eval-item { text-align: center; }
+    .eval-metric { font-size: 12px; color: #5c6370; margin-bottom: 8px; }
+    .eval-before { font-size: 16px; color: #c4314b; font-weight: 600; }
+    .eval-arrow { font-size: 14px; color: #7E55F6; margin: 4px 0; }
+    .eval-after { font-size: 16px; color: #1a7a5a; font-weight: 600; }
+
+    /* Animations */
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes scaleUp { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
+    @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes dash { to { stroke-dashoffset: 0; } }
+
+    .fade-out { animation: fadeOut 200ms cubic-bezier(0.6, 0, 0, 1) forwards; }
+    .fade-in { animation: fadeIn 350ms cubic-bezier(0.6, 0, 0, 1) forwards; }
+
+    .hidden { display: none !important; }
+
+    /* Icons */
+    .icon-home { width: 20px; height: 20px; }
+    .icon-chart { width: 20px; height: 20px; }
+    .icon-settings { width: 20px; height: 20px; }
+
+    /* SVG Chart */
+    .svg-chart { width: 100%; height: 200px; margin-top: 12px; }
+
+    /* Insight Cards — horizontal layout: explanation left, chart right */
+    .insight-card {
+      background: #fff;
+      border-radius: 12px;
+      border: 1px solid #00000014;
+      box-shadow: 0px 2px 20px 0px rgba(0,0,0,0.04);
+      padding: 24px;
+      display: flex;
+      gap: 24px;
+      align-items: stretch;
+      animation: fadeInUp 400ms cubic-bezier(0.6, 0, 0, 1) backwards;
+      cursor: pointer;
+      transition: all 150ms cubic-bezier(0.9, 0, 0, 1);
+    }
+    .insight-card:hover { border-color: #7E55F6; box-shadow: 0px 2px 20px 0px rgba(0,0,0,0.08); }
+    .insight-left { flex: 1; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+    .insight-right { width: 220px; flex-shrink: 0; display: flex; flex-direction: column; justify-content: center; }
+    .insight-badge { display: inline-flex; align-self: flex-start; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; padding: 2px 8px; border-radius: 4px; }
+    .insight-badge.alert { background: #fde8ec; color: #c4314b; }
+    .insight-badge.review { background: #fef3e2; color: #b45309; }
+    .insight-badge.info { background: #e8f4fd; color: #1d6fad; }
+    .insight-badge.success { background: #e9fbf5; color: #147656; }
+    .insight-title { font-size: 14px; font-weight: 600; line-height: 20px; color: #1e242e; }
+    .insight-body { font-size: 13px; line-height: 20px; color: #5c6370; }
+    .insight-body strong { color: #1e242e; font-weight: 600; }
+    .insight-metrics { display: flex; gap: 20px; margin-top: 4px; }
+    .insight-metric { display: flex; flex-direction: column; gap: 2px; }
+    .insight-metric-label { font-size: 11px; font-weight: 500; letter-spacing: 0.01em; color: #5c6370; }
+    .insight-metric-row { display: flex; align-items: center; gap: 4px; }
+    .insight-metric-value { font-size: 18px; font-weight: 600; line-height: 24px; color: #1e242e; }
+    .insight-metric-delta { display: inline-flex; align-items: center; gap: 2px; }
+    .insight-metric-delta svg { width: 10px; height: 10px; }
+    .insight-metric-delta span { font-size: 11px; font-weight: 500; }
+    .insight-chart { width: 100%; height: 100%; min-height: 100px; }
+
+    /* Scrolling */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #d0d4da; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #a0a0a0; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Navigation Sidebar -->
+    <div class="nav">
+      <button class="nav-btn active" data-view="home" title="Home">
+        <svg class="icon-home" viewBox="0 0 20 20" fill="currentColor">
+          <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/>
+        </svg>
+      </button>
+      <button class="nav-btn" data-view="analytics" title="Analytics">
+        <svg class="icon-chart" viewBox="0 0 20 20" fill="currentColor">
+          <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/>
+        </svg>
+      </button>
+      <button class="nav-btn" data-view="settings" title="Settings">
+        <svg class="icon-settings" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.107.886-.54 2.042-.061 2.287.947.379 1.561 2.6 1.561 2.978 0 .46-.916 1.163-1.403 2.287-.947 1.372.836 2.942-.734 2.107-2.106-.54-.886-.061-2.042.947-2.287 1.561-.379 1.561-2.6 0-2.978a1.533 1.533 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.107-.886.54-2.042.061-2.287-.947zm-6.925 4.291a1 1 0 00-1.414 1.414l4 4a1 1 0 001.414 0l4-4a1 1 0 00-1.414-1.414L8 11.586l-3.535-3.535z" clip-rule="evenodd"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Left Panel -->
+    <div class="left-panel">
+      <div class="left-inner">
+        <div class="left-frosted-header" id="leftHeader">
+          <h1 class="heading-xl">Good morning, Natasha</h1>
+        </div>
+        <div class="left-body" id="leftBody">
+          <div class="left-body-top"></div>
+          <div class="left-body-content" id="leftContent"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Panel -->
+    <div class="right-panel">
+      <div class="right-inner">
+        <div class="right-header"><h1 class="heading-xl" id="rightTitle">Activity</h1></div>
+        <div class="right-body" id="rightPanel"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // State management
+    let state = { view: 'home', taskDetail: null, conversationBeat: 0 };
+    const tasks = [
+      { id: 1, title: 'Spike in subscription reactivations', badge: 'Alert', badgeClass: 'badge-alert', desc: 'Reactivation requests up 340% this week.' },
+      { id: 2, title: 'Calibrate tone of voice', badge: 'Review', badgeClass: 'badge-review', desc: '2 responses flagged by TOV scorer.' },
+      { id: 3, title: 'Review Shipping skill update', badge: 'Auto-deployed', badgeClass: 'badge-deployed', desc: 'AI Agent improved a skill overnight. Adherence +12%.' },
+      { id: 4, title: 'Review Subscription Management skill', badge: 'Recommendation', badgeClass: 'badge-recommendation', desc: 'AI Agent detected a pattern and recommends a new skill.' }
+    ];
+
+    // Helper functions
+    const h = (tag, classes = '', innerHTML = '', attrs = {}) => {
+      const el = document.createElement(tag);
+      if (classes) el.className = classes;
+      if (innerHTML) el.innerHTML = innerHTML;
+      Object.assign(el, attrs);
+      return el;
+    };
+
+    const renderHome = () => {
+      // Reset header to greeting
+      document.getElementById('leftHeader').innerHTML = '<h1 class="heading-xl">Good morning, Natasha</h1>';
+      document.getElementById('leftHeader').style.cssText = '';
+
+      const content = document.getElementById('leftContent');
+      content.innerHTML = '';
+
+      const sectionHead = h('div', '', `
+        <div class="heading-md" style="margin-bottom: 4px;">Let's knock some tasks off your list</div>
+        <div class="regular-md text-secondary">Here are the most high-impact tasks I recommend:</div>
+      `);
+      content.appendChild(sectionHead);
+
+      const taskList = h('div', 'task-list');
+      tasks.forEach((task, i) => {
+        const card = h('div', 'task-card');
+        card.style.animationDelay = (i * 60) + 'ms';
+        card.innerHTML = `
+          <div class="task-title">${task.title}</div>
+          <div class="task-desc">${task.desc}</div>
+        `;
+        card.onclick = () => openTask(task.id);
+        taskList.appendChild(card);
+      });
+      content.appendChild(taskList);
+
+      const inputCard = h('div', 'input-card');
+      inputCard.innerHTML = `
+        <div class="input-card-text">What can I help you accomplish?</div>
+        <div class="input-card-buttons">
+          <button class="input-icon-btn light">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3.5 8H8M8 8H12.5M8 8V12.5M8 8V3.5" stroke="#1E242E" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <button class="input-icon-btn dark">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2.75L5.08 5.67M8 2.75L10.92 5.67M8 2.75V13.25" stroke="white" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      `;
+      content.appendChild(inputCard);
+    };
+
+    const infoSvg = `<svg class="metric-info" viewBox="0 0 16 16" fill="none"><path d="M8 7.37V10.52M8 13.67C4.87 13.67 2.33 11.13 2.33 8C2.33 4.87 4.87 2.33 8 2.33C11.13 2.33 13.67 4.87 13.67 8C13.67 11.13 11.13 13.67 8 13.67ZM8.03 5.48V5.54L7.97 5.54V5.48H8.03Z" stroke="#5C6370" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+    const trendUpSvg = (color) => `<svg viewBox="0 0 12 12" fill="none"><path d="M9.85 3.59L7.04 6.45C6.99 6.5 6.96 6.53 6.94 6.55C6.57 6.88 6.02 6.88 5.65 6.55C5.63 6.53 5.61 6.5 5.56 6.45C5.51 6.4 5.48 6.37 5.46 6.35C5.09 6.03 4.54 6.03 4.17 6.35C4.15 6.37 4.13 6.4 4.08 6.45L2.15 8.41M9.85 3.59V6.48M9.85 3.59H6.96" stroke="${color}" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+    const trendDownSvg = (color) => `<svg viewBox="0 0 12 12" fill="none"><path d="M9.85 8.41L7.04 5.55C6.99 5.5 6.96 5.47 6.94 5.45C6.57 5.12 6.02 5.12 5.65 5.45C5.63 5.47 5.61 5.5 5.56 5.55C5.51 5.6 5.48 5.63 5.46 5.65C5.09 5.97 4.54 5.97 4.17 5.65C4.15 5.63 4.13 5.6 4.08 5.55L2.15 3.59M9.85 8.41V5.52M9.85 8.41H6.96" stroke="${color}" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
+    // variants: 'positive' (green up), 'negative' (red down), 'negative-up' (red up — bad increase), 'plain' (no arrow)
+    const metricCard = (label, value, delta, delay, variant) => {
+      let color = '#147656', svg = trendUpSvg(color);
+      if (variant === 'negative') { color = '#c4314b'; svg = trendDownSvg(color); }
+      else if (variant === 'negative-up') { color = '#c4314b'; svg = trendUpSvg(color); }
+      else if (variant === 'positive-down') { color = '#147656'; svg = trendDownSvg(color); }
+      const deltaHtml = variant === 'plain'
+        ? `<span class="metric-delta"><span style="color:#5c6370">${delta}</span></span>`
+        : `<span class="metric-delta">${svg}<span style="color:${color}">${delta}</span></span>`;
+      return `
+      <div class="metric-card" style="animation-delay:${delay}ms">
+        <div class="metric-label-row"><span class="metric-label">${label}</span>${infoSvg}</div>
+        <div class="metric-stats">
+          <span class="metric-value">${value}</span>
+          ${deltaHtml}
+        </div>
+      </div>`;
+    };
+
+    // Inline metric for insight cards (compact variant)
+    const insightMetric = (label, value, delta, color = '#c4314b', direction = 'up') => {
+      const svg = direction === 'up' ? trendUpSvg(color) : trendDownSvg(color);
+      return `
+        <div class="insight-metric">
+          <span class="insight-metric-label">${label}</span>
+          <div class="insight-metric-row">
+            <span class="insight-metric-value">${value}</span>
+            <span class="insight-metric-delta">${svg}<span style="color:${color}">${delta}</span></span>
+          </div>
+        </div>`;
+    };
+
+    const renderHomeActivity = () => {
+      document.getElementById('rightTitle').textContent = 'Activity';
+      const html = `
+        <div>
+          <div class="heading-md" style="margin-bottom:4px;">Adherence is holding steady at 92%. Two issues need your attention.</div>
+          <div class="regular-sm text-secondary" style="margin-top:4px;">Last 24 hours · vs. previous day</div>
+        </div>
+
+        <div class="metrics-grid">
+          ${metricCard('Adherence', '92%', '3%', 0)}
+          ${metricCard('Automation rate', '28%', '2%', 80)}
+          ${metricCard('Revenue influenced', '$12.4k', '8%', 160)}
+          ${metricCard('Customer sentiment', '84%', '1%', 240)}
+        </div>
+
+        <!-- Insight cards stack -->
+        <div style="display:flex;flex-direction:column;gap:12px;">
+
+          <!-- Card 1: Subscription reactivation spike -->
+          <div class="insight-card" style="animation-delay:300ms" onclick="openTask(1)">
+            <div class="insight-left">
+              <div style="display:flex;align-items:center;gap:8px;"><span class="insight-badge alert">Alert</span><span class="regular-sm text-tertiary">Since 10:57 PM yesterday</span></div>
+              <div class="insight-title">Spike in subscription reactivations</div>
+              <div class="insight-body">AI Agent resolved 312 subscription tickets overnight, but <strong>47 customers</strong> who asked to skip a delivery came back asking why their subscription was fully paused. Adherence dropped to 18%.</div>
+              <div class="insight-metrics">
+                ${insightMetric('Adherence', '18%', '71%', '#c4314b', 'down')}
+                ${insightMetric('Reactivations', '312', '340%', '#c4314b', 'up')}
+              </div>
+            </div>
+            <div class="insight-right">
+              <svg class="insight-chart" viewBox="0 0 200 120" preserveAspectRatio="xMidYMid meet">
+                <g fill="none" stroke="#f5f6f7" stroke-width="1">
+                  <line x1="0" y1="30" x2="200" y2="30"/><line x1="0" y1="60" x2="200" y2="60"/><line x1="0" y1="90" x2="200" y2="90"/>
+                </g>
+                <g stroke="#c4314b" stroke-width="2" fill="none" opacity="0.15">
+                  <path d="M 0 88 L 25 85 L 50 80 L 75 65 L 100 35 L 125 20 L 150 25 L 175 30 L 200 35"/>
+                </g>
+                <g stroke="#c4314b" stroke-width="2" fill="none">
+                  <path d="M 0 88 L 25 85 L 50 80 L 75 65 L 100 35 L 125 20 L 150 25 L 175 30 L 200 35" stroke-dasharray="400" stroke-dashoffset="400" style="animation: dash 1.5s ease 0.3s forwards;"/>
+                </g>
+                <circle cx="125" cy="20" r="3" fill="#c4314b" opacity="0" style="animation: fadeIn 300ms ease 1.6s forwards;"/>
+                <text x="200" y="110" text-anchor="end" font-size="10" fill="#5c6370" font-family="Inter, sans-serif">Jun 1–7</text>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Card 2: Tone of voice calibration -->
+          <div class="insight-card" style="animation-delay:400ms" onclick="openTask(2)">
+            <div class="insight-left">
+              <div style="display:flex;align-items:center;gap:8px;"><span class="insight-badge review">Review</span><span class="regular-sm text-tertiary">Detected 3h ago</span></div>
+              <div class="insight-title">Calibrate tone of voice</div>
+              <div class="insight-body">2 responses flagged by TOV scorer in the last 24 hours. Responses were too formal for casual customer inquiries — customers expect a warmer, more conversational tone.</div>
+              <div class="insight-metrics">
+                ${insightMetric('TOV score', '74%', '8%', '#b45309', 'down')}
+                ${insightMetric('Flagged', '2', 'last 24h', '#5c6370', 'up')}
+              </div>
+            </div>
+            <div class="insight-right">
+              <svg class="insight-chart" viewBox="0 0 200 120" preserveAspectRatio="xMidYMid meet">
+                <g fill="none" stroke="#f5f6f7" stroke-width="1">
+                  <line x1="0" y1="30" x2="200" y2="30"/><line x1="0" y1="60" x2="200" y2="60"/><line x1="0" y1="90" x2="200" y2="90"/>
+                </g>
+                <g stroke="#b45309" stroke-width="2" fill="none" opacity="0.15">
+                  <path d="M 0 35 L 25 38 L 50 36 L 75 40 L 100 45 L 125 50 L 150 55 L 175 58 L 200 62"/>
+                </g>
+                <g stroke="#b45309" stroke-width="2" fill="none">
+                  <path d="M 0 35 L 25 38 L 50 36 L 75 40 L 100 45 L 125 50 L 150 55 L 175 58 L 200 62" stroke-dasharray="400" stroke-dashoffset="400" style="animation: dash 1.5s ease 0.4s forwards;"/>
+                </g>
+                <circle cx="175" cy="58" r="3" fill="#b45309" opacity="0" style="animation: fadeIn 300ms ease 1.7s forwards;"/>
+                <text x="200" y="110" text-anchor="end" font-size="10" fill="#5c6370" font-family="Inter, sans-serif">Jun 1–7</text>
+              </svg>
+            </div>
+          </div>
+
+        </div>
+      `;
+
+      document.getElementById('rightPanel').innerHTML = html;
+    };
+
+    const createConversationMessage = (text, isUser = false) => {
+      const msg = h('div', isUser ? 'message message-user' : 'message');
+      if (isUser) {
+        msg.innerHTML = `<div class="user-bubble">${text}</div>`;
+      } else {
+        msg.innerHTML = `<div class="agent-msg regular-md">${text}</div>`;
+      }
+      return msg;
+    };
+
+    const createPromptButtons = (buttons, onSelect) => {
+      const container = h('div', 'prompt-buttons');
+      let clicked = false;
+      buttons.forEach((text, i) => {
+        const btn = h('button', 'prompt-btn', text);
+        btn.style.animationDelay = (i * 100) + 'ms';
+        btn.onclick = () => {
+          if (clicked) return; // guard against double-clicks
+          clicked = true;
+          container.remove(); // self-remove immediately
+          onSelect(text, btn);
+        };
+        container.appendChild(btn);
+      });
+      return container;
+    };
+
+    const openTask = (taskId) => {
+      state.taskDetail = taskId;
+      state.conversationBeat = 0;
+
+      const left = document.getElementById('leftContent');
+      const right = document.getElementById('rightPanel');
+      left.classList.add('fade-out');
+      right.classList.add('fade-out');
+
+      setTimeout(() => {
+        renderTaskDetail(taskId);
+        left.classList.remove('fade-out');
+        right.classList.remove('fade-out');
+        left.classList.add('fade-in');
+        right.classList.add('fade-in');
+        setTimeout(() => { left.classList.remove('fade-in'); right.classList.remove('fade-in'); }, 350);
+      }, 200);
+    };
+
+    const renderTaskDetail = (taskId) => {
+      const task = tasks.find(t => t.id === taskId);
+
+      // Update frosted header to show back + task title + description
+      const header = document.getElementById('leftHeader');
+      header.style.cssText = 'flex-direction:column;align-items:flex-start;gap:4px;height:auto;padding:24px 24px 16px;';
+      header.innerHTML = `
+        <div style="display:flex;align-items:center;gap:12px;cursor:pointer;" onclick="backToHome()">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2.75 8L5.67 10.92M2.75 8L5.67 5.08M2.75 8H13.25" stroke="#7E55F6" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="heading-md">${task.title}</span>
+        </div>
+        <div class="regular-md text-secondary" style="padding-left:28px;">${task.desc}</div>
+      `;
+
+      // Update body content — conversation bottom-aligned, input card pinned at bottom
+      const leftContent = document.getElementById('leftContent');
+      leftContent.style.justifyContent = 'flex-end';
+      leftContent.innerHTML = `
+        <div style="flex:1;overflow-y:auto;display:flex;flex-direction:column;justify-content:flex-end;">
+          <div class="conversation" id="conversation"></div>
+        </div>
+        <div class="input-card" style="flex-shrink:0;">
+          <div class="input-card-text">Ask anything</div>
+          <div class="input-card-buttons">
+            <button class="input-icon-btn light">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3.5 8H8M8 8H12.5M8 8V12.5M8 8V3.5" stroke="#1E242E" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <button class="input-icon-btn dark">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2.75L5.08 5.67M8 2.75L10.92 5.67M8 2.75V13.25" stroke="white" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+        </div>
+      `;
+
+      // Start conversation
+      advanceConversation();
+    };
+
+    const scrollConv = () => {
+      const wrapper = document.getElementById('conversation')?.parentElement;
+      if (wrapper) setTimeout(() => wrapper.scrollTop = wrapper.scrollHeight, 50);
+    };
+
+    const advanceConversation = () => {
+      const conv = document.getElementById('conversation');
+      const beat = state.conversationBeat;
+
+      if (beat === 0) {
+        conv.innerHTML = '';
+        const msg = createConversationMessage(
+          'I found the cause of the reactivation spike. Take a look at the problem breakdown on the right.'
+        );
+        conv.appendChild(msg);
+
+        const btns = createPromptButtons(
+          ['Show me affected tickets', 'What did you do about it?'],
+          (text, btn) => selectPrompt(text, beat + 1)
+        );
+        conv.appendChild(btns);
+        scrollConv();
+
+        renderTaskActivityBeat0();
+      } else if (beat === 1) {
+        const msg = createConversationMessage(state.lastSelectedText || 'Show me affected tickets', true);
+        document.getElementById('conversation').appendChild(msg);
+        scrollConv();
+
+        setTimeout(() => {
+          const agentMsg = createConversationMessage(
+            'Here are two representative tickets. In both, the customer asked to skip one delivery but got their entire subscription paused.'
+          );
+          document.getElementById('conversation').appendChild(agentMsg);
+
+          renderTaskActivityBeat1();
+
+          const btns = createPromptButtons(
+            ['What did you do about it?'],
+            () => selectPrompt(null, beat + 1)
+          );
+          document.getElementById('conversation').appendChild(btns);
+          scrollConv();
+        }, 300);
+      } else if (beat === 2) {
+        const msg = createConversationMessage(state.lastSelectedText || 'What did you do about it?', true);
+        document.getElementById('conversation').appendChild(msg);
+        scrollConv();
+
+        setTimeout(() => {
+          const agentMsg = createConversationMessage(
+            'I separated the two intents and ran an evaluation. See the fix details on the right.'
+          );
+          document.getElementById('conversation').appendChild(agentMsg);
+
+          renderTaskActivityBeat2();
+
+          const btns = createPromptButtons(
+            ['Show me the eval results'],
+            () => selectPrompt(null, beat + 1)
+          );
+          document.getElementById('conversation').appendChild(btns);
+          scrollConv();
+        }, 300);
+      } else if (beat === 3) {
+        const msg = createConversationMessage(state.lastSelectedText || 'Show me the eval results', true);
+        document.getElementById('conversation').appendChild(msg);
+        scrollConv();
+
+        setTimeout(() => {
+          const agentMsg = createConversationMessage(
+            '44 of 47 tickets resolved correctly. The 3 ambiguous ones now trigger a clarifying question.'
+          );
+          document.getElementById('conversation').appendChild(agentMsg);
+
+          renderTaskActivityBeat3();
+
+          const btns = createPromptButtons(
+            ['How is it performing now?'],
+            () => selectPrompt(null, beat + 1)
+          );
+          document.getElementById('conversation').appendChild(btns);
+          scrollConv();
+        }, 300);
+      } else if (beat === 4) {
+        const msg = createConversationMessage(state.lastSelectedText || 'How is it performing now?', true);
+        document.getElementById('conversation').appendChild(msg);
+        scrollConv();
+
+        setTimeout(() => {
+          const agentMsg = createConversationMessage(
+            'The fix has been live for 6 hours. Adherence is back to 91% and holding steady.'
+          );
+          document.getElementById('conversation').appendChild(agentMsg);
+
+          renderTaskActivityBeat4();
+
+          const btns = createPromptButtons(
+            ['Are "where\'s my delivery" tickets trending down?'],
+            () => selectPrompt(null, beat + 1)
+          );
+          document.getElementById('conversation').appendChild(btns);
+          scrollConv();
+        }, 300);
+      } else if (beat === 5) {
+        const msg = createConversationMessage(state.lastSelectedText || 'Are "where\'s my delivery" tickets trending down?', true);
+        document.getElementById('conversation').appendChild(msg);
+        scrollConv();
+
+        setTimeout(() => {
+          const agentMsg = createConversationMessage(
+            'Yes — they\'ve dropped 68% since the fix went live. Down from 47 to 15 in the last 6 hours, and the trend is still falling.'
+          );
+          document.getElementById('conversation').appendChild(agentMsg);
+
+          renderTaskActivityBeat5();
+          scrollConv();
+        }, 300);
+      }
+
+      state.conversationBeat = beat + 1;
+    };
+
+    const selectPrompt = (text, nextBeat) => {
+      // Safety net: remove any remaining prompt-button groups
+      document.querySelectorAll('#conversation .prompt-buttons').forEach(el => el.remove());
+      state.lastSelectedText = text; // store for the next beat's user bubble
+      state.conversationBeat = nextBeat;
+      advanceConversation();
+    };
+
+    const addStoryCard = (html) => {
+      const panel = document.getElementById('rightPanel');
+      const wrapper = document.createElement('div');
+      wrapper.innerHTML = html;
+      panel.appendChild(wrapper.firstElementChild);
+      setTimeout(() => panel.scrollTop = panel.scrollHeight, 50);
+    };
+
+    const renderTaskActivityBeat0 = () => {
+      document.getElementById('rightTitle').textContent = 'Subscription skill';
+      document.getElementById('rightPanel').innerHTML = '';
+
+      addStoryCard(`
+        <div class="story-card">
+          <span class="story-label problem">Problem</span>
+          <div class="regular-sm text-secondary" style="margin-bottom:8px;">Last 12 hours · Subscription Management skill</div>
+          <div class="story-title">"Skip a delivery" requests misrouted as full subscription pauses</div>
+          <div class="story-body">Customers asking to skip their next delivery had their entire subscription paused indefinitely. They came back confused asking why they didn't receive their delivery — driving the reactivation spike on your dashboard.</div>
+          <div class="metrics-grid" style="margin-top:16px;">
+            ${metricCard('Adherence', '18%', '71%', 100, 'negative')}
+            ${metricCard('"Where\'s my delivery?" tickets', '47', '340%', 200, 'negative-up')}
+            ${metricCard('Reactivation requests', '312', '340%', 300, 'negative-up')}
+          </div>
+        </div>
+      `);
+    };
+
+    const toggleTicket = (el) => { el.closest('.ticket-card').classList.toggle('open'); };
+
+    const renderTaskActivityBeat1 = () => {
+      addStoryCard(`
+        <div class="story-card">
+          <span class="story-label impact">Impact</span>
+          <div class="story-title">Representative affected tickets</div>
+          <div class="story-body" style="margin-bottom:12px;">Both customers clearly asked to skip one delivery. The agent paused their entire subscription instead.</div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div class="ticket-card">
+              <div class="ticket-header" onclick="toggleTicket(this)">
+                <div class="ticket-header-left">
+                  <div class="ticket-header-name">Sarah M.</div>
+                  <div class="ticket-header-subject">Vacation skip request</div>
+                </div>
+                <div class="ticket-header-right">
+                  <span class="ticket-tag">Misrouted</span>
+                  <svg class="ticket-chevron" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+              </div>
+              <div class="ticket-content">
+                <div class="ticket-msg ticket-msg-customer">
+                  <div class="ticket-msg-label customer">Customer</div>
+                  "Can I skip my next delivery? I want to keep getting them after I'm back though!"
+                </div>
+                <div class="ticket-msg ticket-msg-agent">
+                  <div class="ticket-msg-label agent">AI Agent response</div>
+                  "I've paused your subscription. You won't receive any more deliveries."
+                </div>
+              </div>
+            </div>
+            <div class="ticket-card">
+              <div class="ticket-header" onclick="toggleTicket(this)">
+                <div class="ticket-header-left">
+                  <div class="ticket-header-name">James R.</div>
+                  <div class="ticket-header-subject">Home renovation — skip this week</div>
+                </div>
+                <div class="ticket-header-right">
+                  <span class="ticket-tag">Misrouted</span>
+                  <svg class="ticket-chevron" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+              </div>
+              <div class="ticket-content">
+                <div class="ticket-msg ticket-msg-customer">
+                  <div class="ticket-msg-label customer">Customer</div>
+                  "Need to skip this week's delivery please — back to normal after that."
+                </div>
+                <div class="ticket-msg ticket-msg-agent">
+                  <div class="ticket-msg-label agent">AI Agent response</div>
+                  "Done! I've paused your flower subscription. No more deliveries will be sent."
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `);
+    };
+
+    const renderTaskActivityBeat2 = () => {
+      addStoryCard(`
+        <div class="story-card">
+          <span class="story-label fix">Fix</span>
+          <div class="story-title">Separated "skip" and "pause" into distinct intents</div>
+          <div class="story-body" style="margin-top:4px;">
+            <strong>Skip next delivery</strong> — skips only the next scheduled delivery, subscription stays active.<br><br>
+            <strong>Pause subscription</strong> — stops all future deliveries until the customer reactivates.<br><br>
+            Ambiguous requests now trigger a clarifying question instead of guessing.
+          </div>
+        </div>
+      `);
+    };
+
+    const renderTaskActivityBeat3 = () => {
+      addStoryCard(`
+        <div class="story-card">
+          <span class="story-label evaluation">Evaluation</span>
+          <div class="story-title">Tested fix against all 47 affected tickets</div>
+          <div class="story-body" style="margin-bottom:12px;">44 of 47 resolved correctly. 3 ambiguous cases now ask a clarifying question.</div>
+          <div class="metrics-grid">
+            ${metricCard('Adherence', '93%', '38%', 100)}
+            ${metricCard('Resolution', '91%', '31%', 200)}
+            ${metricCard('Tone', '95%', '13%', 300)}
+          </div>
+        </div>
+      `);
+    };
+
+    const renderTaskActivityBeat4 = () => {
+      addStoryCard(`
+        <div class="story-card">
+          <span class="story-label result">Result</span>
+          <div class="story-title">Adherence recovered to 91% — fix deployed 6 hours ago</div>
+          <div class="story-body" style="margin-bottom:8px;">A dedicated monitor is now tracking skip vs. pause classification to catch any drift early.</div>
+          <svg class="svg-chart" viewBox="0 0 400 200" preserveAspectRatio="xMidYMid meet">
+            <g stroke="#c4314b" stroke-width="2" fill="none">
+              <path d="M 0 80 L 40 60 L 80 40 L 120 20 L 160 10" stroke-dasharray="500" stroke-dashoffset="500" style="animation: dash 1s ease forwards;"/>
+            </g>
+            <g stroke="#147656" stroke-width="2" fill="none">
+              <path d="M 160 10 L 200 15 L 240 35 L 280 60 L 320 80 L 360 95 L 400 100" stroke-dasharray="500" stroke-dashoffset="500" style="animation: dash 1.5s ease 1s forwards;"/>
+            </g>
+            <g fill="none" stroke="#e9fbf5" stroke-width="1" opacity="0.3">
+              <line x1="0" y1="30" x2="400" y2="30"/><line x1="0" y1="100" x2="400" y2="100"/>
+            </g>
+            <text x="80" y="190" text-anchor="middle" font-size="11" fill="#c4314b">Issue detected</text>
+            <text x="300" y="190" text-anchor="middle" font-size="11" fill="#147656">Fix deployed</text>
+          </svg>
+        </div>
+      `);
+    };
+
+    const renderTaskActivityBeat5 = () => {
+      addStoryCard(`
+        <div class="story-card">
+          <span class="story-label result">Recovery</span>
+          <div class="story-title">"Where's my delivery?" tickets dropping fast</div>
+          <div class="story-body" style="margin-bottom:12px;">Down 68% since the fix went live. Customers are getting the right response now — skip requests are handled correctly without triggering confusion.</div>
+          <div class="metrics-grid" style="margin-bottom:12px;">
+            ${metricCard('"Where\'s my delivery?" tickets', '15', '68%', 100, 'positive-down')}
+            ${metricCard('Reactivation requests', '8', '97%', 200, 'positive-down')}
+          </div>
+          <svg class="svg-chart" viewBox="0 0 400 160" preserveAspectRatio="xMidYMid meet">
+            <g stroke="#147656" stroke-width="2" fill="none">
+              <path d="M 0 20 L 50 22 L 100 25 L 150 30 L 200 50 L 250 75 L 300 105 L 350 125 L 400 140" stroke-dasharray="500" stroke-dashoffset="500" style="animation: dash 1.5s ease forwards;"/>
+            </g>
+            <g fill="none" stroke="#e9fbf5" stroke-width="1" opacity="0.3">
+              <line x1="0" y1="40" x2="400" y2="40"/><line x1="0" y1="80" x2="400" y2="80"/><line x1="0" y1="120" x2="400" y2="120"/>
+            </g>
+            <text x="100" y="155" text-anchor="middle" font-size="11" fill="#c4314b">Before fix</text>
+            <text x="320" y="155" text-anchor="middle" font-size="11" fill="#147656">After fix</text>
+          </svg>
+        </div>
+      `);
+    };
+
+    const backToHome = () => {
+      state.taskDetail = null;
+      state.conversationBeat = 0;
+
+      const left = document.getElementById('leftContent');
+      const right = document.getElementById('rightPanel');
+      left.classList.add('fade-out');
+      right.classList.add('fade-out');
+
+      setTimeout(() => {
+        // Reset content alignment for home
+        left.style.justifyContent = '';
+        renderHome();
+        renderHomeActivity();
+        left.classList.remove('fade-out');
+        right.classList.remove('fade-out');
+        left.classList.add('fade-in');
+        right.classList.add('fade-in');
+        setTimeout(() => {
+          left.classList.remove('fade-in');
+          right.classList.remove('fade-in');
+        }, 350);
+      }, 200);
+    };
+
+    // Nav buttons
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        if (btn.dataset.view === 'home') backToHome();
+      });
+    });
+
+    // Initialize
+    renderHome();
+    renderHomeActivity();
+  </script>
+</body>
+</html>
