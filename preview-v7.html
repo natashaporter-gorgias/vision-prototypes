@@ -1,0 +1,1538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gorgias AI Agent - Morning Briefing</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: #fafafa; color: #1e242e; overflow: hidden; }
+
+    /* Layout */
+    .container { display: flex; height: 100vh; }
+    .nav { width: 48px; background: #fff; border-right: 1px solid #00000014; display: flex; flex-direction: column; align-items: center; padding: 12px 0; gap: 8px; }
+    .nav-btn { width: 32px; height: 32px; border: none; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 6px; transition: all 150ms cubic-bezier(0.9, 0, 0, 1); color: #5c6370; }
+    .nav-btn.active { background: #f1ecff; color: #7E55F6; }
+    .nav-btn:hover { color: #7E55F6; }
+
+    .left-panel { width: 487px; background: #fafafa; display: flex; flex-direction: column; padding: 8px; overflow: hidden; position: relative; }
+    .left-inner { background: #fff; border-radius: 16px; border: 1px solid #00000014; flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
+    .left-frosted-header { position: absolute; top: 0; left: 0; right: 0; z-index: 10; background: linear-gradient(#ffffff 0%, #ffffffb2 100%); backdrop-filter: blur(1px); -webkit-backdrop-filter: blur(1px); padding: 24px; display: flex; align-items: center; min-height: 80px; }
+    .left-body { flex: 1; display: flex; flex-direction: column; justify-content: space-between; padding: 32px 24px; overflow-y: auto; }
+    .left-body-top { padding-top: 56px; }
+    .left-body-content { flex: 1; display: flex; flex-direction: column; gap: 16px; justify-content: flex-end; padding: 16px 0; }
+    .right-panel { flex: 1; background: #fafafa; padding: 8px; overflow: hidden; }
+    .right-inner { background: #fff; border-radius: 16px; border: 1px solid #00000014; height: 100%; display: flex; flex-direction: column; overflow: hidden; }
+    .right-header { padding: 24px; height: 80px; display: flex; align-items: center; }
+    .right-body { flex: 1; overflow-y: auto; padding: 32px 24px; display: flex; flex-direction: column; gap: 24px; }
+
+    /* Typography */
+    .heading-xxl { font-size: 24px; line-height: 32px; font-weight: 600; }
+    .heading-xl { font-size: 20px; line-height: 32px; font-weight: 600; }
+    .heading-md { font-size: 16px; line-height: 24px; font-weight: 600; }
+    .heading-sm { font-size: 14px; line-height: 20px; font-weight: 600; }
+    .medium-md { font-size: 14px; line-height: 20px; font-weight: 500; }
+    .regular-md { font-size: 14px; line-height: 20px; font-weight: 400; }
+    .bold-sm { font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: 0.01em; }
+    .regular-sm { font-size: 12px; line-height: 16px; font-weight: 400; letter-spacing: 0.01em; }
+
+    /* Colors */
+    .text-secondary { color: #5c6370; }
+    .text-tertiary { color: #6e7686; }
+
+    /* Home Screen */
+    .greeting { margin-bottom: 6px; }
+    .subtitle { color: #5c6370; margin-bottom: 24px; }
+
+    .task-list { display: flex; flex-direction: column; gap: 8px; }
+    .task-card { background: #fff; border: 1px solid #00000014; border-radius: 8px; padding: 12px 16px; cursor: pointer; transition: all 150ms cubic-bezier(0.9, 0, 0, 1); box-shadow: 0px 2px 20px 0px rgba(0,0,0,0.04); animation: fadeInUp 400ms cubic-bezier(0.6, 0, 0, 1) backwards; }
+    .task-card:hover { border-color: #7E55F6; box-shadow: 0px 2px 20px 0px rgba(0,0,0,0.08); }
+
+    .task-title { font-size: 14px; font-weight: 600; line-height: 20px; margin-bottom: 4px; }
+    .task-desc { font-size: 12px; line-height: 16px; letter-spacing: 0.01em; color: #5c6370; }
+
+    .input-card { background: #fff; border: 1px solid #00000014; border-radius: 8px; padding: 12px 16px; }
+    .input-card-text { font-size: 14px; color: #5c6370; line-height: 20px; margin-bottom: 24px; }
+    .input-card-buttons { display: flex; justify-content: space-between; align-items: center; }
+    .input-icon-btn { width: 24px; height: 24px; border-radius: 6px; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 150ms cubic-bezier(0.9, 0, 0, 1); }
+    .input-icon-btn.light { background: rgba(255,255,255,0.5); border: 0.5px solid rgba(103,113,131,0.5); box-shadow: 0px 2px 3px 0px rgba(0,0,0,0.05); }
+    .input-icon-btn.light:hover { border-color: #7E55F6; }
+    .input-icon-btn.dark { background: #1e242e; box-shadow: 0px 2px 3px 0px rgba(0,0,0,0.05); opacity: 0.5; }
+    .input-icon-btn.dark:hover { opacity: 0.8; }
+
+    /* Metric Cards */
+    .metrics-grid { display: flex; gap: 16px; }
+    .metric-card { flex: 1; background: #fff; border-radius: 12px; padding: 24px; border: 1px solid #00000014; box-shadow: 0px 2px 20px 0px rgba(0,0,0,0.04); animation: fadeInUp 400ms cubic-bezier(0.6, 0, 0, 1) backwards; }
+    .metric-label-row { display: flex; align-items: center; gap: 4px; margin-bottom: 2px; }
+    .metric-label { font-size: 12px; font-weight: 500; line-height: 16px; letter-spacing: 0.01em; color: #5c6370; }
+    .metric-info { width: 16px; height: 16px; color: #5c6370; }
+    .metric-stats { display: flex; align-items: center; gap: 4px; }
+    .metric-value { font-size: 24px; font-weight: 600; line-height: 32px; }
+    .metric-delta { display: inline-flex; align-items: center; gap: 2px; padding: 1px 4px 1px 2px; border-radius: 4px; }
+    .metric-delta svg { width: 12px; height: 12px; }
+    .metric-delta span { font-size: 12px; font-weight: 500; line-height: 16px; letter-spacing: 0.01em; color: #147656; }
+
+    /* Narrative */
+    .narrative-section { font-size: 14px; line-height: 20px; }
+    .narrative-section strong { font-weight: 600; }
+    .narrative-section .subtitle { color: #5c6370; margin-top: 4px; }
+
+    /* Chart */
+    .chart-card { background: #fff; border-radius: 12px; padding: 24px; border: 1px solid #00000014; box-shadow: 0px 2px 20px 0px rgba(0,0,0,0.04); animation: fadeInUp 400ms cubic-bezier(0.6, 0, 0, 1) backwards; }
+    .narrative-card { margin-bottom: 8px; }
+    .narrative-card h3 { font-size: 14px; line-height: 22px; font-weight: 600; margin-bottom: 4px; }
+    .narrative-card p { font-size: 14px; line-height: 20px; }
+    .chart-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+    .chart-title { font-size: 14px; font-weight: 600; color: #1e242e; margin-bottom: 4px; }
+    .chart-stat { font-size: 24px; font-weight: 600; line-height: 32px; }
+    .chart-change { font-size: 12px; color: #147656; display: flex; align-items: center; gap: 2px; }
+
+    /* Story Cards */
+    .story-card { background: #fff; border-radius: 12px; padding: 20px 24px; border: 1px solid #00000014; box-shadow: 0px 2px 20px 0px rgba(0,0,0,0.04); animation: fadeInUp 400ms cubic-bezier(0.6, 0, 0, 1) backwards; }
+    .story-label { display: inline-block; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; padding: 2px 8px; border-radius: 4px; margin-bottom: 12px; }
+    .story-label.problem { background: #fde8ec; color: #c4314b; }
+    .story-label.impact { background: #fef3e2; color: #b45309; }
+    .story-label.fix { background: #f1ecff; color: #7E55F6; }
+    .story-label.evaluation { background: #e8f4fd; color: #1d6fad; }
+    .story-label.result { background: #e9fbf5; color: #147656; }
+    .story-label.opportunity { background: #f1ecff; color: #7E55F6; }
+    .story-label.evidence { background: #fef3e2; color: #b45309; }
+    .story-label.proposal { background: #e8f4fd; color: #1d6fad; }
+    .story-label.persona { background: #f1ecff; color: #7E55F6; }
+    .story-label.activated { background: #e9fbf5; color: #147656; }
+    .story-card .story-title { font-size: 14px; font-weight: 600; line-height: 20px; margin-bottom: 4px; }
+    .story-card .story-body { font-size: 14px; line-height: 22px; color: #5c6370; }
+    .story-card .story-body strong { color: #1e242e; font-weight: 600; }
+    .story-stat-row { display: flex; gap: 24px; margin-top: 12px; }
+    .story-stat { text-align: center; }
+    .story-stat-value { font-size: 20px; font-weight: 600; line-height: 28px; }
+    .story-stat-label { font-size: 12px; color: #5c6370; letter-spacing: 0.01em; }
+    .story-stat-value.red { color: #c4314b; }
+    .story-stat-value.green { color: #147656; }
+    .story-stat-value.purple { color: #7E55F6; }
+
+    /* Task Detail */
+    .back-nav { display: flex; align-items: center; gap: 8px; cursor: pointer; color: #7E55F6; margin-bottom: 16px; transition: all 150ms; }
+    .back-nav:hover { gap: 12px; }
+    .back-nav svg { width: 16px; height: 16px; }
+
+    .conversation { display: flex; flex-direction: column; gap: 16px; }
+    .message { animation: fadeInUp 400ms cubic-bezier(0.6, 0, 0, 1); }
+    .agent-msg { color: #1e242e; line-height: 1.6; }
+    .user-bubble { display: inline-block; background: #EBECEF; color: #1e242e; padding: 8px 14px; border-radius: 16px 16px 4px 16px; max-width: 85%; font-size: 14px; font-weight: 500; animation: scaleUp 350ms cubic-bezier(0.22, 1, 0.36, 1); }
+    .message-user { text-align: right; }
+
+    .prompt-buttons { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .prompt-btn { background: white; border: 1px solid #d0d4da; border-radius: 6px; padding: 0 12px; height: 32px; font-size: 14px; font-weight: 500; line-height: 20px; text-align: left; cursor: pointer; box-shadow: 0px 2px 3px 0px rgba(0,0,0,0.05); transition: all 150ms cubic-bezier(0.9, 0, 0, 1); animation: fadeInUp 400ms cubic-bezier(0.6, 0, 0, 1) backwards; font-family: 'Inter', sans-serif; }
+    .prompt-btn:hover { border-color: #7E55F6; background: #f1ecff; }
+
+    .ticket-card { background: #fff; border: 1px solid #00000014; border-radius: 12px; overflow: hidden; margin-bottom: 8px; box-shadow: 0px 2px 20px 0px rgba(0,0,0,0.04); }
+    .ticket-header { padding: 16px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; transition: background 150ms; gap: 12px; }
+    .ticket-header:hover { background: #fafafa; }
+    .ticket-header-left { display: flex; flex-direction: column; gap: 2px; }
+    .ticket-header-name { font-size: 14px; font-weight: 600; line-height: 20px; }
+    .ticket-header-subject { font-size: 12px; color: #5c6370; line-height: 16px; letter-spacing: 0.01em; }
+    .ticket-header-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .ticket-tag { font-size: 11px; font-weight: 500; letter-spacing: 0.02em; padding: 2px 8px; border-radius: 4px; background: #fde8ec; color: #c4314b; }
+    .ticket-tag.abandoned { background: #fef3e2; color: #b45309; }
+    .ticket-chevron { width: 16px; height: 16px; color: #5c6370; transition: transform 300ms cubic-bezier(0.6, 0, 0, 1); }
+    .ticket-card.open .ticket-chevron { transform: rotate(180deg); }
+    .ticket-content { padding: 0 16px; max-height: 0; overflow: hidden; transition: max-height 400ms cubic-bezier(0.6, 0, 0, 1); }
+    .ticket-card.open .ticket-content { max-height: 400px; padding-bottom: 16px; }
+    .ticket-msg { padding: 10px 12px; border-radius: 8px; font-size: 13px; line-height: 20px; margin-bottom: 8px; }
+    .ticket-msg:last-child { margin-bottom: 0; }
+    .ticket-msg-customer { background: #f5f6f7; }
+    .ticket-msg-agent { background: #fde8ec; border: 1px solid #f5c6cf; }
+    .ticket-msg-label { font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 4px; }
+    .ticket-msg-label.customer { color: #5c6370; }
+    .ticket-msg-label.agent { color: #c4314b; }
+
+    .eval-results { background: #fff; border: 1px solid #00000014; border-radius: 8px; padding: 20px; margin-bottom: 16px; }
+    .eval-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .eval-item { text-align: center; }
+    .eval-metric { font-size: 12px; color: #5c6370; margin-bottom: 8px; }
+    .eval-before { font-size: 16px; color: #c4314b; font-weight: 600; }
+    .eval-arrow { font-size: 14px; color: #7E55F6; margin: 4px 0; }
+    .eval-after { font-size: 16px; color: #1a7a5a; font-weight: 600; }
+
+    /* Insight Cards */
+    .insight-card {
+      background: #fff;
+      border-radius: 12px;
+      border: 1px solid #00000014;
+      box-shadow: 0px 2px 20px 0px rgba(0,0,0,0.04);
+      padding: 24px;
+      display: flex;
+      gap: 24px;
+      align-items: stretch;
+      animation: fadeInUp 400ms cubic-bezier(0.6, 0, 0, 1) backwards;
+      cursor: pointer;
+      transition: all 150ms cubic-bezier(0.9, 0, 0, 1);
+    }
+    .insight-card:hover { border-color: #7E55F6; box-shadow: 0px 2px 20px 0px rgba(0,0,0,0.08); }
+    .insight-left { flex: 1; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+    .insight-right { width: 220px; flex-shrink: 0; display: flex; flex-direction: column; justify-content: center; }
+    .insight-badge { display: inline-flex; align-self: flex-start; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; padding: 2px 8px; border-radius: 4px; }
+    .insight-badge.alert { background: #fde8ec; color: #c4314b; }
+    .insight-badge.review { background: #fef3e2; color: #b45309; }
+    .insight-badge.info { background: #e8f4fd; color: #1d6fad; }
+    .insight-badge.success { background: #e9fbf5; color: #147656; }
+    .insight-badge.opportunity { background: #f1ecff; color: #7E55F6; }
+    .insight-title { font-size: 14px; font-weight: 600; line-height: 20px; color: #1e242e; }
+    .insight-body { font-size: 13px; line-height: 20px; color: #5c6370; }
+    .insight-body strong { color: #1e242e; font-weight: 600; }
+    .insight-metrics { display: flex; gap: 20px; margin-top: 4px; }
+    .insight-metric { display: flex; flex-direction: column; gap: 2px; }
+    .insight-metric-label { font-size: 11px; font-weight: 500; letter-spacing: 0.01em; color: #5c6370; }
+    .insight-metric-row { display: flex; align-items: center; gap: 4px; }
+    .insight-metric-value { font-size: 18px; font-weight: 600; line-height: 24px; color: #1e242e; }
+    .insight-metric-delta { display: inline-flex; align-items: center; gap: 2px; }
+    .insight-metric-delta svg { width: 10px; height: 10px; }
+    .insight-metric-delta span { font-size: 11px; font-weight: 500; }
+    .insight-chart { width: 100%; height: 100%; min-height: 100px; }
+
+    /* Phone Mockup */
+    .phone-frame {
+      width: 300px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 36px;
+      border: 2px solid #e0e2e6;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.04);
+      overflow: hidden;
+      animation: fadeInUp 400ms cubic-bezier(0.6, 0, 0, 1) backwards;
+    }
+    .phone-status-bar {
+      background: #fff;
+      padding: 8px 20px 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      font-weight: 600;
+      color: #1e242e;
+    }
+    .phone-status-icons { display: flex; gap: 4px; align-items: center; }
+    .phone-header {
+      background: #fff;
+      padding: 10px 16px;
+      border-bottom: 1px solid #00000014;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .phone-header-avatar {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, #7E55F6 0%, #a78bfa 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 600;
+      color: #fff;
+    }
+    .phone-header-name { font-size: 14px; font-weight: 600; color: #1e242e; }
+    .phone-header-sub { font-size: 11px; color: #5c6370; }
+    .phone-chat {
+      background: #fafafa;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-height: 320px;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    .phone-bubble {
+      max-width: 82%;
+      padding: 10px 14px;
+      font-size: 13px;
+      line-height: 19px;
+      animation: fadeInUp 350ms cubic-bezier(0.6, 0, 0, 1) backwards;
+    }
+    .phone-bubble-brand {
+      background: #7E55F6;
+      color: #fff;
+      border-radius: 16px 16px 16px 4px;
+      align-self: flex-start;
+    }
+    .phone-bubble-shopper {
+      background: #EBECEF;
+      color: #1e242e;
+      border-radius: 16px 16px 4px 16px;
+      align-self: flex-end;
+    }
+    .phone-bubble-time {
+      font-size: 10px;
+      color: #8b8f98;
+      text-align: center;
+      padding: 4px 0;
+    }
+    .phone-input-bar {
+      background: #fff;
+      border-top: 1px solid #00000014;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .phone-input-field {
+      flex: 1;
+      background: #f5f6f7;
+      border-radius: 20px;
+      padding: 8px 14px;
+      font-size: 13px;
+      color: #8b8f98;
+    }
+    .phone-send-btn {
+      width: 32px;
+      height: 32px;
+      background: #7E55F6;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Persona Card */
+    .persona-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+    .persona-avatar {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, #f1ecff 0%, #e0d5ff 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+    .persona-name { font-size: 16px; font-weight: 600; line-height: 22px; }
+    .persona-source { font-size: 12px; color: #5c6370; line-height: 16px; }
+    .persona-attrs {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .persona-attr {
+      display: flex;
+      gap: 12px;
+      font-size: 13px;
+      line-height: 18px;
+    }
+    .persona-attr-icon {
+      width: 28px;
+      height: 28px;
+      background: #f5f6f7;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+    .persona-attr-content { display: flex; flex-direction: column; gap: 1px; }
+    .persona-attr-label { font-size: 11px; font-weight: 600; letter-spacing: 0.02em; text-transform: uppercase; color: #5c6370; }
+    .persona-attr-value { font-size: 13px; line-height: 18px; color: #1e242e; }
+
+    /* Skill Proposal */
+    .skill-capability {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+    .skill-capability:last-child { margin-bottom: 0; }
+    .skill-cap-icon {
+      width: 24px;
+      height: 24px;
+      background: #f1ecff;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .skill-cap-icon svg { width: 14px; height: 14px; color: #7E55F6; }
+    .skill-cap-text { font-size: 13px; line-height: 20px; color: #5c6370; }
+    .skill-cap-text strong { color: #1e242e; font-weight: 600; }
+
+    /* Eval flag */
+    .eval-flag {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 12px;
+      background: #fef3e2;
+      border-radius: 8px;
+      margin-top: 12px;
+    }
+    .eval-flag-icon { font-size: 16px; flex-shrink: 0; }
+    .eval-flag-text { font-size: 13px; line-height: 18px; color: #b45309; }
+
+    /* Animations */
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes scaleUp { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
+    @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes dash { to { stroke-dashoffset: 0; } }
+
+    .fade-out { animation: fadeOut 200ms cubic-bezier(0.6, 0, 0, 1) forwards; }
+    .fade-in { animation: fadeIn 350ms cubic-bezier(0.6, 0, 0, 1) forwards; }
+
+    .hidden { display: none !important; }
+
+    /* Icons */
+    .icon-home { width: 20px; height: 20px; }
+    .icon-chart { width: 20px; height: 20px; }
+    .icon-settings { width: 20px; height: 20px; }
+
+    /* SVG Chart */
+    .svg-chart { width: 100%; height: 200px; margin-top: 12px; }
+
+    /* Scrolling */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #d0d4da; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #a0a0a0; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Navigation Sidebar -->
+    <div class="nav">
+      <button class="nav-btn active" data-view="home" title="Home">
+        <svg class="icon-home" viewBox="0 0 20 20" fill="currentColor">
+          <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/>
+        </svg>
+      </button>
+      <button class="nav-btn" data-view="analytics" title="Analytics">
+        <svg class="icon-chart" viewBox="0 0 20 20" fill="currentColor">
+          <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/>
+        </svg>
+      </button>
+      <button class="nav-btn" data-view="settings" title="Settings">
+        <svg class="icon-settings" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.107.886-.54 2.042-.061 2.287.947.379 1.561 2.6 1.561 2.978 0 .46-.916 1.163-1.403 2.287-.947 1.372.836 2.942-.734 2.107-2.106-.54-.886-.061-2.042.947-2.287 1.561-.379 1.561-2.6 0-2.978a1.533 1.533 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.107-.886.54-2.042.061-2.287-.947zm-6.925 4.291a1 1 0 00-1.414 1.414l4 4a1 1 0 001.414 0l4-4a1 1 0 00-1.414-1.414L8 11.586l-3.535-3.535z" clip-rule="evenodd"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Left Panel -->
+    <div class="left-panel">
+      <div class="left-inner">
+        <div class="left-frosted-header" id="leftHeader">
+          <h1 class="heading-xl">Good morning, Natasha</h1>
+        </div>
+        <div class="left-body" id="leftBody">
+          <div class="left-body-top"></div>
+          <div class="left-body-content" id="leftContent"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Panel -->
+    <div class="right-panel">
+      <div class="right-inner">
+        <div class="right-header"><h1 class="heading-xl" id="rightTitle">Activity</h1></div>
+        <div class="right-body" id="rightPanel"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // State management
+    let state = { view: 'home', taskDetail: null, conversationBeat: 0 };
+    const tasks = [
+      { id: 1, title: 'Spike in subscription reactivations', badge: 'Alert', badgeClass: 'badge-alert', desc: 'Reactivation requests up 340% this week.' },
+      { id: 2, title: 'Calibrate tone of voice', badge: 'Review', badgeClass: 'badge-review', desc: '2 responses flagged by TOV scorer.' },
+      { id: 3, title: 'Review Shipping skill update', badge: 'Auto-deployed', badgeClass: 'badge-deployed', desc: 'AI Agent improved a skill overnight. Adherence +12%.' },
+      { id: 5, title: "Mother\u2019s Day: 34 high-intent shoppers didn\u2019t convert", badge: 'Opportunity', badgeClass: 'badge-opportunity', desc: 'Shoppers asked about delivery timing in chat but never completed their purchase.' }
+    ];
+
+    // Helper functions
+    const h = (tag, classes = '', innerHTML = '', attrs = {}) => {
+      const el = document.createElement(tag);
+      if (classes) el.className = classes;
+      if (innerHTML) el.innerHTML = innerHTML;
+      Object.assign(el, attrs);
+      return el;
+    };
+
+    const renderHome = () => {
+      document.getElementById('leftHeader').innerHTML = '<h1 class="heading-xl">Good morning, Natasha</h1>';
+      document.getElementById('leftHeader').style.cssText = '';
+
+      const content = document.getElementById('leftContent');
+      content.innerHTML = '';
+
+      const sectionHead = h('div', '', `
+        <div class="heading-md" style="margin-bottom: 4px;">Let\u2019s knock some tasks off your list</div>
+        <div class="regular-md text-secondary">Here are the most high-impact tasks I recommend:</div>
+      `);
+      content.appendChild(sectionHead);
+
+      const taskList = h('div', 'task-list');
+      tasks.forEach((task, i) => {
+        const card = h('div', 'task-card');
+        card.style.animationDelay = (i * 60) + 'ms';
+        card.innerHTML = `
+          <div class="task-title">${task.title}</div>
+          <div class="task-desc">${task.desc}</div>
+        `;
+        card.onclick = () => openTask(task.id);
+        taskList.appendChild(card);
+      });
+      content.appendChild(taskList);
+
+      const inputCard = h('div', 'input-card');
+      inputCard.innerHTML = `
+        <div class="input-card-text">What can I help you accomplish?</div>
+        <div class="input-card-buttons">
+          <button class="input-icon-btn light">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3.5 8H8M8 8H12.5M8 8V12.5M8 8V3.5" stroke="#1E242E" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <button class="input-icon-btn dark">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2.75L5.08 5.67M8 2.75L10.92 5.67M8 2.75V13.25" stroke="white" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      `;
+      content.appendChild(inputCard);
+    };
+
+    const infoSvg = `<svg class="metric-info" viewBox="0 0 16 16" fill="none"><path d="M8 7.37V10.52M8 13.67C4.87 13.67 2.33 11.13 2.33 8C2.33 4.87 4.87 2.33 8 2.33C11.13 2.33 13.67 4.87 13.67 8C13.67 11.13 11.13 13.67 8 13.67ZM8.03 5.48V5.54L7.97 5.54V5.48H8.03Z" stroke="#5C6370" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+    const trendUpSvg = (color) => `<svg viewBox="0 0 12 12" fill="none"><path d="M9.85 3.59L7.04 6.45C6.99 6.5 6.96 6.53 6.94 6.55C6.57 6.88 6.02 6.88 5.65 6.55C5.63 6.53 5.61 6.5 5.56 6.45C5.51 6.4 5.48 6.37 5.46 6.35C5.09 6.03 4.54 6.03 4.17 6.35C4.15 6.37 4.13 6.4 4.08 6.45L2.15 8.41M9.85 3.59V6.48M9.85 3.59H6.96" stroke="${color}" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+    const trendDownSvg = (color) => `<svg viewBox="0 0 12 12" fill="none"><path d="M9.85 8.41L7.04 5.55C6.99 5.5 6.96 5.47 6.94 5.45C6.57 5.12 6.02 5.12 5.65 5.45C5.63 5.47 5.61 5.5 5.56 5.55C5.51 5.6 5.48 5.63 5.46 5.65C5.09 5.97 4.54 5.97 4.17 5.65C4.15 5.63 4.13 5.6 4.08 5.55L2.15 3.59M9.85 8.41V5.52M9.85 8.41H6.96" stroke="${color}" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
+    const metricCard = (label, value, delta, delay, variant) => {
+      let color = '#147656', svg = trendUpSvg(color);
+      if (variant === 'negative') { color = '#c4314b'; svg = trendDownSvg(color); }
+      else if (variant === 'negative-up') { color = '#c4314b'; svg = trendUpSvg(color); }
+      else if (variant === 'positive-down') { color = '#147656'; svg = trendDownSvg(color); }
+      else if (variant === 'purple-up') { color = '#7E55F6'; svg = trendUpSvg(color); }
+      const deltaHtml = variant === 'plain'
+        ? `<span class="metric-delta"><span style="color:#5c6370">${delta}</span></span>`
+        : `<span class="metric-delta">${svg}<span style="color:${color}">${delta}</span></span>`;
+      return `
+      <div class="metric-card" style="animation-delay:${delay}ms">
+        <div class="metric-label-row"><span class="metric-label">${label}</span>${infoSvg}</div>
+        <div class="metric-stats">
+          <span class="metric-value">${value}</span>
+          ${deltaHtml}
+        </div>
+      </div>`;
+    };
+
+    const insightMetric = (label, value, delta, color = '#c4314b', direction = 'up') => {
+      const svg = direction === 'up' ? trendUpSvg(color) : trendDownSvg(color);
+      return `
+        <div class="insight-metric">
+          <span class="insight-metric-label">${label}</span>
+          <div class="insight-metric-row">
+            <span class="insight-metric-value">${value}</span>
+            <span class="insight-metric-delta">${svg}<span style="color:${color}">${delta}</span></span>
+          </div>
+        </div>`;
+    };
+
+    const renderHomeActivity = () => {
+      document.getElementById('rightTitle').textContent = 'Activity';
+      const html = `
+        <div>
+          <div class="heading-md" style="margin-bottom:4px;">Adherence is holding steady at 92%. Two issues need your attention.</div>
+          <div class="regular-sm text-secondary" style="margin-top:4px;">Last 24 hours \u00b7 vs. previous day</div>
+        </div>
+
+        <div class="metrics-grid">
+          ${metricCard('Adherence', '92%', '3%', 0)}
+          ${metricCard('Automation rate', '28%', '2%', 80)}
+          ${metricCard('Revenue influenced', '$12.4k', '8%', 160)}
+          ${metricCard('Customer sentiment', '84%', '1%', 240)}
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:12px;">
+
+          <!-- Card 1: Subscription reactivation spike -->
+          <div class="insight-card" style="animation-delay:300ms" onclick="openTask(1)">
+            <div class="insight-left">
+              <div style="display:flex;align-items:center;gap:8px;"><span class="insight-badge alert">Alert</span><span class="regular-sm text-tertiary">Since 10:57 PM yesterday</span></div>
+              <div class="insight-title">Spike in subscription reactivations</div>
+              <div class="insight-body">AI Agent resolved 312 subscription tickets overnight, but <strong>47 customers</strong> who asked to skip a delivery came back asking why their subscription was fully paused. Adherence dropped to 18%.</div>
+              <div class="insight-metrics">
+                ${insightMetric('Adherence', '18%', '71%', '#c4314b', 'down')}
+                ${insightMetric('Reactivations', '312', '340%', '#c4314b', 'up')}
+              </div>
+            </div>
+            <div class="insight-right">
+              <svg class="insight-chart" viewBox="0 0 200 120" preserveAspectRatio="xMidYMid meet">
+                <g fill="none" stroke="#f5f6f7" stroke-width="1">
+                  <line x1="0" y1="30" x2="200" y2="30"/><line x1="0" y1="60" x2="200" y2="60"/><line x1="0" y1="90" x2="200" y2="90"/>
+                </g>
+                <g stroke="#c4314b" stroke-width="2" fill="none" opacity="0.15">
+                  <path d="M 0 88 L 25 85 L 50 80 L 75 65 L 100 35 L 125 20 L 150 25 L 175 30 L 200 35"/>
+                </g>
+                <g stroke="#c4314b" stroke-width="2" fill="none">
+                  <path d="M 0 88 L 25 85 L 50 80 L 75 65 L 100 35 L 125 20 L 150 25 L 175 30 L 200 35" stroke-dasharray="400" stroke-dashoffset="400" style="animation: dash 1.5s ease 0.3s forwards;"/>
+                </g>
+                <circle cx="125" cy="20" r="3" fill="#c4314b" opacity="0" style="animation: fadeIn 300ms ease 1.6s forwards;"/>
+                <text x="200" y="110" text-anchor="end" font-size="10" fill="#5c6370" font-family="Inter, sans-serif">Jun 1\u20137</text>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Card 2: Tone of voice calibration -->
+          <div class="insight-card" style="animation-delay:400ms" onclick="openTask(2)">
+            <div class="insight-left">
+              <div style="display:flex;align-items:center;gap:8px;"><span class="insight-badge review">Review</span><span class="regular-sm text-tertiary">Detected 3h ago</span></div>
+              <div class="insight-title">Calibrate tone of voice</div>
+              <div class="insight-body">2 responses flagged by TOV scorer in the last 24 hours. Responses were too formal for casual customer inquiries \u2014 customers expect a warmer, more conversational tone.</div>
+              <div class="insight-metrics">
+                ${insightMetric('TOV score', '74%', '8%', '#b45309', 'down')}
+                ${insightMetric('Flagged', '2', 'last 24h', '#5c6370', 'up')}
+              </div>
+            </div>
+            <div class="insight-right">
+              <svg class="insight-chart" viewBox="0 0 200 120" preserveAspectRatio="xMidYMid meet">
+                <g fill="none" stroke="#f5f6f7" stroke-width="1">
+                  <line x1="0" y1="30" x2="200" y2="30"/><line x1="0" y1="60" x2="200" y2="60"/><line x1="0" y1="90" x2="200" y2="90"/>
+                </g>
+                <g stroke="#b45309" stroke-width="2" fill="none" opacity="0.15">
+                  <path d="M 0 35 L 25 38 L 50 36 L 75 40 L 100 45 L 125 50 L 150 55 L 175 58 L 200 62"/>
+                </g>
+                <g stroke="#b45309" stroke-width="2" fill="none">
+                  <path d="M 0 35 L 25 38 L 50 36 L 75 40 L 100 45 L 125 50 L 150 55 L 175 58 L 200 62" stroke-dasharray="400" stroke-dashoffset="400" style="animation: dash 1.5s ease 0.4s forwards;"/>
+                </g>
+                <circle cx="175" cy="58" r="3" fill="#b45309" opacity="0" style="animation: fadeIn 300ms ease 1.7s forwards;"/>
+                <text x="200" y="110" text-anchor="end" font-size="10" fill="#5c6370" font-family="Inter, sans-serif">Jun 1\u20137</text>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Card 3: Mother's Day high-intent dropoff -->
+          <div class="insight-card" style="animation-delay:500ms" onclick="openTask(5)">
+            <div class="insight-left">
+              <div style="display:flex;align-items:center;gap:8px;"><span class="insight-badge opportunity">Opportunity</span><span class="regular-sm text-tertiary">Pattern detected over 14 days</span></div>
+              <div class="insight-title">34 high-intent shoppers dropped off before Mother\u2019s Day</div>
+              <div class="insight-body">Shoppers asked about <strong>delivery timing for Mother\u2019s Day</strong> in chat but never completed their purchase. Most were anxious it wouldn\u2019t arrive in time.</div>
+              <div class="insight-metrics">
+                ${insightMetric('High-intent dropoffs', '34', '280%', '#7E55F6', 'up')}
+                ${insightMetric('Est. revenue at risk', '$4.2k', 'last 14d', '#7E55F6', 'up')}
+              </div>
+            </div>
+            <div class="insight-right">
+              <svg class="insight-chart" viewBox="0 0 200 120" preserveAspectRatio="xMidYMid meet">
+                <g fill="none" stroke="#f5f6f7" stroke-width="1">
+                  <line x1="0" y1="30" x2="200" y2="30"/><line x1="0" y1="60" x2="200" y2="60"/><line x1="0" y1="90" x2="200" y2="90"/>
+                </g>
+                <g stroke="#7E55F6" stroke-width="2" fill="none" opacity="0.15">
+                  <path d="M 0 95 L 25 92 L 50 90 L 75 88 L 100 82 L 125 65 L 150 42 L 175 28 L 200 18"/>
+                </g>
+                <g stroke="#7E55F6" stroke-width="2" fill="none">
+                  <path d="M 0 95 L 25 92 L 50 90 L 75 88 L 100 82 L 125 65 L 150 42 L 175 28 L 200 18" stroke-dasharray="400" stroke-dashoffset="400" style="animation: dash 1.5s ease 0.5s forwards;"/>
+                </g>
+                <circle cx="200" cy="18" r="3" fill="#7E55F6" opacity="0" style="animation: fadeIn 300ms ease 1.8s forwards;"/>
+                <text x="200" y="110" text-anchor="end" font-size="10" fill="#5c6370" font-family="Inter, sans-serif">Apr 1\u201314</text>
+              </svg>
+            </div>
+          </div>
+
+        </div>
+      `;
+
+      document.getElementById('rightPanel').innerHTML = html;
+    };
+
+    const createConversationMessage = (text, isUser = false) => {
+      const msg = h('div', isUser ? 'message message-user' : 'message');
+      if (isUser) {
+        msg.innerHTML = `<div class="user-bubble">${text}</div>`;
+      } else {
+        msg.innerHTML = `<div class="agent-msg regular-md">${text}</div>`;
+      }
+      return msg;
+    };
+
+    const createPromptButtons = (buttons, onSelect) => {
+      const container = h('div', 'prompt-buttons');
+      let clicked = false;
+      buttons.forEach((text, i) => {
+        const btn = h('button', 'prompt-btn', text);
+        btn.style.animationDelay = (i * 100) + 'ms';
+        btn.onclick = () => {
+          if (clicked) return;
+          clicked = true;
+          container.remove();
+          onSelect(text, btn);
+        };
+        container.appendChild(btn);
+      });
+      return container;
+    };
+
+    const openTask = (taskId) => {
+      state.taskDetail = taskId;
+      state.conversationBeat = 0;
+
+      const left = document.getElementById('leftContent');
+      const right = document.getElementById('rightPanel');
+      left.classList.add('fade-out');
+      right.classList.add('fade-out');
+
+      setTimeout(() => {
+        renderTaskDetail(taskId);
+        left.classList.remove('fade-out');
+        right.classList.remove('fade-out');
+        left.classList.add('fade-in');
+        right.classList.add('fade-in');
+        setTimeout(() => { left.classList.remove('fade-in'); right.classList.remove('fade-in'); }, 350);
+      }, 200);
+    };
+
+    const renderTaskDetail = (taskId) => {
+      const task = tasks.find(t => t.id === taskId);
+
+      const header = document.getElementById('leftHeader');
+      header.style.cssText = 'flex-direction:column;align-items:flex-start;gap:4px;height:auto;padding:24px 24px 16px;';
+      header.innerHTML = `
+        <div style="display:flex;align-items:center;gap:12px;cursor:pointer;" onclick="backToHome()">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2.75 8L5.67 10.92M2.75 8L5.67 5.08M2.75 8H13.25" stroke="#7E55F6" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="heading-md">${task.title}</span>
+        </div>
+        <div class="regular-md text-secondary" style="padding-left:28px;">${task.desc}</div>
+      `;
+
+      const leftContent = document.getElementById('leftContent');
+      leftContent.style.justifyContent = 'flex-end';
+      leftContent.innerHTML = `
+        <div style="flex:1;overflow-y:auto;display:flex;flex-direction:column;justify-content:flex-end;">
+          <div class="conversation" id="conversation"></div>
+        </div>
+        <div class="input-card" style="flex-shrink:0;">
+          <div class="input-card-text">Ask anything</div>
+          <div class="input-card-buttons">
+            <button class="input-icon-btn light">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3.5 8H8M8 8H12.5M8 8V12.5M8 8V3.5" stroke="#1E242E" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <button class="input-icon-btn dark">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2.75L5.08 5.67M8 2.75L10.92 5.67M8 2.75V13.25" stroke="white" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+        </div>
+      `;
+
+      advanceConversation();
+    };
+
+    const scrollConv = () => {
+      const wrapper = document.getElementById('conversation')?.parentElement;
+      if (wrapper) setTimeout(() => wrapper.scrollTop = wrapper.scrollHeight, 50);
+    };
+
+    /* ===========================
+       CONVERSATION DISPATCHER
+       =========================== */
+    const advanceConversation = () => {
+      if (state.taskDetail === 1) {
+        advanceFlow1();
+      } else if (state.taskDetail === 5) {
+        advanceFlowMarketing();
+      }
+    };
+
+    const selectPrompt = (text, nextBeat) => {
+      document.querySelectorAll('#conversation .prompt-buttons').forEach(el => el.remove());
+      state.lastSelectedText = text;
+      state.conversationBeat = nextBeat;
+      advanceConversation();
+    };
+
+    const addStoryCard = (html) => {
+      const panel = document.getElementById('rightPanel');
+      const wrapper = document.createElement('div');
+      wrapper.innerHTML = html;
+      panel.appendChild(wrapper.firstElementChild);
+      setTimeout(() => panel.scrollTop = panel.scrollHeight, 50);
+    };
+
+    /* ===========================
+       FLOW 1: SUBSCRIPTION FIX
+       =========================== */
+    const advanceFlow1 = () => {
+      const conv = document.getElementById('conversation');
+      const beat = state.conversationBeat;
+
+      if (beat === 0) {
+        conv.innerHTML = '';
+        const msg = createConversationMessage(
+          'I found the cause of the reactivation spike. Take a look at the problem breakdown on the right.'
+        );
+        conv.appendChild(msg);
+
+        const btns = createPromptButtons(
+          ['Show me affected tickets', 'What did you do about it?'],
+          (text) => selectPrompt(text, beat + 1)
+        );
+        conv.appendChild(btns);
+        scrollConv();
+        renderFlow1Beat0();
+      } else if (beat === 1) {
+        const msg = createConversationMessage(state.lastSelectedText || 'Show me affected tickets', true);
+        conv.appendChild(msg);
+        scrollConv();
+
+        setTimeout(() => {
+          const agentMsg = createConversationMessage(
+            'Here are two representative tickets. In both, the customer asked to skip one delivery but got their entire subscription paused.'
+          );
+          conv.appendChild(agentMsg);
+          renderFlow1Beat1();
+
+          const btns = createPromptButtons(
+            ['What did you do about it?'],
+            () => selectPrompt(null, beat + 1)
+          );
+          conv.appendChild(btns);
+          scrollConv();
+        }, 300);
+      } else if (beat === 2) {
+        const msg = createConversationMessage(state.lastSelectedText || 'What did you do about it?', true);
+        conv.appendChild(msg);
+        scrollConv();
+
+        setTimeout(() => {
+          const agentMsg = createConversationMessage(
+            'I separated the two intents and ran an evaluation. See the fix details on the right.'
+          );
+          conv.appendChild(agentMsg);
+          renderFlow1Beat2();
+
+          const btns = createPromptButtons(
+            ['Show me the eval results'],
+            () => selectPrompt(null, beat + 1)
+          );
+          conv.appendChild(btns);
+          scrollConv();
+        }, 300);
+      } else if (beat === 3) {
+        const msg = createConversationMessage(state.lastSelectedText || 'Show me the eval results', true);
+        conv.appendChild(msg);
+        scrollConv();
+
+        setTimeout(() => {
+          const agentMsg = createConversationMessage(
+            '44 of 47 tickets resolved correctly. The 3 ambiguous ones now trigger a clarifying question.'
+          );
+          conv.appendChild(agentMsg);
+          renderFlow1Beat3();
+
+          const btns = createPromptButtons(
+            ['How is it performing now?'],
+            () => selectPrompt(null, beat + 1)
+          );
+          conv.appendChild(btns);
+          scrollConv();
+        }, 300);
+      } else if (beat === 4) {
+        const msg = createConversationMessage(state.lastSelectedText || 'How is it performing now?', true);
+        conv.appendChild(msg);
+        scrollConv();
+
+        setTimeout(() => {
+          const agentMsg = createConversationMessage(
+            'The fix has been live for 6 hours. Adherence is back to 91% and holding steady.'
+          );
+          conv.appendChild(agentMsg);
+          renderFlow1Beat4();
+
+          const btns = createPromptButtons(
+            ['Are "where\'s my delivery" tickets trending down?'],
+            () => selectPrompt(null, beat + 1)
+          );
+          conv.appendChild(btns);
+          scrollConv();
+        }, 300);
+      } else if (beat === 5) {
+        const msg = createConversationMessage(state.lastSelectedText || 'Are "where\'s my delivery" tickets trending down?', true);
+        conv.appendChild(msg);
+        scrollConv();
+
+        setTimeout(() => {
+          const agentMsg = createConversationMessage(
+            'Yes \u2014 they\'ve dropped 68% since the fix went live. Down from 47 to 15 in the last 6 hours, and the trend is still falling.'
+          );
+          conv.appendChild(agentMsg);
+          renderFlow1Beat5();
+          scrollConv();
+        }, 300);
+      }
+
+      state.conversationBeat = beat + 1;
+    };
+
+    // Flow 1 right panel renders
+    const renderFlow1Beat0 = () => {
+      document.getElementById('rightTitle').textContent = 'Subscription skill';
+      document.getElementById('rightPanel').innerHTML = '';
+      addStoryCard(`
+        <div class="story-card">
+          <span class="story-label problem">Problem</span>
+          <div class="regular-sm text-secondary" style="margin-bottom:8px;">Last 12 hours \u00b7 Subscription Management skill</div>
+          <div class="story-title">\u201cSkip a delivery\u201d requests misrouted as full subscription pauses</div>
+          <div class="story-body">Customers asking to skip their next delivery had their entire subscription paused indefinitely. They came back confused asking why they didn\u2019t receive their delivery \u2014 driving the reactivation spike on your dashboard.</div>
+          <div class="metrics-grid" style="margin-top:16px;">
+            ${metricCard('Adherence', '18%', '71%', 100, 'negative')}
+            ${metricCard('\u201cWhere\'s my delivery?\u201d tickets', '47', '340%', 200, 'negative-up')}
+            ${metricCard('Reactivation requests', '312', '340%', 300, 'negative-up')}
+          </div>
+        </div>
+      `);
+    };
+
+    const toggleTicket = (el) => { el.closest('.ticket-card').classList.toggle('open'); };
+
+    const renderFlow1Beat1 = () => {
+      addStoryCard(`
+        <div class="story-card">
+          <span class="story-label impact">Impact</span>
+          <div class="story-title">Representative affected tickets</div>
+          <div class="story-body" style="margin-bottom:12px;">Both customers clearly asked to skip one delivery. The agent paused their entire subscription instead.</div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div class="ticket-card">
+              <div class="ticket-header" onclick="toggleTicket(this)">
+                <div class="ticket-header-left">
+                  <div class="ticket-header-name">Sarah M.</div>
+                  <div class="ticket-header-subject">Vacation skip request</div>
+                </div>
+                <div class="ticket-header-right">
+                  <span class="ticket-tag">Misrouted</span>
+                  <svg class="ticket-chevron" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+              </div>
+              <div class="ticket-content">
+                <div class="ticket-msg ticket-msg-customer">
+                  <div class="ticket-msg-label customer">Customer</div>
+                  \u201cCan I skip my next delivery? I want to keep getting them after I\u2019m back though!\u201d
+                </div>
+                <div class="ticket-msg ticket-msg-agent">
+                  <div class="ticket-msg-label agent">AI Agent response</div>
+                  \u201cI\u2019ve paused your subscription. You won\u2019t receive any more deliveries.\u201d
+                </div>
+              </div>
+            </div>
+            <div class="ticket-card">
+              <div class="ticket-header" onclick="toggleTicket(this)">
+                <div class="ticket-header-left">
+                  <div class="ticket-header-name">James R.</div>
+                  <div class="ticket-header-subject">Home renovation \u2014 skip this week</div>
+                </div>
+                <div class="ticket-header-right">
+                  <span class="ticket-tag">Misrouted</span>
+                  <svg class="ticket-chevron" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+              </div>
+              <div class="ticket-content">
+                <div class="ticket-msg ticket-msg-customer">
+                  <div class="ticket-msg-label customer">Customer</div>
+                  \u201cNeed to skip this week\u2019s delivery please \u2014 back to normal after that.\u201d
+                </div>
+                <div class="ticket-msg ticket-msg-agent">
+                  <div class="ticket-msg-label agent">AI Agent response</div>
+                  \u201cDone! I\u2019ve paused your flower subscription. No more deliveries will be sent.\u201d
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `);
+    };
+
+    const renderFlow1Beat2 = () => {
+      addStoryCard(`
+        <div class="story-card">
+          <span class="story-label fix">Fix</span>
+          <div class="story-title">Separated \u201cskip\u201d and \u201cpause\u201d into distinct intents</div>
+          <div class="story-body" style="margin-top:4px;">
+            <strong>Skip next delivery</strong> \u2014 skips only the next scheduled delivery, subscription stays active.<br><br>
+            <strong>Pause subscription</strong> \u2014 stops all future deliveries until the customer reactivates.<br><br>
+            Ambiguous requests now trigger a clarifying question instead of guessing.
+          </div>
+        </div>
+      `);
+    };
+
+    const renderFlow1Beat3 = () => {
+      addStoryCard(`
+        <div class="story-card">
+          <span class="story-label evaluation">Evaluation</span>
+          <div class="story-title">Tested fix against all 47 affected tickets</div>
+          <div class="story-body" style="margin-bottom:12px;">44 of 47 resolved correctly. 3 ambiguous cases now ask a clarifying question.</div>
+          <div class="metrics-grid">
+            ${metricCard('Adherence', '93%', '38%', 100)}
+            ${metricCard('Resolution', '91%', '31%', 200)}
+            ${metricCard('Tone', '95%', '13%', 300)}
+          </div>
+        </div>
+      `);
+    };
+
+    const renderFlow1Beat4 = () => {
+      addStoryCard(`
+        <div class="story-card">
+          <span class="story-label result">Result</span>
+          <div class="story-title">Adherence recovered to 91% \u2014 fix deployed 6 hours ago</div>
+          <div class="story-body" style="margin-bottom:8px;">A dedicated monitor is now tracking skip vs. pause classification to catch any drift early.</div>
+          <svg class="svg-chart" viewBox="0 0 400 200" preserveAspectRatio="xMidYMid meet">
+            <g stroke="#c4314b" stroke-width="2" fill="none">
+              <path d="M 0 80 L 40 60 L 80 40 L 120 20 L 160 10" stroke-dasharray="500" stroke-dashoffset="500" style="animation: dash 1s ease forwards;"/>
+            </g>
+            <g stroke="#147656" stroke-width="2" fill="none">
+              <path d="M 160 10 L 200 15 L 240 35 L 280 60 L 320 80 L 360 95 L 400 100" stroke-dasharray="500" stroke-dashoffset="500" style="animation: dash 1.5s ease 1s forwards;"/>
+            </g>
+            <g fill="none" stroke="#e9fbf5" stroke-width="1" opacity="0.3">
+              <line x1="0" y1="30" x2="400" y2="30"/><line x1="0" y1="100" x2="400" y2="100"/>
+            </g>
+            <text x="80" y="190" text-anchor="middle" font-size="11" fill="#c4314b">Issue detected</text>
+            <text x="300" y="190" text-anchor="middle" font-size="11" fill="#147656">Fix deployed</text>
+          </svg>
+        </div>
+      `);
+    };
+
+    const renderFlow1Beat5 = () => {
+      addStoryCard(`
+        <div class="story-card">
+          <span class="story-label result">Recovery</span>
+          <div class="story-title">\u201cWhere\u2019s my delivery?\u201d tickets dropping fast</div>
+          <div class="story-body" style="margin-bottom:12px;">Down 68% since the fix went live. Customers are getting the right response now \u2014 skip requests are handled correctly without triggering confusion.</div>
+          <div class="metrics-grid" style="margin-bottom:12px;">
+            ${metricCard('\u201cWhere\'s my delivery?\u201d tickets', '15', '68%', 100, 'positive-down')}
+            ${metricCard('Reactivation requests', '8', '97%', 200, 'positive-down')}
+          </div>
+          <svg class="svg-chart" viewBox="0 0 400 160" preserveAspectRatio="xMidYMid meet">
+            <g stroke="#147656" stroke-width="2" fill="none">
+              <path d="M 0 20 L 50 22 L 100 25 L 150 30 L 200 50 L 250 75 L 300 105 L 350 125 L 400 140" stroke-dasharray="500" stroke-dashoffset="500" style="animation: dash 1.5s ease forwards;"/>
+            </g>
+            <g fill="none" stroke="#e9fbf5" stroke-width="1" opacity="0.3">
+              <line x1="0" y1="40" x2="400" y2="40"/><line x1="0" y1="80" x2="400" y2="80"/><line x1="0" y1="120" x2="400" y2="120"/>
+            </g>
+            <text x="100" y="155" text-anchor="middle" font-size="11" fill="#c4314b">Before fix</text>
+            <text x="320" y="155" text-anchor="middle" font-size="11" fill="#147656">After fix</text>
+          </svg>
+        </div>
+      `);
+    };
+
+    /* ===========================
+       FLOW 2: MARKETING SKILL
+       =========================== */
+    const checkSvg = `<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2.5 7.5L5.5 10.5L11.5 4" stroke="#7E55F6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
+    const advanceFlowMarketing = () => {
+      const conv = document.getElementById('conversation');
+      const beat = state.conversationBeat;
+
+      if (beat === 0) {
+        conv.innerHTML = '';
+        const msg = createConversationMessage(
+          'I\u2019ve been reading your conversation data from the past two weeks and spotted something. <strong>34 shoppers</strong> asked about Mother\u2019s Day delivery timing \u2014 \u201cwill it get there by Sunday?\u201d, \u201cis it too late to order for Mom?\u201d \u2014 but never completed their purchase.'
+        );
+        conv.appendChild(msg);
+
+        const btns = createPromptButtons(
+          ['Show me those conversations', 'Why didn\u2019t they convert?'],
+          (text) => selectPrompt(text, beat + 1)
+        );
+        conv.appendChild(btns);
+        scrollConv();
+        renderMarketingBeat0();
+      } else if (beat === 1) {
+        const msg = createConversationMessage(state.lastSelectedText || 'Show me those conversations', true);
+        conv.appendChild(msg);
+        scrollConv();
+
+        setTimeout(() => {
+          const agentMsg = createConversationMessage(
+            'Here are two typical ones. In both cases the shopper was ready to buy but got scared about timing \u2014 they asked if it would arrive by Sunday and either got a vague answer or left before we responded.'
+          );
+          conv.appendChild(agentMsg);
+          renderMarketingBeat1();
+
+          const btns = createPromptButtons(
+            ['What do you recommend?'],
+            () => selectPrompt(null, beat + 1)
+          );
+          conv.appendChild(btns);
+          scrollConv();
+        }, 300);
+      } else if (beat === 2) {
+        const msg = createConversationMessage(state.lastSelectedText || 'What do you recommend?', true);
+        conv.appendChild(msg);
+        scrollConv();
+
+        setTimeout(() => {
+          const agentMsg = createConversationMessage(
+            'I want to create a <strong>Cart Recovery</strong> marketing skill that proactively reaches out to these shoppers. Not a generic promo \u2014 a 2-way conversation that picks up exactly where they left off, answering the delivery question they actually asked.'
+          );
+          conv.appendChild(agentMsg);
+          renderMarketingBeat2();
+
+          const btns = createPromptButtons(
+            ['How would you test this?'],
+            () => selectPrompt(null, beat + 1)
+          );
+          conv.appendChild(btns);
+          scrollConv();
+        }, 300);
+      } else if (beat === 3) {
+        const msg = createConversationMessage(state.lastSelectedText || 'How would you test this?', true);
+        conv.appendChild(msg);
+        scrollConv();
+
+        setTimeout(() => {
+          const agentMsg = createConversationMessage(
+            'I built a test persona from these 34 conversations \u2014 meet <strong>\u201cThe Last-Minute Gifter.\u201d</strong> She\u2019s a composite of the real shoppers who dropped off: buying for Mom, anxious about timing, needs reassurance. I\u2019ll run the outreach skill against her to see how it performs.'
+          );
+          conv.appendChild(agentMsg);
+          renderMarketingBeat3();
+
+          const btns = createPromptButtons(
+            ['Run the eval'],
+            () => selectPrompt(null, beat + 1)
+          );
+          conv.appendChild(btns);
+          scrollConv();
+        }, 300);
+      } else if (beat === 4) {
+        const msg = createConversationMessage(state.lastSelectedText || 'Run the eval', true);
+        conv.appendChild(msg);
+        scrollConv();
+
+        setTimeout(() => {
+          const agentMsg = createConversationMessage(
+            'Done. Here\u2019s how the conversation played out between the Cart Recovery skill and The Last-Minute Gifter. She pushed back on timing \u2014 the skill handled it.'
+          );
+          conv.appendChild(agentMsg);
+          renderMarketingBeat4();
+
+          const btns = createPromptButtons(
+            ['Show me the scores'],
+            () => selectPrompt(null, beat + 1)
+          );
+          conv.appendChild(btns);
+          scrollConv();
+        }, 300);
+      } else if (beat === 5) {
+        const msg = createConversationMessage(state.lastSelectedText || 'Show me the scores', true);
+        conv.appendChild(msg);
+        scrollConv();
+
+        setTimeout(() => {
+          const agentMsg = createConversationMessage(
+            'Adherence is at 96% \u2014 on-brand, conversational, and accurate on delivery details. One flag: it didn\u2019t mention the gift note option, which came up in 60% of these conversations.'
+          );
+          conv.appendChild(agentMsg);
+          renderMarketingBeat5();
+
+          const btns = createPromptButtons(
+            ['Adjust and re-run', 'Looks good, activate it'],
+            () => selectPrompt(null, beat + 1)
+          );
+          conv.appendChild(btns);
+          scrollConv();
+        }, 300);
+      } else if (beat === 6) {
+        const msg = createConversationMessage(state.lastSelectedText || 'Looks good, activate it', true);
+        conv.appendChild(msg);
+        scrollConv();
+
+        setTimeout(() => {
+          const agentMsg = createConversationMessage(
+            'The <strong>Mother\u2019s Day Cart Recovery</strong> skill is live. I\u2019ll reach out to all 34 shoppers over the next 2 hours with personalized messages based on their original conversation. I\u2019ll report back on conversions.'
+          );
+          conv.appendChild(agentMsg);
+          renderMarketingBeat6();
+
+          const btns = createPromptButtons(
+            ['\u23f0 1 day later\u2026'],
+            () => selectPrompt(null, beat + 1)
+          );
+          conv.appendChild(btns);
+          scrollConv();
+        }, 300);
+      } else if (beat === 7) {
+        const msg = createConversationMessage(state.lastSelectedText || '1 day later\u2026', true);
+        conv.appendChild(msg);
+        scrollConv();
+
+        setTimeout(() => {
+          const agentMsg = createConversationMessage(
+            'Good news \u2014 the Mother\u2019s Day Cart Recovery campaign just wrapped. <strong>12 of 34 shoppers came back and completed their order.</strong> Here are the full results.'
+          );
+          conv.appendChild(agentMsg);
+          renderMarketingBeat7();
+          scrollConv();
+        }, 300);
+      }
+
+      state.conversationBeat = beat + 1;
+    };
+
+    // Flow 2 right panel renders
+    const renderMarketingBeat0 = () => {
+      document.getElementById('rightTitle').textContent = 'Cart Recovery';
+      document.getElementById('rightPanel').innerHTML = '';
+      addStoryCard(`
+        <div class="story-card">
+          <span class="story-label opportunity">Opportunity</span>
+          <div class="regular-sm text-secondary" style="margin-bottom:8px;">Pattern detected over 14 days \u00b7 Mother\u2019s Day (May 11)</div>
+          <div class="story-title">34 shoppers asked about delivery timing and never bought</div>
+          <div class="story-body">Your AI Agent handled these conversations as standard support \u2014 answered the question (or didn\u2019t get to it in time) and moved on. But the intent signals in these chats tell a different story: these shoppers <strong>wanted to buy</strong>. They were scared it wouldn\u2019t arrive in time for Mom.</div>
+          <div class="metrics-grid" style="margin-top:16px;">
+            ${metricCard('High-intent dropoffs', '34', '280%', 100, 'purple-up')}
+            ${metricCard('Est. revenue at risk', '$4.2k', '~$124 avg', 200, 'plain')}
+            ${metricCard('Days to Mother\u2019s Day', '9', 'May 11', 300, 'plain')}
+          </div>
+          <svg style="width:100%;height:140px;margin-top:16px;" viewBox="0 0 400 140" preserveAspectRatio="xMidYMid meet">
+            <g fill="none" stroke="#f5f6f7" stroke-width="1">
+              <line x1="0" y1="30" x2="400" y2="30"/><line x1="0" y1="60" x2="400" y2="60"/><line x1="0" y1="90" x2="400" y2="90"/>
+            </g>
+            <g stroke="#7E55F6" stroke-width="2" fill="none" opacity="0.15">
+              <path d="M 0 105 L 30 103 L 60 100 L 90 98 L 120 95 L 150 88 L 180 80 L 210 68 L 240 52 L 270 38 L 300 28 L 330 22 L 360 18 L 400 12"/>
+            </g>
+            <g stroke="#7E55F6" stroke-width="2" fill="none">
+              <path d="M 0 105 L 30 103 L 60 100 L 90 98 L 120 95 L 150 88 L 180 80 L 210 68 L 240 52 L 270 38 L 300 28 L 330 22 L 360 18 L 400 12" stroke-dasharray="600" stroke-dashoffset="600" style="animation: dash 1.8s ease forwards;"/>
+            </g>
+            <circle cx="400" cy="12" r="4" fill="#7E55F6" opacity="0" style="animation: fadeIn 300ms ease 1.8s forwards;"/>
+            <text x="60" y="130" text-anchor="middle" font-size="10" fill="#5c6370" font-family="Inter, sans-serif">Apr 1</text>
+            <text x="200" y="130" text-anchor="middle" font-size="10" fill="#5c6370" font-family="Inter, sans-serif">Apr 7</text>
+            <text x="370" y="130" text-anchor="middle" font-size="10" fill="#7E55F6" font-family="Inter, sans-serif" font-weight="600">Today</text>
+          </svg>
+        </div>
+      `);
+    };
+
+    const renderMarketingBeat1 = () => {
+      addStoryCard(`
+        <div class="story-card">
+          <span class="story-label evidence">Evidence</span>
+          <div class="story-title">What shoppers are saying</div>
+          <div class="story-body" style="margin-bottom:12px;">Both shoppers started a conversation, asked about Mother\u2019s Day delivery, and abandoned their cart within minutes.</div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div class="ticket-card">
+              <div class="ticket-header" onclick="toggleTicket(this)">
+                <div class="ticket-header-left">
+                  <div class="ticket-header-name">Emily T.</div>
+                  <div class="ticket-header-subject">\u201cWill it get there by Sunday?\u201d</div>
+                </div>
+                <div class="ticket-header-right">
+                  <span class="ticket-tag abandoned">Abandoned</span>
+                  <svg class="ticket-chevron" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+              </div>
+              <div class="ticket-content">
+                <div class="ticket-msg ticket-msg-customer">
+                  <div class="ticket-msg-label customer">Customer</div>
+                  \u201cI\u2019m looking at the Garden Rose Bouquet for my mom. If I order today will it definitely get there by Sunday? I\u2019m in Portland and she\u2019s in Chicago.\u201d
+                </div>
+                <div class="ticket-msg" style="background:#f5f6f7;color:#5c6370;font-style:italic;font-size:12px;">
+                  Customer left chat before agent responded. Cart value: $89.
+                </div>
+              </div>
+            </div>
+            <div class="ticket-card">
+              <div class="ticket-header" onclick="toggleTicket(this)">
+                <div class="ticket-header-left">
+                  <div class="ticket-header-name">Rachel K.</div>
+                  <div class="ticket-header-subject">\u201cIs it too late to order for Mother\u2019s Day?\u201d</div>
+                </div>
+                <div class="ticket-header-right">
+                  <span class="ticket-tag abandoned">Abandoned</span>
+                  <svg class="ticket-chevron" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+              </div>
+              <div class="ticket-content">
+                <div class="ticket-msg ticket-msg-customer">
+                  <div class="ticket-msg-label customer">Customer</div>
+                  \u201cHey! Is it too late to order flowers for Mother\u2019s Day? I keep going back and forth and I\u2019m scared it won\u2019t make it in time. She\u2019d be so upset.\u201d
+                </div>
+                <div class="ticket-msg ticket-msg-customer">
+                  <div class="ticket-msg-label customer">Customer</div>
+                  \u201cAlso can I add a handwritten note? That would really make it special\u201d
+                </div>
+                <div class="ticket-msg" style="background:#f5f6f7;color:#5c6370;font-style:italic;font-size:12px;">
+                  Agent responded 14 min later. Customer had already left. Cart value: $124.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `);
+    };
+
+    const renderMarketingBeat2 = () => {
+      addStoryCard(`
+        <div class="story-card">
+          <span class="story-label proposal">Proposal</span>
+          <div class="story-title">New skill: Mother\u2019s Day Cart Recovery</div>
+          <div class="story-body" style="margin-bottom:16px;">A proactive 2-way outreach skill that re-engages shoppers who showed high purchase intent but didn\u2019t convert. Each message is personalized to the shopper\u2019s original conversation.</div>
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div class="skill-capability">
+              <div class="skill-cap-icon">${checkSvg}</div>
+              <div class="skill-cap-text"><strong>Resumes the conversation</strong> \u2014 references their specific question about delivery timing and answers it directly</div>
+            </div>
+            <div class="skill-capability">
+              <div class="skill-cap-icon">${checkSvg}</div>
+              <div class="skill-cap-text"><strong>2-way, not broadcast</strong> \u2014 the shopper can reply, ask follow-ups, swap arrangements, or add a gift note right in the thread</div>
+            </div>
+            <div class="skill-capability">
+              <div class="skill-cap-icon">${checkSvg}</div>
+              <div class="skill-cap-text"><strong>Delivery guarantee upfront</strong> \u2014 leads with \u201cguaranteed Sunday delivery or full refund\u201d to address the #1 anxiety</div>
+            </div>
+            <div class="skill-capability">
+              <div class="skill-cap-icon">${checkSvg}</div>
+              <div class="skill-cap-text"><strong>Time-sensitive urgency</strong> \u2014 mentions the order-by deadline without being pushy (\u201corder by 5pm Friday\u201d)</div>
+            </div>
+          </div>
+        </div>
+      `);
+    };
+
+    const renderMarketingBeat3 = () => {
+      addStoryCard(`
+        <div class="story-card">
+          <span class="story-label persona">Scorer</span>
+          <div class="persona-header">
+            <div class="persona-avatar">\ud83d\udc69</div>
+            <div>
+              <div class="persona-name">\u201cThe Last-Minute Gifter\u201d</div>
+              <div class="persona-source">Built from 34 conversations \u00b7 Apr 1\u201314</div>
+            </div>
+          </div>
+          <div class="story-body" style="margin-bottom:14px;">A synthetic shopper persona constructed from patterns in your real conversation data. She\u2019ll evaluate whether the outreach skill can actually convert a nervous Mother\u2019s Day buyer.</div>
+          <div class="persona-attrs">
+            <div class="persona-attr">
+              <div class="persona-attr-icon">\ud83c\udfaf</div>
+              <div class="persona-attr-content">
+                <div class="persona-attr-label">Mindset</div>
+                <div class="persona-attr-value">Time-pressured, emotionally invested \u2014 \u201cI can\u2019t mess this up for Mom\u201d</div>
+              </div>
+            </div>
+            <div class="persona-attr">
+              <div class="persona-attr-icon">\u23f0</div>
+              <div class="persona-attr-content">
+                <div class="persona-attr-label">Trigger</div>
+                <div class="persona-attr-value">Mother\u2019s Day deadline (May 11). Will only buy if she\u2019s certain it arrives on time.</div>
+              </div>
+            </div>
+            <div class="persona-attr">
+              <div class="persona-attr-icon">\u2753</div>
+              <div class="persona-attr-content">
+                <div class="persona-attr-label">Typical question</div>
+                <div class="persona-attr-value">\u201cWill it <em>definitely</em> arrive by Sunday?\u201d \u2014 asked in 28 of 34 conversations</div>
+              </div>
+            </div>
+            <div class="persona-attr">
+              <div class="persona-attr-icon">\ud83d\udea8</div>
+              <div class="persona-attr-content">
+                <div class="persona-attr-label">Dropout trigger</div>
+                <div class="persona-attr-value">Leaves when the answer feels vague, slow, or doesn\u2019t address timing directly</div>
+              </div>
+            </div>
+            <div class="persona-attr">
+              <div class="persona-attr-icon">\ud83d\udcb0</div>
+              <div class="persona-attr-content">
+                <div class="persona-attr-label">Price sensitivity</div>
+                <div class="persona-attr-value">Moderate \u2014 will pay more for delivery certainty. Avg cart $124.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      `);
+    };
+
+    const renderMarketingBeat4 = () => {
+      addStoryCard(`
+        <div class="story-card" style="padding:20px 16px;">
+          <span class="story-label evaluation">Eval</span>
+          <div class="story-title" style="margin-bottom:16px;">Simulated conversation: Skill vs. Last-Minute Gifter</div>
+          <div class="phone-frame">
+            <div class="phone-status-bar">
+              <span>9:41</span>
+              <div class="phone-status-icons">
+                <svg width="16" height="12" viewBox="0 0 16 12" fill="none"><rect x="0" y="3" width="3" height="9" rx="1" fill="#1e242e"/><rect x="4.5" y="2" width="3" height="10" rx="1" fill="#1e242e"/><rect x="9" y="0" width="3" height="12" rx="1" fill="#1e242e"/><rect x="13" y="1" width="3" height="11" rx="1" fill="#d0d4da"/></svg>
+                <svg width="16" height="10" viewBox="0 0 16 10" fill="#1e242e"><path d="M8 0C5.2 0 2.7 1.1 .9 2.9L2.3 4.3C3.8 2.8 5.8 1.9 8 1.9s4.2.9 5.7 2.4l1.4-1.4C13.3 1.1 10.8 0 8 0zM8 3.8c-1.7 0-3.2.7-4.3 1.8L5.1 7C5.9 6.2 6.9 5.7 8 5.7s2.1.5 2.9 1.3l1.4-1.4c-1.1-1.1-2.6-1.8-4.3-1.8zM8 7.6c-.8 0-1.6.3-2.1.9L8 10.7l2.1-2.1c-.5-.7-1.3-1-2.1-1z"/></svg>
+                <svg width="22" height="10" viewBox="0 0 22 10" fill="none"><rect x="0" y="0" width="19" height="10" rx="2" stroke="#1e242e" stroke-width="1"/><rect x="1.5" y="1.5" width="14" height="7" rx="1" fill="#1e242e"/><rect x="20" y="3" width="2" height="4" rx="0.5" fill="#1e242e"/></svg>
+              </div>
+            </div>
+            <div class="phone-header">
+              <div class="phone-header-avatar">US</div>
+              <div>
+                <div class="phone-header-name">UrbanStems</div>
+                <div class="phone-header-sub">Typically replies instantly</div>
+              </div>
+            </div>
+            <div class="phone-chat">
+              <div class="phone-bubble-time">Today, 10:23 AM</div>
+              <div class="phone-bubble phone-bubble-brand" style="animation-delay:100ms">Hey Emily! \ud83c\udf38 You were looking at the Garden Rose Bouquet for your mom. Great news \u2014 it\u2019s guaranteed to arrive by Sunday if you order by 5pm Friday. Want me to hold one for you?</div>
+              <div class="phone-bubble phone-bubble-shopper" style="animation-delay:200ms">Yes but what if it doesn\u2019t arrive on time? It\u2019s for my mom and I really can\u2019t mess this up</div>
+              <div class="phone-bubble phone-bubble-brand" style="animation-delay:300ms">Totally understand \u2014 Mother\u2019s Day is not one you want to miss! We guarantee Sunday delivery or a full refund. Plus you\u2019ll get real-time tracking once it ships. \ud83d\udce6 Want to add a handwritten card? Most people do for Mom!</div>
+              <div class="phone-bubble phone-bubble-shopper" style="animation-delay:400ms">Oh I didn\u2019t know you could do a card! Yes please. Let me complete my order \u2764\ufe0f</div>
+              <div class="phone-bubble phone-bubble-brand" style="animation-delay:500ms">Love it! I\u2019ve added the bouquet + gift card to your cart. Here\u2019s your checkout link \u2014 you\u2019re all set to make her day. \ud83d\udc90</div>
+            </div>
+            <div class="phone-input-bar">
+              <div class="phone-input-field">Type a message...</div>
+              <div class="phone-send-btn">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M12.5 7L2 2L4 7L2 12L12.5 7Z" fill="white"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      `);
+    };
+
+    const renderMarketingBeat5 = () => {
+      addStoryCard(`
+        <div class="story-card">
+          <span class="story-label evaluation">Results</span>
+          <div class="story-title">Scorer: \u201cThe Last-Minute Gifter\u201d \u2014 Eval results</div>
+          <div class="story-body" style="margin-bottom:16px;">The skill was tested against the synthetic persona across 3 key dimensions. The persona pushed back on delivery certainty and the skill handled it with a concrete guarantee.</div>
+          <div class="metrics-grid" style="margin-bottom:16px;">
+            ${metricCard('Adherence', '96%', 'On-brand', 100, 'plain')}
+            ${metricCard('Conversion', 'High', 'Completed order', 200, 'plain')}
+            ${metricCard('Tone', '94%', 'Warm & confident', 300, 'plain')}
+          </div>
+          <div class="eval-flag">
+            <div class="eval-flag-icon">\u26a0\ufe0f</div>
+            <div class="eval-flag-text"><strong>Flag:</strong> The skill didn\u2019t proactively mention the gift note option until the shopper asked. In your conversation data, <strong>60% of shoppers</strong> asked about gift notes. Recommending the skill lead with this.</div>
+          </div>
+        </div>
+      `);
+    };
+
+    const renderMarketingBeat6 = () => {
+      addStoryCard(`
+        <div class="story-card" style="border-color: #147656; background: linear-gradient(180deg, #f0fdf7 0%, #fff 100%);">
+          <span class="story-label activated">Activated</span>
+          <div class="story-title">Mother\u2019s Day Cart Recovery is live</div>
+          <div class="story-body" style="margin-bottom:16px;">The skill will reach out to all 34 shoppers over the next 2 hours. Each message is personalized based on their original conversation \u2014 referencing the specific arrangement they viewed and answering the delivery question they asked.</div>
+          <div class="metrics-grid">
+            ${metricCard('Shoppers to contact', '34', 'over 2h', 100, 'plain')}
+            ${metricCard('Potential revenue', '$4.2k', '~$124 avg', 200, 'plain')}
+            ${metricCard('Skill confidence', '96%', 'Adherence', 300, 'plain')}
+          </div>
+          <div style="margin-top:16px;padding:12px;background:#e9fbf5;border-radius:8px;display:flex;gap:10px;align-items:flex-start;">
+            <div style="font-size:16px;flex-shrink:0;">\u2705</div>
+            <div style="font-size:13px;line-height:18px;color:#147656;"><strong>Monitor created:</strong> I\u2019ll track response rates, conversions, and sentiment in real time. If anything looks off, I\u2019ll pause and flag it for you.</div>
+          </div>
+        </div>
+      `);
+    };
+
+    const renderMarketingBeat7 = () => {
+      // Clear previous cards and show campaign results
+      document.getElementById('rightTitle').textContent = 'Campaign Results';
+      document.getElementById('rightPanel').innerHTML = '';
+      addStoryCard(`
+        <div class="story-card" style="border-color: #147656; background: linear-gradient(180deg, #f0fdf7 0%, #fff 100%);">
+          <span class="story-label result">Results</span>
+          <div class="regular-sm text-secondary" style="margin-bottom:8px;">Mother\u2019s Day Cart Recovery \u00b7 24 hours after activation</div>
+          <div class="story-title">12 of 34 shoppers converted \u2014 $1,486 in recovered revenue</div>
+          <div class="story-body" style="margin-bottom:16px;">The skill reached all 34 shoppers. 28 opened the message, 19 engaged in a 2-way conversation, and <strong>12 completed their purchase</strong>. Average order value was $124 \u2014 right in line with the persona profile.</div>
+          <div class="metrics-grid" style="margin-bottom:16px;">
+            ${metricCard('Recovered revenue', '$1,486', '35% of potential', 100, 'plain')}
+            ${metricCard('Conversion rate', '35%', '12 of 34', 200, 'plain')}
+            ${metricCard('Avg order value', '$124', 'on target', 300, 'plain')}
+          </div>
+          <div class="metrics-grid">
+            ${metricCard('Open rate', '82%', '28 of 34', 100, 'plain')}
+            ${metricCard('Engagement rate', '56%', '19 conversations', 200, 'plain')}
+            ${metricCard('Adherence', '97%', 'on-brand', 300, 'plain')}
+          </div>
+        </div>
+      `);
+
+      addStoryCard(`
+        <div class="story-card">
+          <span class="story-label evidence">Breakdown</span>
+          <div class="story-title">What happened in the conversations</div>
+          <div class="story-body" style="margin-bottom:12px;">The 2-way format let shoppers get answers to the exact thing that was blocking them \u2014 instead of just receiving a promo link.</div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:#f5f6f7;border-radius:8px;">
+              <span style="font-size:13px;color:#1e242e;font-weight:500;">Asked about delivery guarantee</span>
+              <span style="font-size:13px;font-weight:600;color:#7E55F6;">18 shoppers</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:#f5f6f7;border-radius:8px;">
+              <span style="font-size:13px;color:#1e242e;font-weight:500;">Added a gift note during conversation</span>
+              <span style="font-size:13px;font-weight:600;color:#7E55F6;">9 shoppers</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:#f5f6f7;border-radius:8px;">
+              <span style="font-size:13px;color:#1e242e;font-weight:500;">Swapped to a different arrangement</span>
+              <span style="font-size:13px;font-weight:600;color:#7E55F6;">4 shoppers</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;background:#f5f6f7;border-radius:8px;">
+              <span style="font-size:13px;color:#1e242e;font-weight:500;">Said they already ordered elsewhere</span>
+              <span style="font-size:13px;font-weight:600;color:#5c6370;">6 shoppers</span>
+            </div>
+          </div>
+        </div>
+      `);
+
+      addStoryCard(`
+        <div class="story-card" style="border-color:#7E55F6;">
+          <span class="story-label persona">Learning</span>
+          <div class="story-title">Scorer accuracy: The Last-Minute Gifter was on target</div>
+          <div class="story-body">The persona predicted shoppers would push back on timing and respond well to a delivery guarantee + gift note upsell. That\u2019s exactly what happened \u2014 <strong>18 of 19 engaged shoppers asked about delivery timing first</strong>, and the gift note upsell converted 47% of the time. Saving this persona for future seasonal campaigns.</div>
+        </div>
+      `);
+    };
+
+    const backToHome = () => {
+      state.taskDetail = null;
+      state.conversationBeat = 0;
+
+      const left = document.getElementById('leftContent');
+      const right = document.getElementById('rightPanel');
+      left.classList.add('fade-out');
+      right.classList.add('fade-out');
+
+      setTimeout(() => {
+        left.style.justifyContent = '';
+        renderHome();
+        renderHomeActivity();
+        left.classList.remove('fade-out');
+        right.classList.remove('fade-out');
+        left.classList.add('fade-in');
+        right.classList.add('fade-in');
+        setTimeout(() => {
+          left.classList.remove('fade-in');
+          right.classList.remove('fade-in');
+        }, 350);
+      }, 200);
+    };
+
+    // Nav buttons
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        if (btn.dataset.view === 'home') backToHome();
+      });
+    });
+
+    // Initialize
+    renderHome();
+    renderHomeActivity();
+  </script>
+</body>
+</html>
