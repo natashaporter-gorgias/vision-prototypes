@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gorgias AI Agent - Experimentation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: #fafafa; color: #1e242e; overflow: hidden; }
+
+    /* Layout */
+    .container { display: flex; height: 100vh; }
+    .nav { width: 48px; background: #fff; border-right: 1px solid #00000014; display: flex; flex-direction: column; align-items: center; padding: 12px 0; gap: 8px; }
+    .nav-btn { width: 32px; height: 32px; border: none; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 6px; transition: all 150ms cubic-bezier(0.9, 0, 0, 1); color: #5c6370; }
+    .nav-btn.active { background: #f1ecff; color: #7E55F6; }
+    .nav-btn:hover { color: #7E55F6; }
+
+    .left-panel { width: 487px; background: #fafafa; display: flex; flex-direction: column; padding: 8px; overflow: hidden; position: relative; }
+    .left-inner { background: #fff; border-radius: 16px; border: 1px solid #00000014; flex: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
+    .left-frosted-header { position: absolute; top: 0; left: 0; right: 0; z-index: 10; background: linear-gradient(#ffffff 0%, #ffffffb2 100%); backdrop-filter: blur(1px); -webkit-backdrop-filter: blur(1px); padding: 24px; display: flex; align-items: center; min-height: 80px; }
+    .left-body { flex: 1; display: flex; flex-direction: column; justify-content: space-between; padding: 32px 24px; overflow-y: auto; position: relative; }
+    .left-body-top { padding-top: 56px; }
+    .left-body-content { flex: 1; display: flex; flex-direction: column; gap: 16px; justify-content: flex-end; padding: 16px 0; }
+    .right-panel { flex: 1; background: #fafafa; padding: 8px; overflow: hidden; }
+    .right-inner { background: #fff; border-radius: 16px; border: 1px solid #00000014; height: 100%; display: flex; flex-direction: column; overflow: hidden; }
+    .right-header { padding: 24px; height: 80px; display: flex; align-items: center; justify-content: space-between; }
+    .right-body { flex: 1; overflow-y: auto; padding: 0 24px 32px; display: flex; flex-direction: column; gap: 0; }
+
+    /* Typography */
+    .heading-xxl { font-size: 24px; line-height: 32px; font-weight: 600; }
+    .heading-xl { font-size: 20px; line-height: 32px; font-weight: 600; }
+    .heading-md { font-size: 16px; line-height: 24px; font-weight: 600; }
+    .heading-sm { font-size: 14px; line-height: 20px; font-weight: 600; }
+    .medium-md { font-size: 14px; line-height: 20px; font-weight: 500; }
+    .regular-md { font-size: 14px; line-height: 20px; font-weight: 400; }
+    .regular-sm { font-size: 12px; line-height: 16px; font-weight: 400; letter-spacing: 0.01em; }
+    .text-secondary { color: #5c6370; }
+
+    /* Home */
+    .subtitle { color: #5c6370; margin-bottom: 24px; }
+    .task-list { display: flex; flex-direction: column; gap: 8px; }
+    .task-card { background: #fff; border: 1px solid #00000014; border-radius: 8px; padding: 12px 16px; cursor: pointer; transition: all 150ms cubic-bezier(0.9, 0, 0, 1); box-shadow: 0px 2px 20px 0px rgba(0,0,0,0.04); }
+    .task-card:hover { border-color: #7E55F6; box-shadow: 0px 2px 20px 0px rgba(0,0,0,0.08); }
+    .task-title { font-size: 14px; font-weight: 600; line-height: 20px; margin-bottom: 4px; }
+    .task-desc { font-size: 12px; line-height: 16px; letter-spacing: 0.01em; color: #5c6370; }
+    .task-badge { display: inline-flex; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; padding: 2px 8px; border-radius: 4px; margin-bottom: 8px; }
+    .task-badge.proposed { background: #f1ecff; color: #7E55F6; }
+    .task-badge.success { background: #e9fbf5; color: #147656; }
+
+    /* Input card */
+    .input-card { background: #fff; border: 1px solid #00000014; border-radius: 8px; padding: 12px 16px; }
+    .input-card-text { font-size: 14px; color: #5c6370; line-height: 20px; margin-bottom: 24px; }
+    .input-card-buttons { display: flex; justify-content: space-between; align-items: center; }
+    .input-icon-btn { width: 24px; height: 24px; border-radius: 6px; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 150ms cubic-bezier(0.9, 0, 0, 1); }
+    .input-icon-btn.light { background: rgba(255,255,255,0.5); border: 0.5px solid rgba(103,113,131,0.5); box-shadow: 0px 2px 3px 0px rgba(0,0,0,0.05); }
+    .input-icon-btn.dark { background: #1e242e; box-shadow: 0px 2px 3px 0px rgba(0,0,0,0.05); opacity: 0.5; }
+    .left-body-sticky-bottom { position: sticky; bottom: 0; z-index: 5; background: #fff; padding-top: 8px; flex-shrink: 0; }
+
+    /* Conversation */
+    .conversation { display: flex; flex-direction: column; gap: 16px; }
+    .agent-msg { color: #1e242e; line-height: 1.6; }
+    .user-bubble { display: inline-block; background: #EBECEF; color: #1e242e; padding: 8px 14px; border-radius: 16px 16px 4px 16px; max-width: 85%; font-size: 14px; font-weight: 500; animation: scaleUp 350ms cubic-bezier(0.22, 1, 0.36, 1); }
+    .message-user { text-align: right; }
+    .prompt-buttons { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .prompt-btn { background: white; border: 1px solid #d0d4da; border-radius: 6px; padding: 0 12px; height: 32px; font-size: 14px; font-weight: 500; line-height: 20px; text-align: left; cursor: pointer; box-shadow: 0px 2px 3px 0px rgba(0,0,0,0.05); transition: all 150ms cubic-bezier(0.9, 0, 0, 1); animation: fadeInUp 400ms cubic-bezier(0.6, 0, 0, 1) backwards; font-family: 'Inter', sans-serif; }
+    .prompt-btn:hover { border-color: #7E55F6; background: #f1ecff; }
+
+    /* Config sections */
+    .config-section { border-bottom: 1px solid #00000014; padding: 20px 0; }
+    .config-section:last-child { border-bottom: none; }
+    .config-section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+    .config-section-title { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #5c6370; }
+    .config-edit-btn { font-size: 12px; font-weight: 500; color: #7E55F6; cursor: pointer; border: none; background: none; padding: 2px 6px; border-radius: 4px; transition: all 150ms; }
+    .config-edit-btn:hover { background: #f1ecff; }
+    .config-field { margin-bottom: 12px; }
+    .config-field:last-child { margin-bottom: 0; }
+    .config-label { font-size: 12px; font-weight: 500; color: #5c6370; margin-bottom: 4px; letter-spacing: 0.01em; }
+    .config-value { font-size: 14px; font-weight: 500; line-height: 20px; color: #1e242e; }
+
+    /* Metric cards */
+    .metric-cards-row { display: flex; gap: 8px; margin-top: 4px; flex-wrap: wrap; }
+    .metric-card { background: #ffffff; border-radius: 12px; border: 1px solid #00000014; display: flex; flex-direction: column; gap: 2px; padding: 16px 18px; flex: 1; min-width: 140px; }
+    .metric-card-label-row { display: flex; align-items: center; gap: 4px; }
+    .metric-card-label { font-size: 12px; font-weight: 500; line-height: 16px; letter-spacing: 0.01em; color: #5c6370; white-space: nowrap; }
+    .metric-card-info { width: 14px; height: 14px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+    .metric-card-stats-row { display: flex; align-items: center; gap: 6px; margin-top: 2px; }
+    .metric-card-value { font-size: 22px; font-weight: 600; line-height: 30px; color: #1e242e; white-space: nowrap; }
+    .metric-card-delta { display: inline-flex; align-items: center; gap: 2px; border-radius: 4px; padding: 1px 5px 1px 3px; font-size: 12px; font-weight: 500; line-height: 16px; letter-spacing: 0.01em; white-space: nowrap; }
+    .metric-card-delta.up { background: #e9fbf5; color: #147656; }
+    .metric-card-delta.down { background: #fef3e2; color: #b45309; }
+    .metric-card-delta.neutral { background: #f3f4f6; color: #5c6370; }
+    .metric-card-delta svg { width: 12px; height: 12px; }
+
+    /* Ticket cards */
+    .ticket-cards { display: flex; flex-direction: column; gap: 8px; }
+    .ticket-card { background: #f8f9fa; border-radius: 8px; border: 1px solid #00000014; overflow: hidden; transition: all 200ms; }
+    .ticket-card.expanded { border-color: #d0d4da; }
+    .ticket-card-header { padding: 12px 16px; cursor: pointer; display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+    .ticket-card-header:hover { background: #f0f1f3; }
+    .ticket-card-left { flex: 1; }
+    .ticket-card-meta { font-size: 11px; color: #5c6370; margin-bottom: 4px; letter-spacing: 0.01em; }
+    .ticket-card-summary { font-size: 13px; font-weight: 500; line-height: 18px; color: #1e242e; }
+    .ticket-card-chevron { width: 16px; height: 16px; color: #5c6370; transition: transform 200ms; flex-shrink: 0; margin-top: 2px; }
+    .ticket-card.expanded .ticket-card-chevron { transform: rotate(180deg); }
+    .ticket-card-body { max-height: 0; overflow: hidden; transition: max-height 400ms cubic-bezier(0.4, 0, 0.2, 1); }
+    .ticket-card.expanded .ticket-card-body { max-height: 400px; }
+    .ticket-card-content { padding: 0 16px 14px; border-top: 1px solid #00000014; padding-top: 12px; }
+    .ticket-msg { margin-bottom: 10px; }
+    .ticket-msg:last-child { margin-bottom: 0; }
+    .ticket-msg-role { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 3px; }
+    .ticket-msg-role.customer { color: #1e242e; }
+    .ticket-msg-role.agent { color: #7E55F6; }
+    .ticket-msg-text { font-size: 13px; line-height: 1.6; color: #5c6370; }
+    .freq-highlight { background: #f1ecff; color: #6d3ef0; padding: 1px 5px; border-radius: 3px; font-weight: 500; }
+
+    /* Skill comparison — side by side */
+    .skill-comparison { display: flex; gap: 8px; margin-top: 8px; }
+    .skill-col { flex: 1; background: #f8f9fa; border-radius: 8px; padding: 14px; border-top: 3px solid #d0d4da; }
+    .skill-col.proposed { border-top-color: #7E55F6; }
+    .skill-col-title { font-size: 12px; font-weight: 600; color: #1e242e; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.03em; }
+    .skill-step { font-size: 12px; line-height: 1.6; color: #5c6370; padding: 3px 0; }
+    .skill-step.added { background: #f0fdf4; color: #16a34a; border-radius: 3px; padding: 3px 6px; margin: 2px -6px; font-weight: 500; }
+
+    /* Variant cards */
+    .variant-card { background: #f8f9fa; border-radius: 8px; padding: 14px; margin-bottom: 8px; border-left: 3px solid #d0d4da; }
+    .variant-card:last-child { margin-bottom: 0; }
+    .variant-card.a { border-left-color: #7E55F6; }
+    .variant-card.b { border-left-color: #5c6370; }
+    .variant-name { font-size: 13px; font-weight: 600; color: #1e242e; margin-bottom: 4px; }
+    .variant-desc { font-size: 13px; line-height: 18px; color: #5c6370; }
+
+    /* Traffic split */
+    .split-bar { display: flex; height: 8px; border-radius: 4px; overflow: hidden; margin-top: 8px; margin-bottom: 4px; }
+    .split-bar .a { background: #7E55F6; }
+    .split-bar .b { background: #d0d4da; }
+    .split-labels { display: flex; justify-content: space-between; }
+    .split-label { font-size: 11px; color: #5c6370; }
+
+    /* Scorer chips */
+    .scorer-list { display: flex; flex-direction: column; gap: 6px; }
+    .scorer-chip { display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: #f8f9fa; border-radius: 6px; font-size: 13px; }
+    .scorer-chip .scorer-icon { width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; border-radius: 4px; font-size: 10px; flex-shrink: 0; }
+    .scorer-chip .scorer-icon.foundation { background: #e8f4fd; color: #1d6fad; }
+    .scorer-chip .scorer-icon.custom { background: #f1ecff; color: #7E55F6; }
+    .scorer-chip .scorer-name { font-weight: 500; color: #1e242e; }
+    .scorer-chip .scorer-desc { color: #5c6370; font-size: 12px; margin-left: auto; }
+    .add-scorer-btn { display: inline-flex; align-items: center; gap: 4px; padding: 6px 10px; background: none; border: 1px dashed #d0d4da; border-radius: 6px; font-size: 12px; font-weight: 500; color: #7E55F6; cursor: pointer; margin-top: 6px; font-family: 'Inter', sans-serif; transition: all 150ms; }
+    .add-scorer-btn:hover { border-color: #7E55F6; background: #f1ecff; }
+
+    /* Autonomy */
+    .autonomy-setting { display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: #f8f9fa; border-radius: 6px; font-size: 13px; }
+    .autonomy-icon { color: #147656; flex-shrink: 0; }
+    .autonomy-label { font-weight: 500; color: #1e242e; }
+    .autonomy-detail { font-size: 12px; color: #5c6370; }
+
+    /* Status */
+    .status-pill { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+    .status-pill.running { background: #e8f4fd; color: #1d6fad; }
+    .status-pill.completed { background: #e9fbf5; color: #147656; }
+    .status-pill.review { background: #fef3e2; color: #b45309; }
+    .status-dot { width: 6px; height: 6px; border-radius: 50%; }
+    .status-pill.running .status-dot { background: #1d6fad; animation: pulse 2s ease-in-out infinite; }
+    .status-pill.completed .status-dot { background: #147656; }
+    .status-pill.review .status-dot { background: #b45309; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+    .progress-track { height: 6px; background: #e5e7eb; border-radius: 3px; margin: 8px 0; }
+    .progress-fill { height: 100%; border-radius: 3px; background: #7E55F6; transition: width 600ms ease; }
+
+    /* Hub insight cards */
+    .insight-card { background: #fff; border-radius: 12px; border: 1px solid #00000014; box-shadow: 0px 2px 20px 0px rgba(0,0,0,0.04); padding: 20px; cursor: pointer; transition: all 150ms cubic-bezier(0.9, 0, 0, 1); }
+    .insight-card:hover { border-color: #7E55F6; box-shadow: 0px 2px 20px 0px rgba(0,0,0,0.08); }
+    .insight-badge { display: inline-flex; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; padding: 2px 8px; border-radius: 4px; margin-bottom: 10px; }
+    .insight-badge.proposed { background: #f1ecff; color: #7E55F6; }
+    .insight-title { font-size: 14px; font-weight: 600; line-height: 20px; color: #1e242e; margin-bottom: 6px; }
+    .insight-body { font-size: 13px; line-height: 20px; color: #5c6370; margin-bottom: 12px; }
+
+    /* Results table */
+    .results-table { width: 100%; border-collapse: collapse; }
+    .results-table th, .results-table td { padding: 10px 12px; text-align: left; font-size: 13px; border-bottom: 1px solid #f0f0f0; }
+    .results-table th { font-weight: 600; color: #5c6370; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; background: #f8f9fa; }
+    .results-table .winner { color: #147656; font-weight: 600; }
+
+    /* Animations */
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes scaleUp { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Overlays */
+    .overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; z-index: 1000; }
+    .overlay.time-skip { background: #1e242e; }
+    .overlay.slack { background: #1e1e1e; }
+    .overlay.hidden { display: none; }
+    .time-skip-content { text-align: center; animation: fadeIn 600ms ease forwards; }
+    .time-skip-content .heading-xxl { color: #fff; margin-bottom: 12px; }
+    .time-skip-content .regular-md { color: #5c6370; }
+    .time-skip-content button { margin-top: 24px; padding: 8px 16px; background: #7E55F6; color: #fff; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 500; font-family: 'Inter', sans-serif; }
+    .time-skip-content button:hover { opacity: 0.9; }
+
+    /* Slack */
+    .slack-layout { display: flex; height: 100vh; width: 100vw; }
+    .slack-sidebar { width: 220px; background: #3F0E40; color: #fff; padding: 16px; }
+    .slack-channel { font-size: 13px; padding: 6px 8px; cursor: pointer; border-radius: 4px; margin-bottom: 4px; color: #cfc3cf; }
+    .slack-channel:hover { background: #4a1350; }
+    .slack-channel.active { background: #1164a3; color: #fff; }
+    .slack-main { flex: 1; background: #fff; display: flex; flex-direction: column; }
+    .slack-header { background: #fff; padding: 16px 24px; border-bottom: 1px solid #e0e0e0; font-weight: 600; font-size: 15px; }
+    .slack-messages { flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 24px; }
+    .slack-msg { display: flex; gap: 12px; }
+    .slack-avatar { width: 36px; height: 36px; background: linear-gradient(135deg, #7E55F6 0%, #a78bfa 100%); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; flex-shrink: 0; }
+    .slack-msg-content { flex: 1; }
+    .slack-msg-header { display: flex; align-items: baseline; gap: 8px; margin-bottom: 4px; }
+    .slack-msg-name { font-weight: 700; font-size: 14px; }
+    .slack-msg-time { font-size: 12px; color: #616061; }
+    .slack-msg-body { font-size: 14px; line-height: 1.5; color: #1d1c1d; }
+    .slack-msg-body strong { font-weight: 700; }
+    .slack-attachment { background: #f8f8f8; border-left: 4px solid #7E55F6; border-radius: 4px; padding: 12px 16px; margin-top: 8px; }
+    .slack-metrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+    .slack-metric { padding: 6px 0; }
+    .slack-metric-label { font-size: 12px; color: #616061; }
+    .slack-metric-value { font-size: 14px; font-weight: 600; }
+    .slack-metric-value .win { color: #147656; }
+    .slack-cta { display: inline-block; margin-top: 12px; padding: 6px 12px; background: #7E55F6; color: #fff; border-radius: 4px; font-size: 13px; font-weight: 500; text-decoration: none; cursor: pointer; }
+    .slack-cta:hover { opacity: 0.9; }
+    .slack-bottom-bar { padding: 16px 24px; border-top: 1px solid #e0e0e0; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="nav">
+      <button class="nav-btn active" title="Experiments">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2v6l-2 4v6a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-6l-2-4V2"/><path d="M7 2h10"/><path d="M12 14a1 1 0 1 0 0 2 1 1 0 1 0 0-2z"/></svg>
+      </button>
+      <button class="nav-btn" title="Settings">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+      </button>
+    </div>
+    <div class="left-panel">
+      <div class="left-inner">
+        <div class="left-frosted-header" id="leftHeader"></div>
+        <div class="left-body" id="leftBody">
+          <div class="left-body-top"></div>
+          <div class="left-body-content" id="leftContent"></div>
+        </div>
+      </div>
+    </div>
+    <div class="right-panel">
+      <div class="right-inner">
+        <div class="right-header" id="rightHeader">
+          <h2 class="heading-md" id="rightTitle">Experiments</h2>
+          <div id="rightStatus"></div>
+        </div>
+        <div class="right-body" id="rightPanel"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay time-skip hidden" id="timeSkipOverlay">
+    <div class="time-skip-content">
+      <h1 class="heading-xxl">10 days later</h1>
+      <div class="regular-md" style="color:#9ca3af;">April 13, 2026</div>
+      <button onclick="showSlackScreen()">Continue</button>
+    </div>
+  </div>
+  <div class="overlay slack hidden" id="slackOverlay"></div>
+
+  <script>
+    const state = { screen: 'home', conversationBeat: 0, lastSelectedText: null };
+
+    const $ = id => document.getElementById(id);
+    const h = (tag, cls = '', html = '') => { const el = document.createElement(tag); if (cls) el.className = cls; if (html) el.innerHTML = html; return el; };
+    const scrollConv = () => { const w = $('conversationScroll') || $('conversation')?.parentElement; if (w) setTimeout(() => w.scrollTop = w.scrollHeight, 50); };
+    const scrollRight = () => { const r = $('rightPanel'); if (r) setTimeout(() => r.scrollTop = r.scrollHeight, 80); };
+
+    const addProgressiveMessage = (conv, html, baseDelay = 0) => {
+      const paragraphs = html.split('<br><br>').filter(p => p.trim());
+      const paragraphDelay = 1400;
+      paragraphs.forEach((p, i) => {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'message';
+        wrapper.style.opacity = '0';
+        wrapper.style.transform = 'translateY(8px)';
+        wrapper.innerHTML = '<div class="agent-msg regular-md">' + p + '</div>';
+        conv.appendChild(wrapper);
+        setTimeout(() => {
+          requestAnimationFrame(() => {
+            wrapper.style.transition = 'opacity 500ms cubic-bezier(0.6,0,0,1), transform 500ms cubic-bezier(0.6,0,0,1)';
+            wrapper.style.opacity = '1';
+            wrapper.style.transform = 'translateY(0)';
+          });
+          scrollConv();
+        }, baseDelay + i * paragraphDelay);
+      });
+      return baseDelay + paragraphs.length * paragraphDelay;
+    };
+
+    const addUserBubble = (conv, text) => {
+      const msg = h('div', 'message message-user', '<div class="user-bubble">' + text + '</div>');
+      conv.appendChild(msg);
+      scrollConv();
+    };
+
+    const showPromptButtons = (buttons, onSelect, delay = 0, options = {}) => {
+      const showAll = options.showAll || false;
+      setTimeout(() => {
+        const area = $('promptArea');
+        if (!area) return;
+        area.innerHTML = '';
+        const container = h('div', 'prompt-buttons');
+        let clicked = false;
+        if (showAll) {
+          buttons.forEach((text, i) => {
+            const btn = h('button', 'prompt-btn', text);
+            btn.style.animationDelay = (i * 80) + 'ms';
+            btn.onclick = () => { if (clicked) return; clicked = true; area.innerHTML = ''; onSelect(text); };
+            container.appendChild(btn);
+          });
+        } else {
+          let idx = 0;
+          const showNext = () => {
+            if (idx >= buttons.length || clicked) return;
+            const text = buttons[idx];
+            const btn = h('button', 'prompt-btn', text);
+            btn.onclick = () => { if (clicked) return; clicked = true; area.innerHTML = ''; onSelect(text); };
+            container.appendChild(btn);
+            idx++;
+            if (idx < buttons.length) setTimeout(showNext, 600);
+          };
+          showNext();
+        }
+        area.appendChild(container);
+        scrollConv();
+      }, delay);
+    };
+
+    const addConfigSection = (html, delay = 0) => {
+      const panel = $('rightPanel');
+      const section = h('div', 'config-section');
+      section.style.opacity = '0';
+      section.style.transform = 'translateY(8px)';
+      section.innerHTML = html;
+      panel.appendChild(section);
+      setTimeout(() => {
+        requestAnimationFrame(() => {
+          section.style.transition = 'opacity 400ms cubic-bezier(0.6,0,0,1), transform 400ms cubic-bezier(0.6,0,0,1)';
+          section.style.opacity = '1';
+          section.style.transform = 'translateY(0)';
+        });
+        scrollRight();
+      }, delay);
+      return section;
+    };
+
+    const selectPrompt = (text) => {
+      const area = $('promptArea');
+      if (area) area.innerHTML = '';
+      state.lastSelectedText = text;
+      state.conversationBeat += 1;
+      advanceExperiment();
+    };
+
+    const inputCardHTML = `<div class="input-card"><div class="input-card-text">Ask anything</div><div class="input-card-buttons"><button class="input-icon-btn light"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3.5 8H8M8 8H12.5M8 8V12.5M8 8V3.5" stroke="#1E242E" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button class="input-icon-btn dark"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2.75L5.08 5.67M8 2.75L10.92 5.67M8 2.75V13.25" stroke="white" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div>`;
+    const detailLeftHTML = `<div style="flex:1;overflow-y:auto;display:flex;flex-direction:column;justify-content:flex-end;" id="conversationScroll"><div class="conversation" id="conversation"></div><div id="promptArea" style="flex-shrink:0;padding:8px 0;"></div></div><div class="left-body-sticky-bottom">${inputCardHTML}</div>`;
+    const backArrow = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2.75 8L5.67 10.92M2.75 8L5.67 5.08M2.75 8H13.25" stroke="#7E55F6" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    const chevronDown = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    const infoIcon = '<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 7.37V10.52M8 13.67C4.87 13.67 2.33 11.13 2.33 8S4.87 2.33 8 2.33 13.67 4.87 13.67 8 11.13 13.67 8 13.67ZM8.03 5.48V5.54L7.97 5.54V5.48H8.03Z" stroke="#5C6370" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+    const ticketCardsHTML = `
+      <div class="ticket-cards">
+        <div class="ticket-card" onclick="this.classList.toggle('expanded')">
+          <div class="ticket-card-header">
+            <div class="ticket-card-left">
+              <div class="ticket-card-meta">#4821 · Sarah M. · 3 days ago</div>
+              <div class="ticket-card-summary">"I just <span class="freq-highlight">can't keep up</span> — they <span class="freq-highlight">pile up</span> before I can enjoy them"</div>
+            </div>
+            <div class="ticket-card-chevron">${chevronDown}</div>
+          </div>
+          <div class="ticket-card-body"><div class="ticket-card-content">
+            <div class="ticket-msg"><div class="ticket-msg-role customer">Customer</div><div class="ticket-msg-text">Hi, I'd like to cancel my flower subscription.</div></div>
+            <div class="ticket-msg"><div class="ticket-msg-role agent">AI Agent</div><div class="ticket-msg-text">I'm sorry to hear that. I can help with the cancellation. Can I ask what prompted this?</div></div>
+            <div class="ticket-msg"><div class="ticket-msg-role customer">Customer</div><div class="ticket-msg-text">I love the flowers, honestly. But they <span class="freq-highlight">arrive every week</span> and I just <span class="freq-highlight">can't keep up</span> — half of them end up <span class="freq-highlight">wilting before I get to enjoy them</span> properly.</div></div>
+            <div class="ticket-msg"><div class="ticket-msg-role agent">AI Agent</div><div class="ticket-msg-text">I understand. I'll process your cancellation now. Your last delivery will be March 28.</div></div>
+          </div></div>
+        </div>
+        <div class="ticket-card" onclick="this.classList.toggle('expanded')">
+          <div class="ticket-card-header">
+            <div class="ticket-card-left">
+              <div class="ticket-card-meta">#4756 · David R. · 5 days ago</div>
+              <div class="ticket-card-summary">"It's just <span class="freq-highlight">too many</span> — no room for flowers <span class="freq-highlight">every two weeks</span>"</div>
+            </div>
+            <div class="ticket-card-chevron">${chevronDown}</div>
+          </div>
+          <div class="ticket-card-body"><div class="ticket-card-content">
+            <div class="ticket-msg"><div class="ticket-msg-role customer">Customer</div><div class="ticket-msg-text">Can I cancel my subscription please?</div></div>
+            <div class="ticket-msg"><div class="ticket-msg-role agent">AI Agent</div><div class="ticket-msg-text">Of course. I'll take care of that. Would you mind sharing why?</div></div>
+            <div class="ticket-msg"><div class="ticket-msg-role customer">Customer</div><div class="ticket-msg-text">The arrangements are gorgeous, honestly. It's just <span class="freq-highlight">too many</span>. My apartment is small and there's <span class="freq-highlight">no room for fresh flowers every two weeks</span>. I end up <span class="freq-highlight">giving them away</span>.</div></div>
+            <div class="ticket-msg"><div class="ticket-msg-role agent">AI Agent</div><div class="ticket-msg-text">Got it. Your subscription has been cancelled. Your final delivery will be March 25.</div></div>
+          </div></div>
+        </div>
+        <div class="ticket-card" onclick="this.classList.toggle('expanded')">
+          <div class="ticket-card-header">
+            <div class="ticket-card-left">
+              <div class="ticket-card-meta">#4692 · Michelle T. · 8 days ago</div>
+              <div class="ticket-card-summary">"I <span class="freq-highlight">travel a lot</span> — <span class="freq-highlight">half the deliveries just sit</span> on my porch"</div>
+            </div>
+            <div class="ticket-card-chevron">${chevronDown}</div>
+          </div>
+          <div class="ticket-card-body"><div class="ticket-card-content">
+            <div class="ticket-msg"><div class="ticket-msg-role customer">Customer</div><div class="ticket-msg-text">I need to stop my bi-weekly subscription.</div></div>
+            <div class="ticket-msg"><div class="ticket-msg-role agent">AI Agent</div><div class="ticket-msg-text">I can help with that. Is there anything we could improve?</div></div>
+            <div class="ticket-msg"><div class="ticket-msg-role customer">Customer</div><div class="ticket-msg-text">No, everything's great quality. I just <span class="freq-highlight">travel a lot for work</span> and <span class="freq-highlight">half the time the deliveries sit on my porch</span> for days. It feels like such a <span class="freq-highlight">waste</span>.</div></div>
+            <div class="ticket-msg"><div class="ticket-msg-role agent">AI Agent</div><div class="ticket-msg-text">I understand. I've cancelled your subscription effective immediately.</div></div>
+          </div></div>
+        </div>
+      </div>`;
+
+    /* ===========================
+       HOME SCREEN
+       =========================== */
+    const renderHome = () => {
+      state.screen = 'home';
+      state.conversationBeat = 0;
+      $('leftHeader').style.cssText = '';
+      $('leftHeader').innerHTML = '<h1 class="heading-xl">Good morning, Jane</h1>';
+      $('rightTitle').textContent = 'Experiments';
+      $('rightStatus').innerHTML = '';
+
+      $('leftContent').style.justifyContent = '';
+      $('leftContent').innerHTML = `
+        <div>
+          <div class="subtitle regular-md">AI Agent identified an opportunity to improve a skill.</div>
+          <div class="task-list">
+            <div class="task-card" onclick="openExperiment()">
+              <div class="task-badge proposed">Proposed</div>
+              <div class="task-title">Cancel Subscription skill optimization</div>
+              <div class="task-desc">35% of subscription cancellations show frequency-related language, but the skill doesn't detect this.</div>
+            </div>
+          </div>
+        </div>
+        ${inputCardHTML}`;
+
+      $('rightPanel').innerHTML = `
+        <div class="insight-card" onclick="openExperiment()">
+          <span class="insight-badge proposed">Proposed · Support</span>
+          <div class="insight-title">Cancel Subscription — Frequency Optimization</div>
+          <div class="insight-body">35% of customers who cancel their subscription use language suggesting the delivery frequency is wrong, not the product. The current skill processes all cancellations the same way.</div>
+          <div class="metric-cards-row" style="margin-top:4px;">
+            <div class="metric-card" style="padding:12px 14px;"><div class="metric-card-label-row"><span class="metric-card-label">Cancellations</span></div><div class="metric-card-stats-row"><span class="metric-card-value" style="font-size:18px;line-height:26px;">89</span><span class="metric-card-delta neutral">30d</span></div></div>
+            <div class="metric-card" style="padding:12px 14px;"><div class="metric-card-label-row"><span class="metric-card-label">Frequency-related</span></div><div class="metric-card-stats-row"><span class="metric-card-value" style="font-size:18px;line-height:26px;">35%</span><span class="metric-card-delta down"><svg viewBox="0 0 12 12" fill="none"><path d="M2.15 3.59L4.96 6.45c.05.05.08.08.1.1a.75.75 0 001.08 0c.02-.02.05-.05.1-.1.05-.05.08-.08.1-.1a.75.75 0 011.08 0c.02.02.05.05.1.1L9.85 8.41M2.15 3.59V6.48M2.15 3.59H5.04" stroke="#b45309" stroke-linecap="round" stroke-linejoin="round"/></svg>lost</span></div></div>
+          </div>
+        </div>`;
+    };
+
+    /* ===========================
+       EXPERIMENT
+       =========================== */
+    const openExperiment = () => {
+      state.conversationBeat = 0;
+      state.screen = 'experiment';
+      $('leftHeader').style.cssText = 'flex-direction:column;align-items:flex-start;gap:4px;height:auto;padding:24px 24px 16px;';
+      $('leftHeader').innerHTML = `<div style="display:flex;align-items:center;gap:12px;cursor:pointer;" onclick="renderHome()">${backArrow}<span class="heading-md">Cancel Subscription skill</span></div><div class="regular-sm text-secondary" style="padding-left:28px;">Support · Proposed by AI Agent</div>`;
+      $('rightTitle').textContent = 'Experiment setup';
+      $('rightStatus').innerHTML = '<span class="status-pill" style="background:#f1ecff;color:#7E55F6;"><span class="status-dot" style="background:#7E55F6;"></span>Draft</span>';
+      $('leftContent').style.justifyContent = 'flex-end';
+      $('leftContent').innerHTML = detailLeftHTML;
+      $('rightPanel').innerHTML = '';
+      advanceExperiment();
+    };
+
+    const advanceExperiment = () => {
+      const conv = $('conversation');
+      const beat = state.conversationBeat;
+
+      /* ---- BEAT 0: Context + Hypothesis + Evidence tickets ---- */
+      if (beat === 0) {
+        const totalDelay = addProgressiveMessage(conv,
+          'I\'ve been handling subscription cancellations with the Cancel Subscription skill. Over the last 30 days, I processed 89 cancellations.<br><br>' +
+          'When I looked at the conversations more closely, 31 of those customers — about 35% — said things like "it\'s too many flowers," "I can\'t keep up," or "they pile up before I can enjoy them."<br><br>' +
+          'They weren\'t unhappy with UrbanStems. The frequency was wrong for them. But the current skill treats every cancellation the same — confirm and process.<br><br>' +
+          'I think I can save a significant portion of these by offering to adjust the delivery schedule instead of canceling. You can expand the conversations on the right to see what I mean.',
+          200
+        );
+
+        setTimeout(() => {
+          addConfigSection(`
+            <div class="config-section-header"><span class="config-section-title">Experiment</span></div>
+            <div class="heading-sm" style="margin-bottom:8px;">Cancel Subscription — Frequency Optimization</div>
+          `, 400);
+
+          addConfigSection(`
+            <div class="config-section-header"><span class="config-section-title">Hypothesis</span></div>
+            <div class="config-value" style="line-height:1.5;font-weight:400;">When customers cancel due to delivery frequency rather than product dissatisfaction, offering to adjust their schedule will save subscriptions. The current skill misses this signal and processes all cancellations identically.</div>
+          `, 800);
+
+          addConfigSection(`
+            <div class="config-section-header"><span class="config-section-title">Current performance</span></div>
+            <div class="metric-cards-row">
+              <div class="metric-card"><div class="metric-card-label-row"><span class="metric-card-label">Cancellations</span><div class="metric-card-info">${infoIcon}</div></div><div class="metric-card-stats-row"><span class="metric-card-value">89</span><span class="metric-card-delta neutral">30d</span></div></div>
+              <div class="metric-card"><div class="metric-card-label-row"><span class="metric-card-label">Frequency-related</span></div><div class="metric-card-stats-row"><span class="metric-card-value">31</span><span class="metric-card-delta down"><svg viewBox="0 0 12 12" fill="none"><path d="M2.15 3.59L4.96 6.45c.05.05.08.08.1.1a.75.75 0 001.08 0c.02-.02.05-.05.1-.1.05-.05.08-.08.1-.1a.75.75 0 011.08 0c.02.02.05.05.1.1L9.85 8.41M2.15 3.59V6.48M2.15 3.59H5.04" stroke="#b45309" stroke-linecap="round" stroke-linejoin="round"/></svg>35%</span></div></div>
+            </div>
+            <div class="metric-cards-row" style="margin-top:8px;">
+              <div class="metric-card"><div class="metric-card-label-row"><span class="metric-card-label">Current save rate</span></div><div class="metric-card-stats-row"><span class="metric-card-value">0%</span></div></div>
+              <div class="metric-card"><div class="metric-card-label-row"><span class="metric-card-label">Revenue at risk</span></div><div class="metric-card-stats-row"><span class="metric-card-value">$2,700</span><span class="metric-card-delta neutral">/mo</span></div></div>
+            </div>
+          `, 1200);
+
+          addConfigSection(`
+            <div class="config-section-header"><span class="config-section-title">Evidence — Conversations where frequency was the real issue</span></div>
+            ${ticketCardsHTML}
+          `, 1600);
+        }, 200);
+
+        showPromptButtons(
+          ['Show me the proposed experiment'],
+          (text) => selectPrompt(text),
+          totalDelay + 300
+        );
+
+      /* ---- BEAT 1: Experiment proposal — side-by-side diff, metrics, traffic ---- */
+      } else if (beat === 1) {
+        addUserBubble(conv, state.lastSelectedText);
+        setTimeout(() => {
+          const totalDelay = addProgressiveMessage(conv,
+            'Here\'s what I\'d like to test. I\'ll add a detection step to the Cancel Subscription skill — when I hear frequency-related language, I\'ll offer to adjust the delivery schedule before processing the cancellation.<br><br>' +
+            'The key change is small: instead of going straight to "I\'ll cancel that for you," I\'ll respond with something like "It sounds like the flowers are arriving faster than you can enjoy them. Would every 3 weeks or once a month work better?"<br><br>' +
+            'If they still want to cancel after that, I\'ll process it as normal. The skill comparison is on the right.',
+            0
+          );
+
+          setTimeout(() => {
+            addConfigSection(`
+              <div class="config-section-header"><span class="config-section-title">Skill change</span></div>
+              <div style="font-size:13px;line-height:1.5;color:#1e242e;font-weight:500;margin-bottom:4px;">Adds a frequency detection step before cancellation processing</div>
+              <div style="font-size:13px;line-height:1.5;color:#5c6370;margin-bottom:12px;">When the agent detects frequency-related language, it offers to adjust the delivery schedule instead of proceeding directly to cancel.</div>
+              <div class="skill-comparison">
+                <div class="skill-col">
+                  <div class="skill-col-title">Current skill (B)</div>
+                  <div class="skill-step">1. Acknowledge cancellation</div>
+                  <div class="skill-step">2. Ask for reason</div>
+                  <div class="skill-step">3. Process cancellation</div>
+                  <div class="skill-step">4. Confirm last delivery</div>
+                </div>
+                <div class="skill-col proposed">
+                  <div class="skill-col-title">Frequency-aware (A)</div>
+                  <div class="skill-step">1. Acknowledge cancellation</div>
+                  <div class="skill-step">2. Ask for reason</div>
+                  <div class="skill-step added">3. Detect frequency signals</div>
+                  <div class="skill-step added">→ Offer schedule adjustment</div>
+                  <div class="skill-step added">→ If declined: continue</div>
+                  <div class="skill-step">4. Process cancellation</div>
+                  <div class="skill-step">5. Confirm last delivery</div>
+                </div>
+              </div>
+            `, 300);
+
+            addConfigSection(`
+              <div class="config-section-header"><span class="config-section-title">Success metrics</span></div>
+              <div class="metric-cards-row">
+                <div class="metric-card"><div class="metric-card-label-row"><span class="metric-card-label">Adherence</span><div class="metric-card-info">${infoIcon}</div></div><div class="metric-card-stats-row"><span class="metric-card-value" style="color:#5c6370;">TBD</span></div></div>
+                <div class="metric-card"><div class="metric-card-label-row"><span class="metric-card-label">Accuracy</span><div class="metric-card-info">${infoIcon}</div></div><div class="metric-card-stats-row"><span class="metric-card-value" style="color:#5c6370;">TBD</span></div></div>
+              </div>
+              <div class="metric-cards-row" style="margin-top:8px;">
+                <div class="metric-card"><div class="metric-card-label-row"><span class="metric-card-label">Save rate</span></div><div class="metric-card-stats-row"><span class="metric-card-value" style="color:#5c6370;">TBD</span></div></div>
+                <div class="metric-card"><div class="metric-card-label-row"><span class="metric-card-label">Revenue retained</span></div><div class="metric-card-stats-row"><span class="metric-card-value" style="color:#5c6370;">TBD</span><span class="metric-card-delta neutral">/mo</span></div></div>
+              </div>
+              <div class="metric-cards-row" style="margin-top:8px;">
+                <div class="metric-card"><div class="metric-card-label-row"><span class="metric-card-label">Detection accuracy</span></div><div class="metric-card-stats-row"><span class="metric-card-value" style="color:#5c6370;">TBD</span></div></div>
+                <div class="metric-card"><div class="metric-card-label-row"><span class="metric-card-label">7-day retention</span><div class="metric-card-info">${infoIcon}</div></div><div class="metric-card-stats-row"><span class="metric-card-value" style="color:#5c6370;">TBD</span></div></div>
+              </div>
+            `, 600);
+
+            addConfigSection(`
+              <div class="config-section-header"><span class="config-section-title">Traffic allocation</span><button class="config-edit-btn">Edit</button></div>
+              <div class="variant-card a"><div class="variant-name">A · Frequency-aware (proposed)</div><div class="variant-desc">Detects frequency language, offers schedule adjustment before canceling.</div></div>
+              <div class="variant-card b" style="margin-top:8px;"><div class="variant-name">B · Current skill (control)</div><div class="variant-desc">Confirms and processes all cancellation requests identically.</div></div>
+              <div class="split-bar" style="margin-top:12px;"><div class="a" style="width:50%"></div><div class="b" style="width:50%"></div></div>
+              <div class="split-labels"><span class="split-label">Variant A · 50%</span><span class="split-label">Variant B · 50%</span></div>
+              <div style="display:flex;gap:24px;margin-top:12px;">
+                <div class="config-field"><div class="config-label">Conversations needed</div><div class="config-value">~60</div></div>
+                <div class="config-field"><div class="config-label">Est. duration</div><div class="config-value">~10 days</div></div>
+              </div>
+            `, 900);
+
+            showPromptButtons(
+              ['How will conversations be scored?'],
+              (text) => selectPrompt(text),
+              totalDelay + 400
+            );
+          }, 400);
+        }, 400);
+
+      /* ---- BEAT 2: Scoring — directly answers the question ---- */
+      } else if (beat === 2) {
+        addUserBubble(conv, state.lastSelectedText);
+        setTimeout(() => {
+          const totalDelay = addProgressiveMessage(conv,
+            'Each conversation in the experiment gets scored automatically on two levels.<br><br>' +
+            'First, foundational scoring that runs on every conversation: adherence checks whether I followed the skill instructions correctly, and accuracy checks whether I correctly identified the customer\'s intent — did they actually mean frequency, or something else?<br><br>' +
+            'Second, the success metrics on the right — save rate, revenue retained, detection accuracy, and 7-day retention — measure whether the experiment is working overall.<br><br>' +
+            'You can also add custom scorers to evaluate things I can\'t capture with numbers alone. For example, when I offer "every 3 weeks or monthly," did that actually match what the customer described? If someone says "I travel every other week," monthly might be perfect but every 3 weeks doesn\'t help at all.',
+            0
+          );
+
+          setTimeout(() => {
+            addConfigSection(`
+              <div class="config-section-header"><span class="config-section-title">Conversation scoring</span></div>
+              <div class="config-label" style="margin-bottom:6px;">Foundational (every conversation)</div>
+              <div class="scorer-list">
+                <div class="scorer-chip"><span class="scorer-icon foundation">F</span><span class="scorer-name">Adherence</span><span class="scorer-desc">Followed skill instructions</span></div>
+                <div class="scorer-chip"><span class="scorer-icon foundation">F</span><span class="scorer-name">Accuracy</span><span class="scorer-desc">Correct intent detection</span></div>
+              </div>
+              <div class="config-label" style="margin-top:14px;margin-bottom:6px;">Custom</div>
+              <div class="scorer-list" id="customScorers"></div>
+              <button class="add-scorer-btn" id="addScorerBtn">+ Add scorer</button>
+            `, 300);
+
+            showPromptButtons(
+              ['Add "Frequency match quality" as a scorer'],
+              (text) => selectPrompt(text),
+              totalDelay + 400
+            );
+          }, 400);
+        }, 400);
+
+      /* ---- BEAT 3: Scorer added → Autonomy question ---- */
+      } else if (beat === 3) {
+        addUserBubble(conv, state.lastSelectedText);
+        setTimeout(() => {
+          const list = $('customScorers');
+          if (list) {
+            const chip = h('div', 'scorer-chip', '<span class="scorer-icon custom">C</span><span class="scorer-name">Frequency match quality</span><span class="scorer-desc" style="color:#147656;">New</span>');
+            chip.style.opacity = '0'; chip.style.transform = 'translateY(4px)';
+            list.appendChild(chip);
+            setTimeout(() => { chip.style.transition = 'opacity 300ms, transform 300ms'; chip.style.opacity = '1'; chip.style.transform = 'translateY(0)'; }, 200);
+          }
+          scrollRight();
+
+          const totalDelay = addProgressiveMessage(conv,
+            'Added. For each conversation where I offer a schedule adjustment, I\'ll evaluate whether the alternatives I suggested actually fit the customer\'s situation. If someone mentions travel, monthly makes more sense than every 3 weeks. If someone says their flowers wilt before they finish them, a slightly longer cadence might be enough.<br><br>' +
+            'One last thing — when this experiment reaches a clear winner at 95% statistical confidence, should I promote the winning variant automatically, or ask you first?',
+            0
+          );
+
+          showPromptButtons(
+            ['Auto-promote at 95% confidence', 'Ask me before promoting'],
+            (text) => selectPrompt(text),
+            totalDelay + 200,
+            { showAll: true }
+          );
+        }, 400);
+
+      /* ---- BEAT 4: Autonomy confirmed → ready to launch ---- */
+      } else if (beat === 4) {
+        const isAuto = state.lastSelectedText && state.lastSelectedText.includes('Auto');
+        addUserBubble(conv, state.lastSelectedText);
+        setTimeout(() => {
+          addConfigSection(`
+            <div class="config-section-header"><span class="config-section-title">When experiment concludes</span><button class="config-edit-btn">Edit</button></div>
+            <div class="autonomy-setting">
+              <span class="autonomy-icon">✓</span>
+              <div>
+                <div class="autonomy-label">${isAuto ? 'Auto-promote winner at 95% confidence' : 'Ask before promoting'}</div>
+                <div class="autonomy-detail">${isAuto ? 'Notify via Slack → #cx-team' : 'Notify via Slack → #cx-team for review'}</div>
+              </div>
+            </div>
+          `, 200);
+
+          const totalDelay = addProgressiveMessage(conv,
+            isAuto
+              ? 'Got it — if the experiment reaches 95% confidence, I\'ll automatically promote the winning variant and notify you in Slack. Ready to launch?'
+              : 'Got it — I\'ll notify you in Slack when we reach significance and wait for your decision. Ready to launch?',
+            0
+          );
+
+          showPromptButtons(['Launch experiment'], (text) => selectPrompt(text), totalDelay + 200);
+        }, 400);
+
+      /* ---- BEAT 5+: Launched (handles any beat >= 5 to avoid off-by-one) ---- */
+      } else if (beat >= 5) {
+        addUserBubble(conv, 'Launch experiment');
+        setTimeout(() => {
+          $('rightStatus').innerHTML = '<span class="status-pill running"><span class="status-dot"></span>Running</span>';
+
+          addConfigSection(`
+            <div class="config-section-header"><span class="config-section-title">Status</span></div>
+            <div class="config-field">
+              <div class="config-label">Progress</div>
+              <div class="progress-track"><div class="progress-fill" style="width:0%"></div></div>
+              <div style="display:flex;justify-content:space-between;"><span class="regular-sm text-secondary">0 of 60 conversations</span><span class="regular-sm text-secondary">0%</span></div>
+            </div>
+            <div style="display:flex;gap:24px;margin-top:12px;">
+              <div class="config-field"><div class="config-label">Started</div><div class="config-value">Apr 3, 2026</div></div>
+              <div class="config-field"><div class="config-label">Est. completion</div><div class="config-value">Apr 13, 2026</div></div>
+            </div>
+          `, 200);
+
+          const totalDelay = addProgressiveMessage(conv,
+            'Experiment launched. The Cancel Subscription skill is now running two variants — frequency-aware and current — split 50/50 across incoming cancellation conversations.<br><br>' +
+            'I\'ll keep you posted. Expect early signals in about 5 days and statistical significance around day 10.',
+            0
+          );
+
+          showPromptButtons(
+            ['See what happens next →'],
+            (text) => { $('promptArea').innerHTML = ''; $('timeSkipOverlay').classList.remove('hidden'); },
+            totalDelay + 300
+          );
+        }, 400);
+        state.conversationBeat = 99;
+        return;
+      }
+
+    };
+
+    /* ===========================
+       TIME SKIP + SLACK
+       =========================== */
+    const showSlackScreen = () => {
+      $('timeSkipOverlay').classList.add('hidden');
+      const overlay = $('slackOverlay');
+      overlay.classList.remove('hidden');
+      overlay.innerHTML = `
+        <div class="slack-layout">
+          <div class="slack-sidebar">
+            <div style="font-weight:700;font-size:15px;margin-bottom:16px;padding:4px 0;">UrbanStems</div>
+            <div class="slack-channel active"># cx-team</div>
+            <div class="slack-channel"># marketing-team</div>
+            <div class="slack-channel"># general</div>
+          </div>
+          <div class="slack-main">
+            <div class="slack-header"># cx-team</div>
+            <div class="slack-messages">
+              <div class="slack-msg">
+                <div class="slack-avatar">G</div>
+                <div class="slack-msg-content">
+                  <div class="slack-msg-header"><span class="slack-msg-name">Gorgias AI Agent</span><span class="slack-msg-time">9:14 AM</span></div>
+                  <div class="slack-msg-body"><strong>Experiment complete: Cancel Subscription — Frequency Optimization</strong><br>The frequency-aware variant saved 71% of frequency-related cancellations.</div>
+                  <div class="slack-attachment">
+                    <div class="slack-metrics-grid">
+                      <div class="slack-metric"><div class="slack-metric-label">Save rate</div><div class="slack-metric-value"><span class="win">71%</span> vs 0%</div></div>
+                      <div class="slack-metric"><div class="slack-metric-label">Revenue retained</div><div class="slack-metric-value"><span class="win">$1,840</span>/mo</div></div>
+                      <div class="slack-metric"><div class="slack-metric-label">7-day retention</div><div class="slack-metric-value"><span class="win">91%</span> still active</div></div>
+                      <div class="slack-metric"><div class="slack-metric-label">Detection accuracy</div><div class="slack-metric-value"><span class="win">90%</span> (28/31)</div></div>
+                    </div>
+                    <div style="margin-top:8px;font-size:13px;color:#616061;">Awaiting your review before promoting.</div>
+                    <span class="slack-cta" onclick="showResultsScreen()">Review results in Gorgias →</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="slack-bottom-bar"><div style="padding:8px 12px;border:1px solid #e0e0e0;border-radius:8px;color:#616061;font-size:13px;">Message #cx-team</div></div>
+          </div>
+        </div>`;
+    };
+
+    /* ===========================
+       RESULTS
+       =========================== */
+    const showResultsScreen = () => {
+      $('slackOverlay').classList.add('hidden');
+      state.screen = 'results';
+      state.conversationBeat = 0;
+      $('leftHeader').style.cssText = 'flex-direction:column;align-items:flex-start;gap:4px;height:auto;padding:24px 24px 16px;';
+      $('leftHeader').innerHTML = `<div style="display:flex;align-items:center;gap:12px;cursor:pointer;" onclick="renderHome()">${backArrow}<span class="heading-md">Cancel Subscription skill</span></div><div class="regular-sm text-secondary" style="padding-left:28px;">Experiment results</div>`;
+      $('rightTitle').textContent = 'Results';
+      $('rightStatus').innerHTML = '<span class="status-pill review"><span class="status-dot"></span>Needs review</span>';
+      $('leftContent').style.justifyContent = 'flex-end';
+      $('leftContent').innerHTML = detailLeftHTML;
+      $('rightPanel').innerHTML = '';
+      advanceResults();
+    };
+
+    const advanceResults = () => {
+      const conv = $('conversation');
+      const beat = state.conversationBeat;
+
+      if (beat === 0) {
+        const totalDelay = addProgressiveMessage(conv,
+          'The experiment is complete. The frequency-aware variant worked — it saved 22 of 31 frequency-related cancellation attempts. That\'s a 71% save rate.<br><br>' +
+          'Customers who switched chose every 3 weeks (14) or monthly (8). After 7 days, 91% are still subscribed — they haven\'t come back to cancel. That\'s $1,840 in monthly recurring revenue retained.<br><br>' +
+          'One thing I want to flag: my detection wasn\'t perfect. In 3 conversations, customers said "too much" but meant the price, not the frequency. I offered a schedule change and they had to correct me. The frequency match scorer caught this — those 3 conversations scored low because the alternative I offered didn\'t address their actual concern.<br><br>' +
+          'I\'d recommend promoting the frequency-aware variant as default, and running a follow-up to improve detection — I think I can distinguish frequency complaints from price complaints by looking at whether the customer mentions cost, budget, or value.',
+          200
+        );
+
+        setTimeout(() => {
+          addConfigSection(`
+            <div class="config-section-header"><span class="config-section-title">Winner: Frequency-aware (Variant A)</span></div>
+            <table class="results-table">
+              <thead><tr><th>Metric</th><th>Frequency-aware</th><th>Current skill</th></tr></thead>
+              <tbody>
+                <tr><td>Save rate</td><td class="winner">71% (22/31)</td><td>0%</td></tr>
+                <tr><td>Revenue retained</td><td class="winner">$1,840/mo</td><td>$0</td></tr>
+                <tr><td>7-day retention</td><td class="winner">91%</td><td>—</td></tr>
+                <tr><td>Detection accuracy</td><td>90% (28/31)</td><td>—</td></tr>
+                <tr><td>Adherence</td><td class="winner">96%</td><td>94%</td></tr>
+                <tr><td>Frequency match quality</td><td>86% (19/22 good match)</td><td>—</td></tr>
+              </tbody>
+            </table>
+          `, 400);
+
+          addConfigSection(`
+            <div class="config-section-header"><span class="config-section-title">Frequency switch breakdown</span></div>
+            <div class="metric-cards-row">
+              <div class="metric-card"><div class="metric-card-label-row"><span class="metric-card-label">Every 3 weeks</span></div><div class="metric-card-stats-row"><span class="metric-card-value">14</span></div></div>
+              <div class="metric-card"><div class="metric-card-label-row"><span class="metric-card-label">Monthly</span></div><div class="metric-card-stats-row"><span class="metric-card-value">8</span></div></div>
+            </div>
+          `, 700);
+
+          addConfigSection(`
+            <div class="config-section-header"><span class="config-section-title">Accuracy issues (3 conversations)</span></div>
+            <div style="font-size:13px;line-height:1.6;color:#5c6370;">In 3 cases, "too much" referred to <strong style="color:#1e242e;">price</strong>, not frequency. The agent offered a schedule change when the customer wanted to discuss cost. All 3 were corrected by the customer and proceeded to cancel.</div>
+          `, 1000);
+        }, 200);
+
+        showPromptButtons(
+          ['Promote frequency-aware variant', 'Set up the follow-up experiment'],
+          (text) => { $('promptArea').innerHTML = ''; state.lastSelectedText = text; state.conversationBeat = 1; advanceResults(); },
+          totalDelay + 400
+        );
+
+      } else if (beat === 1) {
+        addUserBubble(conv, state.lastSelectedText);
+        setTimeout(() => {
+          if (state.lastSelectedText.includes('Promote')) {
+            $('rightStatus').innerHTML = '<span class="status-pill completed"><span class="status-dot"></span>Promoted</span>';
+            addConfigSection(`
+              <div class="config-section-header"><span class="config-section-title">Decision</span></div>
+              <div class="autonomy-setting"><span class="autonomy-icon">✓</span><div><div class="autonomy-label">Frequency-aware variant promoted</div><div class="autonomy-detail">Now the default Cancel Subscription skill</div></div></div>
+            `, 200);
+            addConfigSection(`
+              <div class="config-section-header"><span class="config-section-title">Suggested follow-up</span></div>
+              <div style="font-size:13px;line-height:1.6;color:#5c6370;">Add price-sensitivity detection to distinguish "too much flowers" from "too much money." Test a variant that offers a discount tier when price language is detected, and a schedule change when frequency language is detected.</div>
+            `, 400);
+
+            const totalDelay = addProgressiveMessage(conv,
+              'Done — the frequency-aware variant is now the default Cancel Subscription skill. Every cancellation conversation will include frequency detection going forward.<br><br>' +
+              'Based on the 3 accuracy misses, I recommend a follow-up experiment to also detect price sensitivity. Want me to set that up?',
+              0
+            );
+            showPromptButtons(['Yes, set that up', 'Not now'], () => {}, totalDelay + 300);
+          } else {
+            addProgressiveMessage(conv,
+              'I\'ll design a follow-up that adds price-sensitivity detection. When a customer says "too much," I\'ll look at surrounding context — mentions of cost, budget, or value point to price; mentions of frequency, keeping up, or waste point to cadence.<br><br>' +
+              'I\'ll have a proposal ready for you shortly.',
+              0
+            );
+          }
+        }, 400);
+      }
+    };
+
+    document.addEventListener('DOMContentLoaded', () => { renderHome(); });
+  </script>
+</body>
+</html>
