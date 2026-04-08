@@ -108,7 +108,7 @@
       margin: 0 auto;
       padding: 0 32px 48px;
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1fr 1fr 1fr;
       gap: 16px;
     }
     .context-card {
@@ -691,7 +691,7 @@
         <a href="#j1">Onboarding</a>
         <a href="#j2">Digest → Inbox</a>
         <a href="#j3">Mother's Day</a>
-        <a href="#j4">Evaluation</a>
+        <a href="#j4">E2E Performance</a>
         <a href="#shared">Shared Assets</a>
       </div>
     </div>
@@ -700,11 +700,11 @@
   <!-- HERO -->
   <section class="hero" id="overview">
     <h1>Customer Journey Framework</h1>
-    <p class="subtitle">Four journeys following Maya Torres, CX ops manager at UrbanStems, from agent setup through post-peak evaluation. The first three journeys show what the agent does. The fourth shows how it gets better on its own — that's the moat.</p>
+    <p class="subtitle">Two personas, one agent. Maya Torres (CX Operations Manager) sets up and refines the agent. Daniel Reyes (GM of E-Commerce) sees the bigger picture — support and marketing unified into a single customer experience. The vision: as the agent matures, the ICP shifts from CX manager to GM of ecommerce.</p>
   </section>
 
   <!-- CONTEXT -->
-  <section class="context-grid">
+  <section class="context-grid" style="grid-template-columns: 1fr 1fr 1fr">
     <div class="context-card">
       <h3>🌸 The Merchant</h3>
       <p style="margin-bottom:12px"><strong>UrbanStems</strong> — Premium flower &amp; gifting brand. Seasonal peaks (Valentine's, Mother's Day), growing subscription base ("BloomPlan"), perishable products with 2-day freshness guarantee.</p>
@@ -716,12 +716,21 @@
       </ul>
     </div>
     <div class="context-card">
-      <h3>👤 The Protagonist</h3>
-      <p style="margin-bottom:12px"><strong>Maya Torres</strong> — CX Operations Manager. Former senior support agent, moved into ops 6 months ago when they adopted Gorgias AI Agent. Thinks in customer outcomes, not code.</p>
+      <h3>👤 Maya Torres</h3>
+      <p style="margin-bottom:12px"><strong>CX Operations Manager</strong> — Protagonist, Journeys 1-2. Former senior support agent, moved into ops 6 months ago when UrbanStems adopted Gorgias AI Agent. Thinks in customer outcomes, not code.</p>
       <ul>
         <li>Goal: push automation from 61% → 80% before Mother's Day</li>
-        <li>Reduce escalation volume for her 3 human agents</li>
-        <li>Prove AI drives quality + revenue, not just deflection</li>
+        <li>Manages 3 human agents; owns escalation quality</li>
+        <li>Cares about: agent accuracy, team workload, deflection</li>
+      </ul>
+    </div>
+    <div class="context-card">
+      <h3>👔 Daniel Reyes</h3>
+      <p style="margin-bottom:12px"><strong>GM of E-Commerce</strong> — Protagonist, Journeys 3-4. Oversees full customer lifecycle: acquisition, conversion, support, retention. Reports to CEO. Pays attention when the agent crosses from support into revenue.</p>
+      <ul>
+        <li>Evaluating: can Gorgias be the platform for the entire customer lifecycle?</li>
+        <li>Cares about: conversion rate, customer LTV, retention, unified experience</li>
+        <li>Key insight: support and marketing are both skills the agent can use at the right moment</li>
       </ul>
     </div>
   </section>
@@ -732,22 +741,22 @@
       <a class="timeline-item" href="#j1" style="text-decoration:none;color:inherit">
         <div class="week">Week 1</div>
         <div class="title">Onboarding</div>
-        <div class="owner">Mac / Lisa</div>
+        <div class="owner">Maya — Mac / Lisa</div>
       </a>
       <a class="timeline-item" href="#j2" style="text-decoration:none;color:inherit">
         <div class="week">Week 3</div>
         <div class="title">Digest → Inbox</div>
-        <div class="owner">Ines / Chris</div>
+        <div class="owner">Maya — Ines / Chris</div>
       </a>
       <a class="timeline-item" href="#j3" style="text-decoration:none;color:inherit">
         <div class="week">Week 5</div>
         <div class="title">Mother's Day</div>
-        <div class="owner">Lisa</div>
+        <div class="owner">Both — Lisa</div>
       </a>
       <a class="timeline-item" href="#j4" style="text-decoration:none;color:inherit">
         <div class="week">Week 7</div>
         <div class="title">Evaluation</div>
-        <div class="owner">Natasha</div>
+        <div class="owner">Daniel — Natasha</div>
       </a>
     </div>
   </section>
@@ -1044,12 +1053,12 @@
     <div class="journey-header">
       <div class="journey-label">
         <span class="journey-number">Journey 3</span>
-        <span class="journey-owner">Lisa</span>
+        <span class="journey-owner">Maya & Daniel — Lisa</span>
       </div>
       <h2>Mother's Day Campaign — "One Agent, Multiple Skills"</h2>
-      <p class="journey-desc">Mother's Day is 10 days away. The agent proposes marketing skills — not separate campaigns, but coordinated behaviors that activate at the right moment in each shopper's journey. One agent, reading context, choosing the right skill.</p>
-      <div style="background:var(--amber-light);border:1px solid #fde68a;border-radius:8px;padding:12px 16px;margin-top:12px;font-size:13px;color:#92400e;line-height:1.5">
-        <strong>Open question for Lisa:</strong> How does "marketing as a skill" actually differ from a Klaviyo campaign? What's the channel (email, SMS, chat)? What triggers the outbound? This journey shows the concept but needs grounding in the mechanics. The team hasn't resolved the flows-vs-campaigns tension yet — this is the space to explore it.
+      <p class="journey-desc">Mother's Day is 10 days away. The agent proposes marketing skills. Maya is focused on execution; Daniel sees something bigger: one agent managing the full shopper lifecycle (browse → nudge → purchase → upsell → follow-up). Support and marketing aren't separate — they're both skills the agent chooses at the right moment. Daniel starts paying attention. This isn't just a support tool. This is a commerce platform.</p>
+      <div style="background:var(--blue-light);border:1px solid #93c5fd;border-radius:8px;padding:12px 16px;margin-top:12px;font-size:13px;color:#1e40af;line-height:1.5">
+        <strong>The ICP Shift Begins:</strong> Maya is still running ops — setting up skills, calibrating tone, measuring deflection. But Daniel is now in the room. He's seeing that the real lever isn't support efficiency. It's the unified shopper journey. By Journey 4, he's the primary decision-maker.
       </div>
     </div>
 
@@ -1189,10 +1198,10 @@
     <div class="journey-header">
       <div class="journey-label">
         <span class="journey-number">Journey 4</span>
-        <span class="journey-owner">Natasha</span>
+        <span class="journey-owner">Daniel — Natasha</span>
       </div>
-      <h2>Evaluation at Scale — "The Learning Loop"</h2>
-      <p class="journey-desc">The first three journeys show what the agent does. This journey shows how it gets better on its own. The frequency seed from Week 3 has matured. The agent surfaces the pattern, proposes a fix, tests it offline at scale, then validates live. The full pipeline: insight → offline eval → A/B test → self-critique.</p>
+      <h2>E2E Performance — "The Whole Picture"</h2>
+      <p class="journey-desc">Daniel is evaluating the agent as a commerce platform, not just support. The agent surfaces an insight about subscriber churn — a retention problem spanning support and marketing that neither team found alone. It proposes a solution, tests it offline, then A/B tests with real customers. Daniel cares about the business outcome: saved revenue, improved LTV, unified insights across the customer lifecycle. This is the moat.</p>
     </div>
 
     <div class="data-section" style="margin-bottom:24px">
@@ -1232,15 +1241,15 @@
       <div class="beat">
         <div class="beat-num">1</div>
         <div class="beat-content">
-          <h4>Post-peak analysis — Week 7</h4>
-          <p>Mother's Day is over. The agent has reviewed 89 cancellation conversations from the peak period. It surfaces the frequency pattern that was first seeded in the Week 3 digest.</p>
+          <h4>Post-peak analysis — Week 7: Daniel's Dashboard</h4>
+          <p>Mother's Day is over. Daniel reviews his commerce dashboard. Acquisition was strong (3.5× normal volume). But he notices something: churn spiked in the first week post-peak. The agent surfaces why: 35% of cancellations mention frequency language — "too many," "can't keep up." This is a retention problem neither his marketing team nor the support team saw separately. The unified insight: support conversations contain revenue signals.</p>
         </div>
       </div>
       <div class="beat">
         <div class="beat-num">2</div>
         <div class="beat-content">
           <h4>The agent shows the data</h4>
-          <p>35% of cancellations (31 of 89) contained frequency language — "too many," "can't keep up," "every two weeks is too much." These customers aren't unhappy with UrbanStems. They're unhappy with the cadence. But the current Cancel Subscription skill treats all cancellations identically. Save rate: 0%.</p>
+          <p>35% of cancellations (31 of 89) contained frequency language — "too many," "can't keep up," "every two weeks is too much." These are customers who love the product but can't commit to the cadence. They're not a support problem. They're a retention problem — addressable through a simple schedule adjustment. Current save rate: 0%. Daniel sees the potential: if frequency detection and schedule adjustment save even 30% of these, that's ~$416/mo in recurring revenue. Not a support efficiency gain. A revenue lever.</p>
         </div>
       </div>
       <div class="beat">
@@ -1255,7 +1264,7 @@
         <div class="beat-num" style="background:var(--blue);color:white">✦</div>
         <div class="beat-content">
           <h4 style="color:var(--blue)">Part 2: Offline Evaluation — Testing at Scale</h4>
-          <p style="color:#1e40af">Before anything goes live, the agent replays hundreds of historical tickets through the new instructions.</p>
+          <p style="color:#1e40af">Daniel approves a test. Before risking real customers, the agent validates the hypothesis at scale using historical data.</p>
         </div>
       </div>
       <div class="beat">
@@ -1291,7 +1300,7 @@
         <div class="beat-num">7</div>
         <div class="beat-content">
           <h4>Custom scorers — Maya adds qualitative evaluation</h4>
-          <p>The copilot asks: "Beyond adherence, success rate, and coverage — is there anything qualitative you'd want me to watch for?" Maya says: "Make sure the frequency offer doesn't feel like we're blocking the cancellation. It should be a genuine suggestion, not a retention trap." The agent creates a custom scorer: "Tone — helpful suggestion, not a save gate." Maya adds another: "Accuracy — only flag real frequency complaints, not price or quality issues."</p>
+          <p>Daniel sits in with Maya. He pushes for a business-focused scorer: "I don't just care if the agent can detect frequency. I care if the retention works — and more importantly, that the customer feels heard, not strong-armed." The team creates custom scorers: Tone (helpful suggestion, not a retention trap), Accuracy (only flag real frequency, not price/quality confusion), and a new one: Sentiment (is the customer's tone positive post-interaction, even if they choose a different frequency or cancel?). This is Daniel's criteria — the agent should be building lifetime value, not just save rate.</p>
         </div>
       </div>
       <div class="beat">
@@ -1305,14 +1314,14 @@
         <div class="beat-num">9</div>
         <div class="beat-content">
           <h4>Results: Variant A wins</h4>
-          <p>Success rate held steady (agent fully automated without escalation). Coverage stable. Adherence at 96% — variant followed the new instructions correctly. Merchant quality rate up. 8 subscriptions saved out of 27 frequency-identified customers, $416/mo in recurring revenue retained.</p>
+          <p>Coverage stable. Adherence at 96%. But the metrics Daniel cares about: 8 subscriptions saved out of 27 frequency-identified customers = $416/mo in recurring revenue retained. Annualized: ~$5,000 saved. Customer LTV for saved subscribers improved. Churn rate for frequency cohort down 6%. This is what unified commerce intelligence looks like — support conversations generating revenue insights and outcomes.</p>
         </div>
       </div>
       <div class="beat">
         <div class="beat-num">10</div>
         <div class="beat-content">
           <h4>Agent self-critique</h4>
-          <p>"3 conversations were misclassified. One customer said 'too many wilted flowers' — that's a quality complaint, not a frequency one. I need better signal detection to distinguish 'too many deliveries' from 'too many problems.' Want me to propose a follow-up experiment?"</p>
+          <p>"3 conversations were misclassified. One customer said 'too many wilted flowers' — that's a quality complaint, not a frequency one. I need better signal detection to distinguish 'too many deliveries' from 'too many problems.' Want me to propose a follow-up experiment?" Daniel is impressed. The agent isn't just executing — it's self-correcting, learning, proposing better iterations. This is how products scale. He starts thinking: what else spans support and revenue? Returns drive product quality feedback. Support conversations inform marketing segmentation. One agent, reading the full context, driving the whole funnel.</p>
         </div>
       </div>
     </div>
@@ -1610,8 +1619,13 @@
       <div class="characters-grid">
         <div class="character-card">
           <div class="char-name">Maya Torres</div>
-          <div class="char-role">CX Operations Manager (protagonist)</div>
-          <div class="char-appears">All journeys</div>
+          <div class="char-role">CX Operations Manager</div>
+          <div class="char-appears">Journeys 1-2 (protagonist); 3-4 (supporting)</div>
+        </div>
+        <div class="character-card">
+          <div class="char-name">Daniel Reyes</div>
+          <div class="char-role">GM of E-Commerce</div>
+          <div class="char-appears">Journeys 3-4 (protagonist); observing metrics from 1-2</div>
         </div>
         <div class="character-card">
           <div class="char-name">Jess</div>
