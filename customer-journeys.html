@@ -1,0 +1,1693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UrbanStems — Customer Journey Framework</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #fafafa;
+      --surface: #ffffff;
+      --border: #e8e8ec;
+      --border-light: #f0f0f4;
+      --text-primary: #18181b;
+      --text-secondary: #71717a;
+      --text-tertiary: #a1a1aa;
+      --purple: #6c47ff;
+      --purple-light: #f0ecff;
+      --green: #16a34a;
+      --green-light: #f0fdf4;
+      --amber: #d97706;
+      --amber-light: #fffbeb;
+      --red: #dc2626;
+      --red-light: #fef2f2;
+      --blue: #2563eb;
+      --blue-light: #eff6ff;
+    }
+
+    body {
+      font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* --- NAV --- */
+    .topnav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 32px;
+    }
+    .topnav-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      height: 56px;
+      gap: 24px;
+    }
+    .topnav-brand {
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--purple);
+      white-space: nowrap;
+    }
+    .topnav-links {
+      display: flex;
+      gap: 4px;
+      overflow-x: auto;
+    }
+    .topnav-links a {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      white-space: nowrap;
+      transition: all 0.15s;
+    }
+    .topnav-links a:hover {
+      background: var(--purple-light);
+      color: var(--purple);
+    }
+
+    /* --- HERO --- */
+    .hero {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 96px 32px 48px;
+    }
+    .hero h1 {
+      font-size: 36px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 12px;
+    }
+    .hero .subtitle {
+      font-size: 18px;
+      color: var(--text-secondary);
+      max-width: 600px;
+      line-height: 1.6;
+    }
+
+    /* --- CONTEXT CARDS --- */
+    .context-grid {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 32px 48px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .context-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+    }
+    .context-card h3 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .context-card p, .context-card li {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+    .context-card ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .context-card ul li::before {
+      content: "·";
+      margin-right: 8px;
+      color: var(--text-tertiary);
+      font-weight: 700;
+    }
+
+    /* --- TIMELINE --- */
+    .timeline-section {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 32px 48px;
+    }
+    .timeline-bar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .timeline-item {
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: background 0.15s;
+      border-right: 1px solid var(--border);
+    }
+    .timeline-item:last-child { border-right: none; }
+    .timeline-item:hover { background: var(--purple-light); }
+    .timeline-item .week {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--purple);
+      margin-bottom: 4px;
+    }
+    .timeline-item .title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    .timeline-item .owner {
+      font-size: 12px;
+      color: var(--text-tertiary);
+    }
+
+    /* --- JOURNEY SECTIONS --- */
+    .journey {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 48px 32px;
+      border-top: 1px solid var(--border-light);
+    }
+    .journey-header {
+      margin-bottom: 32px;
+    }
+    .journey-header .journey-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .journey-header .journey-number {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--purple);
+      background: var(--purple-light);
+      padding: 4px 10px;
+      border-radius: 100px;
+    }
+    .journey-header .journey-owner {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-tertiary);
+      background: var(--bg);
+      padding: 4px 10px;
+      border-radius: 100px;
+      border: 1px solid var(--border);
+    }
+    .journey-header h2 {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      margin-bottom: 8px;
+    }
+    .journey-header .journey-desc {
+      font-size: 15px;
+      color: var(--text-secondary);
+      max-width: 640px;
+    }
+
+    /* --- BEATS --- */
+    .beats {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 36px;
+    }
+    .beat {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 24px;
+      display: grid;
+      grid-template-columns: 32px 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+    .beat-num {
+      width: 32px;
+      height: 32px;
+      background: var(--purple-light);
+      color: var(--purple);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .beat-content h4 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .beat-content p {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* --- DATA PANELS --- */
+    .data-section {
+      margin-bottom: 32px;
+    }
+    .data-section-title {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-tertiary);
+      margin-bottom: 12px;
+    }
+
+    /* Metric cards */
+    .metric-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .metric-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+    }
+    .metric-card .metric-label {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      margin-bottom: 4px;
+    }
+    .metric-card .metric-value {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+    }
+    .metric-card .metric-delta {
+      font-size: 12px;
+      font-weight: 500;
+      margin-top: 2px;
+    }
+    .metric-card .metric-delta.up { color: var(--green); }
+    .metric-card .metric-delta.down { color: var(--red); }
+    .metric-card .metric-delta.neutral { color: var(--text-tertiary); }
+    .metric-card .metric-note {
+      font-size: 12px;
+      color: var(--text-tertiary);
+      margin-top: 4px;
+    }
+
+    /* Conversation bubbles */
+    .conversation {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+    .conversation-header {
+      padding: 12px 16px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .conversation-header .ticket-id {
+      font-weight: 400;
+      color: var(--text-tertiary);
+    }
+    .message {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-light);
+    }
+    .message:last-child { border-bottom: none; }
+    .message-sender {
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .message-sender.customer { color: var(--text-primary); }
+    .message-sender.agent { color: var(--purple); }
+    .message-sender.human { color: var(--blue); }
+    .message-sender.copilot { color: var(--amber); }
+    .message-body {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+    .message-body mark {
+      background: #fef08a;
+      color: var(--text-primary);
+      padding: 1px 3px;
+      border-radius: 3px;
+    }
+
+    /* Skill table */
+    .skill-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+    .skill-table th {
+      text-align: left;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-tertiary);
+      padding: 10px 16px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+    }
+    .skill-table td {
+      font-size: 13px;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border-light);
+      color: var(--text-secondary);
+    }
+    .skill-table tr:last-child td { border-bottom: none; }
+    .skill-table .skill-name {
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    /* Badge */
+    .badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 100px;
+    }
+    .badge.active { background: var(--green-light); color: var(--green); }
+    .badge.off { background: var(--bg); color: var(--text-tertiary); border: 1px solid var(--border); }
+    .badge.alert { background: var(--amber-light); color: var(--amber); }
+    .badge.review { background: var(--blue-light); color: var(--blue); }
+    .badge.new { background: var(--purple-light); color: var(--purple); }
+
+    /* Insight card */
+    .insight-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+    .insight-card .insight-top {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .insight-card .insight-time {
+      font-size: 11px;
+      color: var(--text-tertiary);
+    }
+    .insight-card h4 {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .insight-card p {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* Agent proposal */
+    .agent-proposal {
+      background: var(--purple-light);
+      border: 1px solid #d4c8ff;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+    .agent-proposal h4 {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--purple);
+      margin-bottom: 8px;
+    }
+    .agent-proposal p {
+      font-size: 14px;
+      color: #4a3580;
+      line-height: 1.6;
+    }
+
+    /* Results */
+    .results-card {
+      background: var(--green-light);
+      border: 1px solid #bbf7d0;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+    .results-card h4 {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--green);
+      margin-bottom: 12px;
+    }
+
+    /* Shared section */
+    .shared-section {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 48px 32px;
+      border-top: 1px solid var(--border-light);
+    }
+    .shared-section h2 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+
+    .characters-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+    }
+    .character-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+    }
+    .character-card .char-name {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    .character-card .char-role {
+      font-size: 12px;
+      color: var(--text-tertiary);
+    }
+    .character-card .char-appears {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 8px;
+    }
+
+    /* Nav structure */
+    .nav-preview {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+    }
+    .nav-item {
+      padding: 16px;
+      text-align: center;
+      border-right: 1px solid var(--border);
+    }
+    .nav-item:last-child { border-right: none; }
+    .nav-item .nav-name {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    .nav-item .nav-owner {
+      font-size: 11px;
+      color: var(--text-tertiary);
+    }
+
+    /* Variant comparison */
+    .variant-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .variant-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+    }
+    .variant-card.winner {
+      border-color: var(--green);
+      background: var(--green-light);
+    }
+    .variant-card h5 {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-tertiary);
+      margin-bottom: 8px;
+    }
+    .variant-card.winner h5 { color: var(--green); }
+    .variant-card p {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* Edge case */
+    .edge-case {
+      background: var(--amber-light);
+      border: 1px solid #fde68a;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 8px;
+      font-size: 13px;
+      color: #92400e;
+      line-height: 1.5;
+    }
+
+    /* Divider */
+    .section-divider {
+      width: 48px;
+      height: 3px;
+      background: var(--purple);
+      border-radius: 2px;
+      margin-bottom: 16px;
+    }
+
+    /* Flow arrow */
+    .flow-connector {
+      text-align: center;
+      padding: 8px 0;
+      color: var(--text-tertiary);
+      font-size: 20px;
+    }
+
+    /* Shopper journey */
+    .shopper-journey {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .shopper-step {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-light);
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+    .shopper-step:last-child { border-bottom: none; }
+    .shopper-step .step-time {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-tertiary);
+      padding-top: 2px;
+    }
+    .shopper-step .step-content h5 {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .shopper-step .step-content h5 .skill-tag {
+      font-weight: 500;
+      font-size: 11px;
+      color: var(--purple);
+      background: var(--purple-light);
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-left: 6px;
+    }
+    .shopper-step .step-content p {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* Slack notification mock */
+    .slack-mock {
+      background: #f8f8f8;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      display: flex;
+      gap: 12px;
+      align-items: start;
+    }
+    .slack-mock .slack-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--purple);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 16px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .slack-mock .slack-body {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+    .slack-mock .slack-body strong {
+      color: var(--text-primary);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="topnav">
+    <div class="topnav-inner">
+      <span class="topnav-brand">UrbanStems Journeys</span>
+      <div class="topnav-links">
+        <a href="#overview">Overview</a>
+        <a href="#j1">Onboarding</a>
+        <a href="#j2">Digest → Inbox</a>
+        <a href="#j3">Mother's Day</a>
+        <a href="#j4">Evaluation</a>
+        <a href="#shared">Shared Assets</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" id="overview">
+    <h1>Customer Journey Framework</h1>
+    <p class="subtitle">Four journeys following Maya Torres, CX ops manager at UrbanStems, from agent setup through post-peak evaluation. The first three journeys show what the agent does. The fourth shows how it gets better on its own — that's the moat.</p>
+  </section>
+
+  <!-- CONTEXT -->
+  <section class="context-grid">
+    <div class="context-card">
+      <h3>🌸 The Merchant</h3>
+      <p style="margin-bottom:12px"><strong>UrbanStems</strong> — Premium flower &amp; gifting brand. Seasonal peaks (Valentine's, Mother's Day), growing subscription base ("BloomPlan"), perishable products with 2-day freshness guarantee.</p>
+      <ul>
+        <li>~4,200 tickets/month, 61% automated</li>
+        <li>BloomPlan: $52/delivery, biweekly</li>
+        <li>Mother's Day: 3.5× normal volume</li>
+        <li>AOV: $68 (one-time), $52 (subscription)</li>
+      </ul>
+    </div>
+    <div class="context-card">
+      <h3>👤 The Protagonist</h3>
+      <p style="margin-bottom:12px"><strong>Maya Torres</strong> — CX Operations Manager. Former senior support agent, moved into ops 6 months ago when they adopted Gorgias AI Agent. Thinks in customer outcomes, not code.</p>
+      <ul>
+        <li>Goal: push automation from 61% → 80% before Mother's Day</li>
+        <li>Reduce escalation volume for her 3 human agents</li>
+        <li>Prove AI drives quality + revenue, not just deflection</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- TIMELINE -->
+  <section class="timeline-section">
+    <div class="timeline-bar">
+      <a class="timeline-item" href="#j1" style="text-decoration:none;color:inherit">
+        <div class="week">Week 1</div>
+        <div class="title">Onboarding</div>
+        <div class="owner">Mac / Lisa</div>
+      </a>
+      <a class="timeline-item" href="#j2" style="text-decoration:none;color:inherit">
+        <div class="week">Week 3</div>
+        <div class="title">Digest → Inbox</div>
+        <div class="owner">Ines / Chris</div>
+      </a>
+      <a class="timeline-item" href="#j3" style="text-decoration:none;color:inherit">
+        <div class="week">Week 5</div>
+        <div class="title">Mother's Day</div>
+        <div class="owner">Lisa</div>
+      </a>
+      <a class="timeline-item" href="#j4" style="text-decoration:none;color:inherit">
+        <div class="week">Week 7</div>
+        <div class="title">Evaluation</div>
+        <div class="owner">Natasha</div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ==================== JOURNEY 1 ==================== -->
+  <section class="journey" id="j1">
+    <div class="journey-header">
+      <div class="journey-label">
+        <span class="journey-number">Journey 1</span>
+        <span class="journey-owner">Mac / Lisa</span>
+      </div>
+      <h2>Onboarding — "Getting the Agent Ready"</h2>
+      <p class="journey-desc">Maya sets up the AI agent through conversation. She activates skills she trusts, leaves the high-stakes ones off for now, and calibrates the brand voice.</p>
+    </div>
+
+    <div class="beats">
+      <div class="beat">
+        <div class="beat-num">1</div>
+        <div class="beat-content">
+          <h4>The agent greets Maya — and already knows her business</h4>
+          <p>UrbanStems just migrated from Zendesk. The agent has already ingested their historical ticket data — 14 months of conversations. Instead of asking Maya to describe her business from scratch, it leads with what it's learned: "I've analyzed 58,000 tickets from your Zendesk history. Here's what your customers write about most."</p>
+        </div>
+      </div>
+      <div class="beat">
+        <div class="beat-num">2</div>
+        <div class="beat-content">
+          <h4>The agent proposes skills based on real ticket data</h4>
+          <p>From the Zendesk history, the agent has identified the top intents and their volume. It proposes 6 skills mapped directly to what customers actually ask about — not generic templates, but recommendations grounded in UrbanStems' real conversation patterns.</p>
+        </div>
+      </div>
+      <div class="beat">
+        <div class="beat-num">3</div>
+        <div class="beat-content">
+          <h4>Maya activates selectively</h4>
+          <p>She turns on 3 skills she's confident about (Order Tracking, Delivery Issues, Gift Messaging) and leaves Subscription Management and Return &amp; Refund off for now. She wants to see the agent handle simpler stuff before trusting it with cancellations.</p>
+        </div>
+      </div>
+      <div class="beat">
+        <div class="beat-num">4</div>
+        <div class="beat-content">
+          <h4>Brand voice calibration</h4>
+          <p>Maya describes the tone: "Warm but not cutesy. We send flowers for funerals too, not just birthdays. Empathetic, concise, never robotic." The agent generates 3 sample responses to a delivery delay for her to pick from and edit.</p>
+        </div>
+      </div>
+      <div class="beat">
+        <div class="beat-num">5</div>
+        <div class="beat-content">
+          <h4>Policy ingestion</h4>
+          <p>Maya pastes their refund policy. The agent summarizes it back in plain language and asks for confirmation. Maya adjusts the damage-claim photo threshold from $75 to $60.</p>
+        </div>
+      </div>
+      <div class="beat">
+        <div class="beat-num">6</div>
+        <div class="beat-content">
+          <h4>Go live</h4>
+          <p>The agent starts handling tickets. "I'll send you a digest tomorrow morning with how the first 24 hours went. If anything looks off, just tell me here."</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Skill table -->
+    <div class="data-section">
+      <div class="data-section-title">Proposed Skill Set</div>
+      <table class="skill-table">
+        <thead>
+          <tr>
+            <th>Skill</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th>Est. Coverage</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="skill-name">Order Tracking</td>
+            <td>WISMO, shipping status, delivery ETAs</td>
+            <td><span class="badge active">Active</span></td>
+            <td>~1,100/mo</td>
+          </tr>
+          <tr>
+            <td class="skill-name">Delivery Issues</td>
+            <td>Late, damaged, wrong address</td>
+            <td><span class="badge active">Active</span></td>
+            <td>~680/mo</td>
+          </tr>
+          <tr>
+            <td class="skill-name">Gift Messaging</td>
+            <td>Card edits, gift wrap, message changes</td>
+            <td><span class="badge active">Active</span></td>
+            <td>~340/mo</td>
+          </tr>
+          <tr>
+            <td class="skill-name">Subscription Mgmt</td>
+            <td>BloomPlan changes, skips, cancels</td>
+            <td><span class="badge off">Off</span></td>
+            <td>~520/mo</td>
+          </tr>
+          <tr>
+            <td class="skill-name">Return & Refund</td>
+            <td>Refund requests, store credit</td>
+            <td><span class="badge off">Off</span></td>
+            <td>~410/mo</td>
+          </tr>
+          <tr>
+            <td class="skill-name">Product Recs</td>
+            <td>"What should I get for…" questions</td>
+            <td><span class="badge off">Off</span></td>
+            <td>~290/mo</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Brand voice samples -->
+    <div class="data-section">
+      <div class="data-section-title">Brand Voice Options — Delivery Delay</div>
+      <div class="conversation">
+        <div class="conversation-header">Sample response — Option A <span class="ticket-id">(Maya picks this one)</span></div>
+        <div class="message">
+          <div class="message-sender agent">AI Agent</div>
+          <div class="message-body">"I'm sorry your bouquet hasn't arrived yet, Jamie. I've checked with our delivery partner and it's currently out for delivery — you should have it by end of day. If it doesn't show up, just let me know and I'll get a fresh bouquet to you."</div>
+        </div>
+      </div>
+      <div class="conversation">
+        <div class="conversation-header">Sample response — Option B</div>
+        <div class="message">
+          <div class="message-sender agent">AI Agent</div>
+          <div class="message-body">"Hi Jamie! 🌸 Your flowers are on their way and should be at your door today! Let me know if they don't arrive and we'll sort it out right away!"</div>
+        </div>
+      </div>
+      <div class="conversation">
+        <div class="conversation-header">Sample response — Option C</div>
+        <div class="message">
+          <div class="message-sender agent">AI Agent</div>
+          <div class="message-body">"Jamie, I see your order is currently in transit and expected today. If it doesn't arrive by tonight, I can arrange a replacement or full refund — whichever you'd prefer."</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== JOURNEY 2 ==================== -->
+  <section class="journey" id="j2">
+    <div class="journey-header">
+      <div class="journey-label">
+        <span class="journey-number">Journey 2</span>
+        <span class="journey-owner">Ines / Chris</span>
+      </div>
+      <h2>Daily Digest → Inbox → Automation</h2>
+      <p class="journey-desc">Maya's morning routine. The digest surfaces insights from overnight conversations. She drops into the inbox to handle what the agent couldn't — and by the end, the agent has learned a new skill from watching how she resolved it.</p>
+    </div>
+
+    <div class="beats">
+      <div class="beat">
+        <div class="beat-num">1</div>
+        <div class="beat-content">
+          <h4>Maya opens the daily digest — 8:47 AM, Week 3</h4>
+          <p>The agent has been live for two weeks. The digest greets her with a contextual summary and four metric cards. "Customer satisfaction is up to 4.3 — the brand voice tweaks you made Friday are landing well. Adherence holding steady at 88%."</p>
+        </div>
+      </div>
+      <div class="beat">
+        <div class="beat-num">2</div>
+        <div class="beat-content">
+          <h4>Two insight cards demand attention</h4>
+          <p>First: a seed — "5 of 14 cancellations yesterday mentioned delivery frequency. I'm tracking this." (This pays off in Journey 4.) Second: 4 escalated tickets the agent couldn't handle — all about pet safety.</p>
+        </div>
+      </div>
+      <div class="beat">
+        <div class="beat-num">3</div>
+        <div class="beat-content">
+          <h4>Maya drops into the inbox — and spots a problem</h4>
+          <p>3 of the 4 pet safety tickets were escalated correctly — the agent said "I'm not sure, let me connect you with our team." But the 4th one is bad. The agent confidently told Marcus Webb that the Sunset Lily arrangement is "perfectly safe for dogs." Lilies are toxic to cats and can cause kidney issues in dogs. The agent didn't know this — it had no pet safety data — and guessed wrong instead of escalating.</p>
+        </div>
+      </div>
+      <div class="beat">
+        <div class="beat-num">4</div>
+        <div class="beat-content">
+          <h4>Maya fixes the damage and sees the pattern</h4>
+          <p>She immediately messages Marcus with a correction and offers to swap to a pet-safe arrangement at no charge. Then she resolves the other 3. The pattern is clear: check if the bouquet contains toxic flowers, suggest a pet-safe alternative. But the failure makes the fix urgent — without pet safety knowledge, the agent will keep guessing, and the next guess might not get caught.</p>
+        </div>
+      </div>
+      <div class="beat">
+        <div class="beat-num">5</div>
+        <div class="beat-content">
+          <h4>The agent proposes a proactive skill update</h4>
+          <p>"These 4 customers caught the issue after ordering — but how many didn't? If I proactively ask gift buyers whether the recipient has pets, I can recommend pet-safe arrangements before the order goes through. No more toxic bouquets arriving at homes with cats." Maya reviews the proposed update and activates it.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Metrics -->
+    <div class="data-section">
+      <div class="data-section-title">Morning Digest Metrics</div>
+      <div class="metric-row">
+        <div class="metric-card">
+          <div class="metric-label">Adherence</div>
+          <div class="metric-value">88%</div>
+          <div class="metric-delta neutral">→ holding steady</div>
+          <div class="metric-note">Agent following skill instructions correctly</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Success Rate</div>
+          <div class="metric-value">78%</div>
+          <div class="metric-delta up">↑ 5pp since launch</div>
+          <div class="metric-note">Billed / covered tickets</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Coverage Rate</div>
+          <div class="metric-value">64%</div>
+          <div class="metric-delta up">↑ 3pp since launch</div>
+          <div class="metric-note">3 skills active, 3 off</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Customer Satisfaction</div>
+          <div class="metric-value">4.3/5</div>
+          <div class="metric-delta up">↑ 0.2 vs last week</div>
+          <div class="metric-note">AI-derived from 100% of conversations</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Insight cards -->
+    <div class="data-section">
+      <div class="data-section-title">Insight Cards</div>
+
+      <div class="insight-card">
+        <div class="insight-top">
+          <span class="badge review">Tracking</span>
+          <span class="insight-time">Last 24 hours</span>
+        </div>
+        <h4>5 of 14 cancellations mention delivery frequency</h4>
+        <p>Customers are saying "too often," "can't keep up," and "every two weeks is too much." These may not be product-dissatisfied — they might be cadence-dissatisfied. I'm tracking this pattern and will have more data by end of week.</p>
+      </div>
+
+      <div class="insight-card">
+        <div class="insight-top">
+          <span class="badge alert">4 escalations</span>
+          <span class="insight-time">Overnight</span>
+        </div>
+        <h4>Pet safety questions — no skill coverage</h4>
+        <p>4 customers asked whether their bouquet is safe for a recipient's pet. I don't have pet safety data in my product knowledge, so I escalated all 4. These follow the same resolution pattern.</p>
+      </div>
+    </div>
+
+    <!-- Pet safety tickets -->
+    <div class="data-section">
+      <div class="data-section-title">Escalated Tickets — Pet Safety</div>
+
+      <div class="conversation">
+        <div class="conversation-header">Ticket #3,291 <span class="ticket-id">— Sarah Lim</span></div>
+        <div class="message">
+          <div class="message-sender customer">Sarah Lim</div>
+          <div class="message-body">"I just ordered the Spring Peony bouquet for my sister but <mark>I totally forgot she has a cat</mark>. Are peonies safe for cats? If not can I switch to something that is?"</div>
+        </div>
+      </div>
+
+      <div class="conversation" style="border-color:var(--red)">
+        <div class="conversation-header" style="background:var(--red-light)">Ticket #3,294 <span class="ticket-id">— Marcus Webb · ⚠ Bad response</span></div>
+        <div class="message">
+          <div class="message-sender customer">Marcus Webb</div>
+          <div class="message-body">"Hey! Quick question — I'm sending flowers to my mom and <mark>she has two dogs</mark>. Can you tell me if the Sunset Lily arrangement is pet-friendly? I'd hate to put her pups at risk."</div>
+        </div>
+        <div class="message" style="background:var(--red-light)">
+          <div class="message-sender agent">AI Agent (incorrect)</div>
+          <div class="message-body">"Great question, Marcus! The Sunset Lily arrangement features beautiful Asiatic lilies and is a lovely choice. It should be perfectly fine around dogs. Enjoy!" <br><br><em style="color:var(--red);font-size:12px">⚠ Lilies are toxic to pets. The agent had no pet safety data and generated a confident but wrong answer instead of escalating.</em></div>
+        </div>
+      </div>
+
+      <div class="conversation">
+        <div class="conversation-header">Ticket #3,298 <span class="ticket-id">— Amy Tran</span></div>
+        <div class="message">
+          <div class="message-sender customer">Amy Tran</div>
+          <div class="message-body">"Are <mark>any of your bouquets safe for homes with cats</mark>? I want to order for a friend but she's got 3 cats and I know lilies are toxic. Can you recommend something?"</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Agent proposal -->
+    <div class="data-section">
+      <div class="data-section-title">Agent Proposal</div>
+      <div class="agent-proposal">
+        <h4>Proposed skill update: Proactive pet safety check for gift orders</h4>
+        <p>These 4 customers caught the issue after ordering — but how many didn't notice and had toxic flowers delivered to a home with pets?<br><br>
+        I'd like to update how I handle gift orders: when a customer is buying flowers as a gift, I'll ask if the recipient has any pets. If they do, I'll recommend pet-safe arrangements and flag any toxic flowers in their current selection.<br><br>
+        • During gift orders, ask: "Do you know if the recipient has any pets at home?"<br>
+        • If yes → recommend pet-safe bouquets (roses, sunflowers, orchids) and flag toxic ones (lilies, tulips, daffodils)<br>
+        • If unsure → default to pet-safe options with a note explaining why<br><br>
+        This prevents the problem instead of reacting to it. Want me to add this?</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== JOURNEY 3 ==================== -->
+  <section class="journey" id="j3">
+    <div class="journey-header">
+      <div class="journey-label">
+        <span class="journey-number">Journey 3</span>
+        <span class="journey-owner">Lisa</span>
+      </div>
+      <h2>Mother's Day Campaign — "One Agent, Multiple Skills"</h2>
+      <p class="journey-desc">Mother's Day is 10 days away. The agent proposes marketing skills — not separate campaigns, but coordinated behaviors that activate at the right moment in each shopper's journey. One agent, reading context, choosing the right skill.</p>
+      <div style="background:var(--amber-light);border:1px solid #fde68a;border-radius:8px;padding:12px 16px;margin-top:12px;font-size:13px;color:#92400e;line-height:1.5">
+        <strong>Open question for Lisa:</strong> How does "marketing as a skill" actually differ from a Klaviyo campaign? What's the channel (email, SMS, chat)? What triggers the outbound? This journey shows the concept but needs grounding in the mechanics. The team hasn't resolved the flows-vs-campaigns tension yet — this is the space to explore it.
+      </div>
+    </div>
+
+    <div class="beats">
+      <div class="beat">
+        <div class="beat-num">1</div>
+        <div class="beat-content">
+          <h4>The agent proposes a Mother's Day skill bundle</h4>
+          <p>Three temporary skills: Gift Deadline Alerts (proactive outreach to browsers with order-by dates), Upsell Add-Ons (suggest pairings during support conversations), Post-Delivery Follow-Up (satisfaction check + review prompt 2 days after delivery).</p>
+        </div>
+      </div>
+      <div class="beat">
+        <div class="beat-num">2</div>
+        <div class="beat-content">
+          <h4>Maya sees how skills interact — one customer, multiple touchpoints</h4>
+          <p>The agent shows Elena Vargas's journey: browse-abandon → gift deadline alert → purchase with upsell → post-delivery follow-up. Not 4 campaigns. One agent choosing the right skill at the right moment.</p>
+        </div>
+      </div>
+      <div class="beat">
+        <div class="beat-num">3</div>
+        <div class="beat-content">
+          <h4>Maya customizes the Gift Deadline skill</h4>
+          <p>"Say 'order by Wednesday May 6 for guaranteed Mother's Day delivery' — not just 'order soon.'" The agent updates the instructions with specific dates based on shipping zones.</p>
+        </div>
+      </div>
+      <div class="beat">
+        <div class="beat-num">4</div>
+        <div class="beat-content">
+          <h4>Skills transition within a single conversation</h4>
+          <p>A customer writes in asking about a late delivery (Delivery Issues skill). Mid-conversation she says "actually, while you're helping me — can I also change my BloomPlan to monthly instead of biweekly?" The agent pivots from Delivery Issues to Subscription Management seamlessly, in the same thread. This is the architecture in action — not separate automations, but one agent reading context and switching skills fluidly.</p>
+        </div>
+      </div>
+      <div class="beat">
+        <div class="beat-num">5</div>
+        <div class="beat-content">
+          <h4>Three days later — results</h4>
+          <p>Gift Deadline Alerts converted 14% of browse-abandoners. Upsells added $12 avg to order value. Follow-ups generated 23 reviews at 4.6 avg. The skills work together, not in isolation.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mother's Day skills -->
+    <div class="data-section">
+      <div class="data-section-title">Mother's Day Skill Bundle</div>
+      <table class="skill-table">
+        <thead>
+          <tr>
+            <th>Skill</th>
+            <th>Type</th>
+            <th>Trigger</th>
+            <th>Behavior</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="skill-name">Gift Deadline Alert</td>
+            <td><span class="badge new">Outbound</span></td>
+            <td>Browse without purchase + cutoff approaching</td>
+            <td>Personalized message with order-by date for their location</td>
+          </tr>
+          <tr>
+            <td class="skill-name">Upsell Add-Ons</td>
+            <td><span class="badge active">In-conversation</span></td>
+            <td>Active support or order conversation</td>
+            <td>Suggest wrapping, chocolates, or card based on cart</td>
+          </tr>
+          <tr>
+            <td class="skill-name">Post-Delivery Follow-Up</td>
+            <td><span class="badge new">Outbound</span></td>
+            <td>Delivery confirmed + 2 days</td>
+            <td>Satisfaction check, review prompt, next-occasion suggestion</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Elena's journey -->
+    <div class="data-section">
+      <div class="data-section-title">Elena Vargas — One Customer, One Agent, Multiple Skills</div>
+      <div class="shopper-journey">
+        <div class="shopper-step">
+          <div class="step-time">Mon, May 4</div>
+          <div class="step-content">
+            <h5>Browse abandon <span class="skill-tag">Gift Deadline Alert</span></h5>
+            <p>"Hi Elena! Just a heads up — to guarantee Mother's Day delivery to Chicago, you'll want to place your order by Wednesday, May 6. Want me to hold the Jardin bouquet in your cart?"</p>
+          </div>
+        </div>
+        <div class="shopper-step">
+          <div class="step-time">Tue, May 5</div>
+          <div class="step-content">
+            <h5>Purchase + upsell <span class="skill-tag">Upsell Add-Ons</span></h5>
+            <p>Elena replies to add a note. The agent handles the order and suggests: "The Jardin pairs beautifully with our artisan chocolate box ($18). A lot of customers are adding it for Mother's Day."</p>
+          </div>
+        </div>
+        <div class="shopper-step">
+          <div class="step-time">Sun, May 10</div>
+          <div class="step-content">
+            <h5>Delivery confirmed</h5>
+            <p>Delivered at 11:23 AM. Mother's Day.</p>
+          </div>
+        </div>
+        <div class="shopper-step">
+          <div class="step-time">Tue, May 12</div>
+          <div class="step-content">
+            <h5>Follow-up <span class="skill-tag">Post-Delivery Follow-Up</span></h5>
+            <p>"Hi Elena, hope your mom loved the Jardin bouquet! If you have a moment, a quick review helps other gift-givers find the right arrangement. And if you're already thinking ahead — Father's Day is June 21."</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Campaign results -->
+    <div class="data-section">
+      <div class="data-section-title">Results — 3 Days Post-Launch</div>
+      <div class="metric-row">
+        <div class="metric-card">
+          <div class="metric-label">Gift Deadline Alert</div>
+          <div class="metric-value">14.2%</div>
+          <div class="metric-note">Browse-abandon conversion (89 of 627)</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Upsell Add-Ons</div>
+          <div class="metric-value">+$12.40</div>
+          <div class="metric-note">Avg order value lift per conversation</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Post-Delivery Follow-Up</div>
+          <div class="metric-value">23 reviews</div>
+          <div class="metric-note">4.6 avg rating generated</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== JOURNEY 4 ==================== -->
+  <section class="journey" id="j4">
+    <div class="journey-header">
+      <div class="journey-label">
+        <span class="journey-number">Journey 4</span>
+        <span class="journey-owner">Natasha</span>
+      </div>
+      <h2>Evaluation at Scale — "The Learning Loop"</h2>
+      <p class="journey-desc">The first three journeys show what the agent does. This journey shows how it gets better on its own. The frequency seed from Week 3 has matured. The agent surfaces the pattern, proposes a fix, tests it offline at scale, then validates live. The full pipeline: insight → offline eval → A/B test → self-critique.</p>
+    </div>
+
+    <div class="data-section" style="margin-bottom:24px">
+      <div class="data-section-title">How Metrics Work in This Journey</div>
+      <div class="metric-row">
+        <div class="metric-card">
+          <div class="metric-label">Adherence</div>
+          <div class="metric-value" style="font-size:14px;font-weight:600">Primary</div>
+          <div class="metric-note">Is the agent following its skill instructions correctly?</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Success Rate</div>
+          <div class="metric-value" style="font-size:14px;font-weight:600">Primary</div>
+          <div class="metric-note">Was the ticket fully automated without human intervention? (billed / covered tickets)</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Coverage Rate</div>
+          <div class="metric-value" style="font-size:14px;font-weight:600">Primary</div>
+          <div class="metric-note">What share of tickets is the agent handling? (covered / total tickets)</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Customer Satisfaction</div>
+          <div class="metric-value" style="font-size:14px;font-weight:600">Quality</div>
+          <div class="metric-note">AI-derived from 100% of conversations. No survey needed.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="beats">
+      <div class="beat" style="background:var(--purple-light);border-color:#d4c8ff">
+        <div class="beat-num" style="background:var(--purple);color:white">✦</div>
+        <div class="beat-content">
+          <h4 style="color:var(--purple)">Part 1: The Insight</h4>
+          <p style="color:#4a3580">The agent surfaces a pattern it found by reading cancellation conversations at scale.</p>
+        </div>
+      </div>
+      <div class="beat">
+        <div class="beat-num">1</div>
+        <div class="beat-content">
+          <h4>Post-peak analysis — Week 7</h4>
+          <p>Mother's Day is over. The agent has reviewed 89 cancellation conversations from the peak period. It surfaces the frequency pattern that was first seeded in the Week 3 digest.</p>
+        </div>
+      </div>
+      <div class="beat">
+        <div class="beat-num">2</div>
+        <div class="beat-content">
+          <h4>The agent shows the data</h4>
+          <p>35% of cancellations (31 of 89) contained frequency language — "too many," "can't keep up," "every two weeks is too much." These customers aren't unhappy with UrbanStems. They're unhappy with the cadence. But the current Cancel Subscription skill treats all cancellations identically. Save rate: 0%.</p>
+        </div>
+      </div>
+      <div class="beat">
+        <div class="beat-num">3</div>
+        <div class="beat-content">
+          <h4>Example tickets with highlighted language</h4>
+          <p>The agent shows 3 real conversations where frequency language appears. Maya can expand each to see the full exchange and what the agent actually responded.</p>
+        </div>
+      </div>
+
+      <div class="beat" style="background:var(--blue-light);border-color:#bfdbfe">
+        <div class="beat-num" style="background:var(--blue);color:white">✦</div>
+        <div class="beat-content">
+          <h4 style="color:var(--blue)">Part 2: Offline Evaluation — Testing at Scale</h4>
+          <p style="color:#1e40af">Before anything goes live, the agent replays hundreds of historical tickets through the new instructions.</p>
+        </div>
+      </div>
+      <div class="beat">
+        <div class="beat-num">4</div>
+        <div class="beat-content">
+          <h4>The agent proposes a skill change</h4>
+          <p>"I want to add a frequency detection step. When I detect frequency language, I'd offer to adjust the schedule (every 3 weeks, monthly) before processing the cancellation. Before we put this in front of real customers, I can test it against historical tickets."</p>
+        </div>
+      </div>
+      <div class="beat">
+        <div class="beat-num">5</div>
+        <div class="beat-content">
+          <h4>847 historical tickets evaluated</h4>
+          <p>The agent replays every subscription conversation from the past 3 months through the new instructions. Adherence: 94%. 312 correctly identified as frequency-related. 486 correctly identified as standard cancellations. 49 edge cases flagged.</p>
+        </div>
+      </div>
+      <div class="beat">
+        <div class="beat-num">6</div>
+        <div class="beat-content">
+          <h4>Maya reviews edge cases</h4>
+          <p>The agent surfaces the 3 riskiest: "too much" meaning price not frequency, a customer already offered a schedule change last month, and "too many emails" (marketing, not deliveries). Maya adjusts the instructions. The agent re-runs — adherence improves to 97%, edge cases drop from 49 to 12.</p>
+        </div>
+      </div>
+
+      <div class="beat" style="background:var(--green-light);border-color:#bbf7d0">
+        <div class="beat-num" style="background:var(--green);color:white">✦</div>
+        <div class="beat-content">
+          <h4 style="color:var(--green)">Part 3: A/B Test — Real-World Validation</h4>
+          <p style="color:#166534">Offline eval looks solid. Now the change goes to real traffic.</p>
+        </div>
+      </div>
+      <div class="beat">
+        <div class="beat-num">7</div>
+        <div class="beat-content">
+          <h4>Custom scorers — Maya adds qualitative evaluation</h4>
+          <p>The copilot asks: "Beyond adherence, success rate, and coverage — is there anything qualitative you'd want me to watch for?" Maya says: "Make sure the frequency offer doesn't feel like we're blocking the cancellation. It should be a genuine suggestion, not a retention trap." The agent creates a custom scorer: "Tone — helpful suggestion, not a save gate." Maya adds another: "Accuracy — only flag real frequency complaints, not price or quality issues."</p>
+        </div>
+      </div>
+      <div class="beat">
+        <div class="beat-num">8</div>
+        <div class="beat-content">
+          <h4>A/B test launched</h4>
+          <p>Variant A: frequency-aware (detect signals, offer schedule adjustment). Variant B: current skill (confirm and cancel). 50/50 split, 3 weeks. Standard metrics + Maya's custom scorers running on every conversation.</p>
+        </div>
+      </div>
+      <div class="beat">
+        <div class="beat-num">9</div>
+        <div class="beat-content">
+          <h4>Results: Variant A wins</h4>
+          <p>Success rate held steady (agent fully automated without escalation). Coverage stable. Adherence at 96% — variant followed the new instructions correctly. Merchant quality rate up. 8 subscriptions saved out of 27 frequency-identified customers, $416/mo in recurring revenue retained.</p>
+        </div>
+      </div>
+      <div class="beat">
+        <div class="beat-num">10</div>
+        <div class="beat-content">
+          <h4>Agent self-critique</h4>
+          <p>"3 conversations were misclassified. One customer said 'too many wilted flowers' — that's a quality complaint, not a frequency one. I need better signal detection to distinguish 'too many deliveries' from 'too many problems.' Want me to propose a follow-up experiment?"</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pattern data -->
+    <div class="data-section">
+      <div class="data-section-title">Frequency Signals Found in Conversations</div>
+      <table class="skill-table">
+        <thead>
+          <tr>
+            <th>Signal Phrase</th>
+            <th>Frequency</th>
+            <th>Example</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="skill-name">"too many" / "too often"</td>
+            <td>14 tickets</td>
+            <td>"The flowers are gorgeous but every two weeks is too many"</td>
+          </tr>
+          <tr>
+            <td class="skill-name">"can't keep up"</td>
+            <td>8 tickets</td>
+            <td>"I just can't keep up with this many deliveries"</td>
+          </tr>
+          <tr>
+            <td class="skill-name">"every week/biweekly is too much"</td>
+            <td>6 tickets</td>
+            <td>"Biweekly is too much for just me"</td>
+          </tr>
+          <tr>
+            <td class="skill-name">"overwhelming" / "piling up"</td>
+            <td>3 tickets</td>
+            <td>"They're piling up faster than they wilt"</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Example tickets -->
+    <div class="data-section">
+      <div class="data-section-title">Example Tickets</div>
+
+      <div class="conversation">
+        <div class="conversation-header">Ticket #4,871 <span class="ticket-id">— Lena Morrison</span></div>
+        <div class="message">
+          <div class="message-sender customer">Lena Morrison</div>
+          <div class="message-body">"Hi, I need to cancel my BloomPlan. I love the flowers honestly but <mark>every two weeks is just too much for me</mark>. They're piling up and I can't enjoy them before the next batch arrives."</div>
+        </div>
+        <div class="message" style="background:#fef2f2">
+          <div class="message-sender agent">AI Agent (current skill)</div>
+          <div class="message-body">"I understand you'd like to cancel your BloomPlan subscription. I'm sorry to see you go! I've processed your cancellation effective immediately."</div>
+        </div>
+        <div class="message" style="background:#f0fdf4">
+          <div class="message-sender agent">AI Agent (proposed variant)</div>
+          <div class="message-body">"I hear you, Lena — every two weeks can be a lot! Before I cancel, would you like to try switching to a less frequent schedule? We offer every 3 weeks or monthly delivery. That way you can still enjoy fresh flowers without them piling up. Or if you'd prefer to cancel, I'm happy to do that too."</div>
+        </div>
+      </div>
+
+      <div class="conversation">
+        <div class="conversation-header">Ticket #4,903 <span class="ticket-id">— James Okafor</span></div>
+        <div class="message">
+          <div class="message-sender customer">James Okafor</div>
+          <div class="message-body">"Cancel my subscription please. <mark>I can't keep up with weekly deliveries</mark>, it's wasteful at this point."</div>
+        </div>
+        <div class="message" style="background:#fef2f2">
+          <div class="message-sender agent">AI Agent (current skill)</div>
+          <div class="message-body">"Done — your BloomPlan has been cancelled. You won't receive any further deliveries."</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Offline eval -->
+    <div class="data-section">
+      <div class="data-section-title">Offline Evaluation — 847 Historical Tickets</div>
+      <div class="metric-row">
+        <div class="metric-card">
+          <div class="metric-label">Tickets Evaluated</div>
+          <div class="metric-value">847</div>
+          <div class="metric-note">All subscription conversations, last 3 months</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Adherence</div>
+          <div class="metric-value">94%</div>
+          <div class="metric-delta neutral">→ 97% after adjustment</div>
+          <div class="metric-note">Agent follows new branching logic correctly</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Frequency-Related</div>
+          <div class="metric-value">312</div>
+          <div class="metric-note">Correctly identified → offered schedule change</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Edge Cases</div>
+          <div class="metric-value">49 → 12</div>
+          <div class="metric-note">Reduced after instruction adjustment</div>
+        </div>
+      </div>
+
+      <div style="margin-top:16px">
+        <div class="data-section-title" style="margin-bottom:8px">Riskiest Edge Cases</div>
+        <div class="edge-case">
+          <strong>1.</strong> "This is just <mark>too much</mark> for my budget right now" — <strong>"too much" = price, not frequency.</strong> Agent incorrectly offered schedule change.
+        </div>
+        <div class="edge-case">
+          <strong>2.</strong> "I called last month about switching to monthly and was told I couldn't" — <strong>Customer already attempted frequency change.</strong> Offering again feels repetitive.
+        </div>
+        <div class="edge-case">
+          <strong>3.</strong> "I'm getting <mark>way too many emails</mark> from you guys, I want to cancel everything" — <strong>"too many" = email marketing, not deliveries.</strong> Misclassified.
+        </div>
+      </div>
+    </div>
+
+    <!-- Custom scorers -->
+    <div class="data-section">
+      <div class="data-section-title">Custom Scorers</div>
+      <p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;line-height:1.6">Beyond standard metrics, Maya defines qualitative criteria the agent should evaluate on every conversation during the experiment. These run as automated assessments alongside adherence, success rate, and coverage.</p>
+      <div class="variant-grid">
+        <div class="variant-card">
+          <h5>Custom Scorer 1</h5>
+          <p><strong style="color:var(--text-primary)">Tone — helpful suggestion, not a save gate</strong><br><br>When offering a schedule adjustment, the agent should feel like it's genuinely helping, not blocking the cancellation. The customer should always feel they can say "no" and cancel immediately without friction.</p>
+        </div>
+        <div class="variant-card">
+          <h5>Custom Scorer 2</h5>
+          <p><strong style="color:var(--text-primary)">Accuracy — only flag real frequency complaints</strong><br><br>The agent should only trigger the frequency offer when the customer is actually unhappy with cadence. "Too much" about price, quality, or emails should not trigger the offer. Misclassifications = bad experience.</p>
+        </div>
+      </div>
+      <div class="agent-proposal" style="margin-top:12px">
+        <h4>How custom scorers work</h4>
+        <p>The agent evaluates each conversation against Maya's criteria and scores it pass/fail. In the results, Maya can see: "Tone scorer: 94% pass — 2 conversations felt slightly pushy when the customer hesitated." and "Accuracy scorer: 91% pass — 3 conversations triggered on non-frequency language." This gives her qualitative insight alongside the quantitative metrics.</p>
+      </div>
+    </div>
+
+    <!-- A/B test -->
+    <div class="data-section">
+      <div class="data-section-title">A/B Test Setup</div>
+      <div class="variant-grid">
+        <div class="variant-card">
+          <h5>Variant A — Frequency-Aware (New)</h5>
+          <p>Detect frequency language → offer schedule adjustment (every 3 weeks / monthly) before processing cancellation. If customer declines, cancel normally.</p>
+        </div>
+        <div class="variant-card">
+          <h5>Variant B — Current Skill</h5>
+          <p>Confirm the cancellation request and process immediately. No frequency detection, no schedule offer.</p>
+        </div>
+      </div>
+      <div class="metric-row">
+        <div class="metric-card">
+          <div class="metric-label">Primary Metrics</div>
+          <div class="metric-value" style="font-size:13px;font-weight:600">Adherence · Success Rate · Coverage Rate</div>
+          <div class="metric-note">Is the variant following instructions? Is it fully automating? Is it handling volume?</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Quality</div>
+          <div class="metric-value" style="font-size:13px;font-weight:600">Customer Satisfaction</div>
+          <div class="metric-note">AI-derived from 100% of conversations. How do customers feel?</div>
+        </div>
+      </div>
+      <div class="metric-row">
+        <div class="metric-card">
+          <div class="metric-label">Traffic Split</div>
+          <div class="metric-value">50/50</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Duration</div>
+          <div class="metric-value">3 weeks</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Revenue at Risk</div>
+          <div class="metric-value">$2,700/mo</div>
+          <div class="metric-note">From frequency-motivated cancellers</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results -->
+    <div class="data-section">
+      <div class="data-section-title">Results — 3 Weeks Later</div>
+      <div class="results-card">
+        <h4>Winner: Variant A ✓</h4>
+        <div class="metric-row" style="margin-bottom:12px">
+          <div class="metric-card" style="background:white">
+            <div class="metric-label">Adherence</div>
+            <div class="metric-value">96%</div>
+            <div class="metric-note">Agent followed new frequency-detection instructions correctly</div>
+          </div>
+          <div class="metric-card" style="background:white">
+            <div class="metric-label">Success Rate</div>
+            <div class="metric-value">93%</div>
+            <div class="metric-note">Fully automated — no human intervention needed</div>
+          </div>
+          <div class="metric-card" style="background:white">
+            <div class="metric-label">Coverage Rate</div>
+            <div class="metric-value">97%</div>
+            <div class="metric-note">Agent handled full cancel flow without escalating</div>
+          </div>
+          <div class="metric-card" style="background:white">
+            <div class="metric-label">Customer Satisfaction</div>
+            <div class="metric-value">4.5/5</div>
+            <div class="metric-note">AI-derived from save conversations</div>
+          </div>
+        </div>
+        <div class="metric-row" style="margin-bottom:0">
+          <div class="metric-card" style="background:white">
+            <div class="metric-label">Subscriptions Saved</div>
+            <div class="metric-value">8 of 27</div>
+            <div class="metric-note">30% of frequency-identified customers accepted schedule change</div>
+          </div>
+          <div class="metric-card" style="background:white">
+            <div class="metric-label">Revenue Retained</div>
+            <div class="metric-value">$416/mo</div>
+            <div class="metric-note">Recurring subscription revenue kept (vs. $0 with current skill)</div>
+          </div>
+          <div class="metric-card" style="background:white">
+            <div class="metric-label">30-Day Re-Cancel Rate</div>
+            <div class="metric-value">12%</div>
+            <div class="metric-note">1 of 8 re-cancelled within 30 days</div>
+          </div>
+        </div>
+        <div style="margin-top:12px;padding-top:12px;border-top:1px solid #bbf7d0">
+          <div style="font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--green);margin-bottom:8px">Custom Scorer Results</div>
+          <div class="metric-row" style="margin-bottom:0">
+            <div class="metric-card" style="background:white">
+              <div class="metric-label">Tone — helpful, not pushy</div>
+              <div class="metric-value">94%</div>
+              <div class="metric-note">2 conversations felt slightly pushy when customer hesitated</div>
+            </div>
+            <div class="metric-card" style="background:white">
+              <div class="metric-label">Accuracy — real frequency only</div>
+              <div class="metric-value">91%</div>
+              <div class="metric-note">3 conversations triggered on non-frequency language</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Self critique -->
+      <div class="agent-proposal">
+        <h4>Agent Self-Critique</h4>
+        <p>3 conversations were misclassified. In one, a customer said "too many wilted flowers" — that's a quality complaint about damaged deliveries, not about frequency. I offered a schedule adjustment when I should have routed to the Delivery Issues skill.<br><br>I need better signal detection to distinguish "too many [deliveries]" from "too many [problems]." Want me to propose a follow-up experiment on detection accuracy?</p>
+      </div>
+    </div>
+
+    <!-- Slack -->
+    <div class="data-section">
+      <div class="data-section-title">Slack Notification</div>
+      <div class="slack-mock">
+        <div class="slack-icon">G</div>
+        <div class="slack-body">
+          <strong>🧪 Experiment complete: Subscription Frequency Optimization</strong><br>
+          Variant A won. 8 subscriptions saved ($416/mo retained, vs. $0 before). Adherence 96%, success rate 93%, satisfaction 4.5/5. 3 misclassifications to review. <a href="#" style="color:var(--purple)">View full results in Gorgias →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== SHARED ASSETS ==================== -->
+  <section class="shared-section" id="shared">
+    <h2>Shared Assets — Keep Consistent</h2>
+
+    <div class="data-section">
+      <div class="data-section-title">Navigation Structure</div>
+      <div class="nav-preview" style="grid-template-columns:repeat(6,1fr)">
+        <div class="nav-item">
+          <div class="nav-name">Home</div>
+          <div class="nav-owner">Ines</div>
+        </div>
+        <div class="nav-item">
+          <div class="nav-name">Inbox</div>
+          <div class="nav-owner">Chris</div>
+        </div>
+        <div class="nav-item">
+          <div class="nav-name">Skills</div>
+          <div class="nav-owner">Lisa</div>
+        </div>
+        <div class="nav-item">
+          <div class="nav-name">Knowledge</div>
+          <div class="nav-owner">Mac / Lisa</div>
+        </div>
+        <div class="nav-item">
+          <div class="nav-name">Performance</div>
+          <div class="nav-owner">Natasha</div>
+        </div>
+        <div class="nav-item">
+          <div class="nav-name">Settings</div>
+          <div class="nav-owner">Placeholder</div>
+        </div>
+      </div>
+      <p style="font-size:13px;color:var(--text-tertiary);margin-top:8px">Copilot lives on the <strong>left panel</strong> — creation mode, not assistant add-on. Skills contain Actions (execution tools the agent uses). Performance contains Analytics + Experiments + Offline Eval. Customer profiles are accessed contextually from Inbox.</p>
+    </div>
+
+    <div class="data-section">
+      <div class="data-section-title">Recurring Characters</div>
+      <div class="characters-grid">
+        <div class="character-card">
+          <div class="char-name">Maya Torres</div>
+          <div class="char-role">CX Operations Manager (protagonist)</div>
+          <div class="char-appears">All journeys</div>
+        </div>
+        <div class="character-card">
+          <div class="char-name">Jess</div>
+          <div class="char-role">Senior Human Agent</div>
+          <div class="char-appears">Inbox escalations</div>
+        </div>
+        <div class="character-card">
+          <div class="char-name">Elena Vargas</div>
+          <div class="char-role">Customer — Mother's Day gift buyer</div>
+          <div class="char-appears">Marketing journey</div>
+        </div>
+        <div class="character-card">
+          <div class="char-name">Lena Morrison</div>
+          <div class="char-role">Subscriber — frequency canceller</div>
+          <div class="char-appears">Evaluation journey</div>
+        </div>
+        <div class="character-card">
+          <div class="char-name">Sarah Lim</div>
+          <div class="char-role">Customer — pet safety concern</div>
+          <div class="char-appears">Daily digest / inbox</div>
+        </div>
+        <div class="character-card">
+          <div class="char-name">James Okafor</div>
+          <div class="char-role">Subscriber — frequency canceller</div>
+          <div class="char-appears">Evaluation journey</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="data-section">
+      <div class="data-section-title">Shared Data Points</div>
+      <div class="metric-row">
+        <div class="metric-card">
+          <div class="metric-label">Tickets / month</div>
+          <div class="metric-value">~4,200</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Automation at start</div>
+          <div class="metric-value">61%</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Automation Week 3</div>
+          <div class="metric-value">64%</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Peak volume multiplier</div>
+          <div class="metric-value">3.5×</div>
+        </div>
+      </div>
+      <div class="metric-row">
+        <div class="metric-card">
+          <div class="metric-label">BloomPlan price</div>
+          <div class="metric-value">$52/delivery</div>
+          <div class="metric-note">Biweekly default</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Human agents</div>
+          <div class="metric-value">3 + Maya</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">NPS</div>
+          <div class="metric-value">72</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">AOV</div>
+          <div class="metric-value">$68</div>
+          <div class="metric-note">One-time orders</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div style="text-align:center;padding:48px 32px;color:var(--text-tertiary);font-size:13px">
+    Gorgias AI Agent Vision — Customer Journey Framework · April 2026<br>
+    Target: Product Review, April 16
+  </div>
+
+</body>
+</html>

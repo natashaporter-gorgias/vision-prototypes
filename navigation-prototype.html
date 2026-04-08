@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gorgias AI Agent Vision</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background-color: #fafafa; color: #1e242e; height: 100vh; overflow: hidden; }
+        .container { display: flex; height: 100vh; }
+
+        /* ── Icon Nav ── */
+        .nav { width: 48px; background: #fff; border-right: 1px solid rgba(0,0,0,.078); display: flex; flex-direction: column; align-items: center; padding: 12px 0; gap: 8px; flex-shrink: 0; }
+        .nav-logo { width: 32px; height: 32px; border-radius: 6px; background: linear-gradient(135deg,#7E55F6,#6D44E8); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 600; font-size: 18px; margin-bottom: 8px; cursor: pointer; }
+        .nav-divider { width: 24px; height: 1px; background: rgba(0,0,0,.078); margin: 8px 0; }
+        .nav-btn { width: 32px; height: 32px; border: none; border-radius: 6px; background: transparent; color: #5c6370; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 150ms cubic-bezier(.9,0,0,1); flex-shrink: 0; }
+        .nav-btn:hover { color: #7E55F6; }
+        .nav-btn.active { background: #f1ecff; color: #7E55F6; }
+        .nav-btn svg { width: 20px; height: 20px; }
+        .nav-bottom { margin-top: auto; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+        .nav-avatar { width: 28px; height: 28px; border-radius: 50%; background: #e5e7eb; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: #5c6370; cursor: pointer; }
+
+        /* ── Home: full-width layout ── */
+        .home-layout { display: flex; flex: 1; overflow: hidden; }
+        .home-sidebar { width: 200px; background: #fff; border-right: 1px solid rgba(0,0,0,.078); padding: 16px 12px; display: flex; flex-direction: column; gap: 4px; flex-shrink: 0; }
+        .home-sidebar-header { font-size: 16px; font-weight: 600; line-height: 24px; padding: 8px 8px 12px; display: flex; align-items: center; gap: 8px; }
+        .home-sidebar-header svg { width: 20px; height: 20px; color: #1e242e; }
+        .home-sidebar-actions { display: flex; gap: 6px; margin-left: auto; }
+        .home-sidebar-actions button { width: 24px; height: 24px; border: none; background: transparent; color: #5c6370; cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 4px; }
+        .home-sidebar-actions button:hover { background: #f1ecff; color: #7E55F6; }
+        .home-sidebar-actions button svg { width: 16px; height: 16px; }
+        .sidebar-item { padding: 8px 10px; border-radius: 6px; font-size: 14px; font-weight: 500; color: #1e242e; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 120ms ease; }
+        .sidebar-item:hover { background: #f3f4f6; }
+        .sidebar-item.active { background: #e8f5e9; color: #2e7d32; }
+        .sidebar-item svg { width: 16px; height: 16px; color: #5c6370; flex-shrink: 0; }
+        .sidebar-item.active svg { color: #2e7d32; }
+        .sidebar-new-chat { color: #5c6370; }
+        .sidebar-label { font-size: 11px; font-weight: 500; letter-spacing: .04em; text-transform: uppercase; color: #9ca3af; padding: 16px 10px 6px; }
+        .sidebar-recent { font-size: 13px; font-weight: 400; color: #5c6370; padding: 6px 10px; border-radius: 6px; cursor: pointer; }
+        .sidebar-recent:hover { background: #f3f4f6; color: #1e242e; }
+
+        .home-main { flex: 1; overflow-y: auto; padding: 40px 48px; display: flex; flex-direction: column; max-width: 860px; }
+        .home-greeting-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+        .home-greeting { font-size: 24px; font-weight: 600; line-height: 32px; }
+        .home-date { font-size: 13px; color: #5c6370; display: flex; align-items: center; gap: 6px; }
+        .home-date svg { width: 16px; height: 16px; }
+
+        /* Input */
+        .home-input-wrap { margin-bottom: 12px; }
+        .home-input { width: 100%; background: #fff; border: 1px solid rgba(0,0,0,.078); border-radius: 10px; padding: 12px 16px; display: flex; align-items: center; gap: 12px; box-shadow: 0 1px 3px rgba(0,0,0,.04); }
+        .home-input input { flex: 1; border: none; outline: none; font-family: 'Inter', sans-serif; font-size: 14px; color: #1e242e; background: transparent; }
+        .home-input input::placeholder { color: #9ca3af; }
+        .home-input-icons { display: flex; gap: 4px; }
+        .home-input-icons button { width: 28px; height: 28px; border: none; background: transparent; color: #9ca3af; cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 4px; }
+        .home-input-icons button:hover { color: #7E55F6; background: #f1ecff; }
+        .home-input-icons button svg { width: 18px; height: 18px; }
+
+        .home-prompts { display: flex; gap: 8px; margin-bottom: 32px; }
+        .home-prompt-btn { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; background: #fff; border: 1px solid rgba(0,0,0,.078); border-radius: 8px; font-size: 13px; font-weight: 500; color: #5c6370; cursor: pointer; transition: all 150ms cubic-bezier(.9,0,0,1); box-shadow: 0 1px 2px rgba(0,0,0,.04); font-family: 'Inter', sans-serif; }
+        .home-prompt-btn:hover { border-color: #7E55F6; color: #7E55F6; background: #faf8ff; }
+        .home-prompt-btn svg { width: 14px; height: 14px; }
+
+        /* Metric cards */
+        .home-metrics { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 32px; }
+        .hm-card { background: #fff; border: 1px solid rgba(0,0,0,.078); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 4px; }
+        .hm-label { font-size: 12px; font-weight: 500; color: #5c6370; }
+        .hm-value-row { display: flex; align-items: center; gap: 8px; }
+        .hm-value { font-size: 28px; font-weight: 600; line-height: 36px; }
+        .hm-value.positive { color: #1e242e; }
+        .hm-health { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; font-weight: 500; }
+        .hm-health.green { color: #16a34a; }
+        .hm-health svg { width: 16px; height: 16px; }
+        .hm-sub { font-size: 12px; color: #5c6370; margin-top: 2px; }
+        .hm-delta { font-size: 12px; font-weight: 500; color: #16a34a; }
+        .hm-delta.warn { color: #b45309; }
+        .hm-delta.neutral { color: #5c6370; }
+
+        /* Sections */
+        .home-section { margin-bottom: 24px; }
+        .home-section-header { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; cursor: pointer; }
+        .home-section-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+        .home-section-dot.orange { background: #f59e0b; }
+        .home-section-dot.green { background: #16a34a; }
+        .home-section-title { font-size: 14px; font-weight: 600; }
+        .home-section-meta { font-size: 12px; color: #9ca3af; margin-left: auto; }
+        .home-section-chevron { width: 20px; height: 20px; color: #9ca3af; transition: transform 200ms ease; }
+
+        .attention-item { padding: 16px 0; border-bottom: 1px solid rgba(0,0,0,.04); display: flex; align-items: center; gap: 16px; }
+        .attention-item:last-child { border-bottom: none; }
+        .attention-content { flex: 1; }
+        .attention-title { font-size: 14px; font-weight: 600; color: #1e242e; margin-bottom: 4px; }
+        .attention-desc { font-size: 13px; color: #5c6370; line-height: 18px; }
+        .attention-metric { font-size: 12px; font-weight: 500; color: #dc2626; margin-top: 4px; display: flex; align-items: center; gap: 4px; }
+        .attention-metric svg { width: 14px; height: 14px; }
+        .attention-action { padding: 6px 14px; border-radius: 6px; border: 1px solid rgba(0,0,0,.078); background: #fff; font-size: 13px; font-weight: 500; cursor: pointer; color: #1e242e; font-family: 'Inter', sans-serif; transition: all 120ms ease; white-space: nowrap; }
+        .attention-action:hover { border-color: #7E55F6; color: #7E55F6; }
+
+        .activity-item { padding: 16px 0; border-bottom: 1px solid rgba(0,0,0,.04); }
+        .activity-item:last-child { border-bottom: none; }
+        .activity-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+        .activity-desc { font-size: 13px; color: #5c6370; line-height: 18px; }
+        .activity-time { font-size: 12px; color: #9ca3af; margin-top: 4px; }
+        .activity-delta { font-size: 12px; font-weight: 500; color: #16a34a; margin-top: 4px; }
+
+        /* ── Copilot + Right Panel (non-Home) ── */
+        .panels-layout { display: flex; flex: 1; overflow: hidden; }
+        .left-panel { width: 487px; background: #fafafa; padding: 8px; display: flex; flex-direction: column; flex-shrink: 0; overflow: hidden; }
+        .left-panel-inner { background: #fff; border-radius: 16px; border: 1px solid rgba(0,0,0,.078); display: flex; flex-direction: column; height: 100%; overflow: hidden; box-shadow: 0 2px 20px rgba(0,0,0,.04); }
+        .left-panel-header { height: 80px; padding: 24px; background: linear-gradient(180deg,#fff 0%,rgba(255,255,255,.7) 100%); backdrop-filter: blur(1px); border-bottom: 1px solid rgba(0,0,0,.04); display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+        .left-panel-header-icon { width: 24px; height: 24px; color: #7E55F6; }
+        .left-panel-header-title { font-size: 16px; font-weight: 600; line-height: 24px; }
+        .left-panel-body { flex: 1; padding: 24px; overflow-y: auto; display: flex; flex-direction: column; gap: 16px; }
+        .copilot-message { background: #f1ecff; border-radius: 12px; padding: 16px; border-left: 3px solid #7E55F6; animation: fadeInUp .3s ease-out; }
+        .copilot-message-text { font-size: 14px; line-height: 20px; color: #1e242e; }
+        .prompt-buttons { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+        .prompt-button { padding: 10px 12px; background: #fff; border: 1px solid rgba(0,0,0,.078); border-radius: 8px; font-size: 13px; color: #5c6370; cursor: pointer; transition: all 150ms cubic-bezier(.9,0,0,1); text-align: left; font-weight: 400; font-family: 'Inter', sans-serif; }
+        .prompt-button:hover { background: #f1ecff; color: #7E55F6; border-color: #7E55F6; }
+        .left-panel-input { padding: 16px; border-top: 1px solid rgba(0,0,0,.078); flex-shrink: 0; }
+        .input-card { background: #fff; border: 1px solid rgba(0,0,0,.078); border-radius: 8px; padding: 12px 16px; display: flex; flex-direction: column; gap: 8px; }
+        .input-card textarea { border: none; outline: none; font-family: 'Inter', sans-serif; font-size: 14px; resize: none; background: transparent; color: #1e242e; line-height: 20px; }
+        .input-card textarea::placeholder { color: #5c6370; }
+        .input-actions { display: flex; justify-content: flex-end; gap: 8px; }
+        .input-icon-btn { width: 28px; height: 28px; border: none; background: transparent; color: #5c6370; cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 4px; transition: all 150ms cubic-bezier(.9,0,0,1); }
+        .input-icon-btn:hover { color: #7E55F6; background: #f1ecff; }
+        .input-icon-btn svg { width: 18px; height: 18px; }
+
+        .right-panel { flex: 1; background: #fafafa; padding: 8px; display: flex; flex-direction: column; overflow: hidden; }
+        .right-panel-inner { background: #fff; border-radius: 16px; border: 1px solid rgba(0,0,0,.078); height: 100%; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 2px 20px rgba(0,0,0,.04); }
+        .right-panel-header { padding: 24px; height: 80px; display: flex; align-items: center; border-bottom: 1px solid rgba(0,0,0,.04); flex-shrink: 0; }
+        .right-panel-header-content { display: flex; flex-direction: column; gap: 4px; }
+        .right-panel-header-title { font-size: 24px; font-weight: 600; line-height: 32px; }
+        .right-panel-header-subtitle { font-size: 14px; color: #5c6370; }
+        .right-panel-header-badge { background: #f1ecff; color: #7E55F6; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; margin-left: 8px; }
+        .right-panel-body { flex: 1; overflow-y: auto; padding: 32px 24px; display: flex; flex-direction: column; gap: 32px; }
+
+        /* Shared components */
+        .metrics-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; }
+        .metric-card { background: #fafafa; border: 1px solid rgba(0,0,0,.078); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 12px; animation: fadeInUp .4s ease-out; }
+        .metric-label { font-size: 12px; font-weight: 500; letter-spacing: .01em; color: #5c6370; text-transform: uppercase; }
+        .metric-value { font-size: 32px; font-weight: 600; line-height: 40px; }
+        .metric-subtext { font-size: 12px; color: #5c6370; }
+
+        .ticket-cards { display: flex; flex-direction: column; gap: 12px; }
+        .ticket-card { background: #fafafa; border: 1px solid rgba(0,0,0,.078); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 8px; animation: fadeInUp .4s ease-out; }
+        .ticket-header { display: flex; justify-content: space-between; align-items: flex-start; }
+        .ticket-id { font-size: 12px; font-weight: 600; color: #7E55F6; }
+        .ticket-status { font-size: 11px; font-weight: 600; padding: 4px 8px; border-radius: 4px; background: #fff3cd; color: #856404; }
+        .ticket-subject { font-size: 14px; font-weight: 600; }
+        .ticket-preview { font-size: 13px; color: #5c6370; line-height: 18px; }
+
+        .skills-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+        .skill-card { background: #fafafa; border: 1px solid rgba(0,0,0,.078); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 16px; animation: fadeInUp .4s ease-out; }
+        .skill-card.inactive { opacity: .65; }
+        .skill-header { display: flex; justify-content: space-between; align-items: center; }
+        .skill-name { font-size: 14px; font-weight: 600; }
+        .skill-toggle { width: 40px; height: 24px; background: #d1d5da; border: none; border-radius: 12px; cursor: pointer; position: relative; transition: all 150ms cubic-bezier(.9,0,0,1); }
+        .skill-toggle.active { background: #7E55F6; }
+        .skill-toggle::after { content: ''; position: absolute; width: 20px; height: 20px; background: #fff; border-radius: 10px; top: 2px; left: 2px; transition: all 150ms cubic-bezier(.9,0,0,1); }
+        .skill-toggle.active::after { left: 18px; }
+        .skill-desc { font-size: 12px; color: #5c6370; line-height: 16px; }
+
+        .knowledge-cards { display: flex; flex-direction: column; gap: 12px; }
+        .knowledge-card { background: #fafafa; border: 1px solid rgba(0,0,0,.078); border-radius: 12px; padding: 20px; animation: fadeInUp .4s ease-out; }
+        .knowledge-title { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+        .knowledge-meta { font-size: 12px; color: #5c6370; }
+
+        .tabs { display: flex; gap: 24px; border-bottom: 1px solid rgba(0,0,0,.078); margin-bottom: 24px; }
+        .tab { font-size: 14px; font-weight: 500; color: #5c6370; cursor: pointer; padding: 0 0 16px; border-bottom: 2px solid transparent; transition: all 150ms cubic-bezier(.9,0,0,1); }
+        .tab.active { color: #7E55F6; border-bottom-color: #7E55F6; }
+        .tab:hover { color: #7E55F6; }
+
+        .settings-sections { display: flex; flex-direction: column; gap: 32px; }
+        .settings-section { display: flex; flex-direction: column; gap: 16px; }
+        .settings-section-title { font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: .01em; }
+        .settings-item { display: flex; justify-content: space-between; align-items: center; padding: 16px; background: #fafafa; border-radius: 8px; border: 1px solid rgba(0,0,0,.078); }
+        .settings-item-label { display: flex; flex-direction: column; gap: 4px; }
+        .settings-item-title { font-size: 14px; font-weight: 500; }
+        .settings-item-desc { font-size: 12px; color: #5c6370; }
+
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(0,0,0,.1); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,.2); }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Icon Nav -->
+        <nav class="nav">
+            <div class="nav-logo">G</div>
+            <div class="nav-divider"></div>
+            <button class="nav-btn active" data-section="home" title="Home">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            </button>
+            <button class="nav-btn" data-section="inbox" title="Inbox">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>
+            </button>
+            <button class="nav-btn" data-section="skills" title="Skills">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            </button>
+            <button class="nav-btn" data-section="knowledge" title="Knowledge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+            </button>
+            <button class="nav-btn" data-section="performance" title="Performance">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            </button>
+            <div class="nav-bottom">
+                <button class="nav-btn" data-section="settings" title="Settings">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                </button>
+                <div class="nav-avatar">M</div>
+            </div>
+        </nav>
+
+        <!-- ════ HOME LAYOUT ════ -->
+        <div class="home-layout" id="home-layout">
+            <!-- Left sidebar -->
+            <div class="home-sidebar">
+                <div class="home-sidebar-header">
+                    Home
+                    <div class="home-sidebar-actions">
+                        <button title="Search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+                        <button title="Fullscreen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg></button>
+                    </div>
+                </div>
+                <div class="sidebar-item active">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/></svg>
+                    Daily digest
+                </div>
+                <div class="sidebar-item sidebar-new-chat">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    New chat
+                </div>
+                <div class="sidebar-label">Recents</div>
+                <div class="sidebar-recent">Improve skills</div>
+                <div class="sidebar-recent">Recent escalations</div>
+                <div class="sidebar-recent">Onboarding</div>
+            </div>
+
+            <!-- Main content -->
+            <div class="home-main">
+                <div class="home-greeting-row">
+                    <div class="home-greeting">Good morning, Maya!</div>
+                    <div class="home-date">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        Apr 2, 2026 · 11:30 AM
+                    </div>
+                </div>
+
+                <!-- Input -->
+                <div class="home-input-wrap">
+                    <div class="home-input">
+                        <input type="text" placeholder="Ask anything...">
+                        <div class="home-input-icons">
+                            <button title="Attach"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></button>
+                            <button title="Voice"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="home-prompts">
+                    <button class="home-prompt-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/></svg>
+                        Why did subscription spike?
+                    </button>
+                    <button class="home-prompt-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/></svg>
+                        Compare performance to last week
+                    </button>
+                </div>
+
+                <!-- Metrics -->
+                <div class="home-metrics">
+                    <div class="hm-card">
+                        <div class="hm-label">Health score</div>
+                        <div class="hm-health green">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
+                            Positive
+                        </div>
+                        <div class="hm-sub">Everything running normally</div>
+                    </div>
+                    <div class="hm-card">
+                        <div class="hm-label">Automation rate</div>
+                        <div class="hm-value positive">89%</div>
+                        <div class="hm-sub">847 of 853 conversations</div>
+                    </div>
+                    <div class="hm-card">
+                        <div class="hm-label">Total sales</div>
+                        <div class="hm-value positive">$12,800</div>
+                        <div class="hm-delta warn">↗ 14% vs last week</div>
+                    </div>
+                    <div class="hm-card">
+                        <div class="hm-label">Customer satisfaction</div>
+                        <div class="hm-value positive">4.8</div>
+                        <div class="hm-delta">↗ 0.5% vs last week</div>
+                    </div>
+                </div>
+
+                <!-- Needs your attention -->
+                <div class="home-section">
+                    <div class="home-section-header">
+                        <span class="home-section-dot orange"></span>
+                        <span class="home-section-title">Needs your attention</span>
+                        <svg class="home-section-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                    </div>
+                    <div>
+                        <div class="attention-item">
+                            <div class="attention-content">
+                                <div class="attention-title">Skill a delivery requests misrouted as full subscription pauses</div>
+                                <div class="attention-desc">Customers asking to skip their next delivery had their entire subscription paused indefinitely</div>
+                                <div class="attention-metric">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>
+                                    Adherence dropped to 18%
+                                </div>
+                            </div>
+                            <button class="attention-action">Monitor</button>
+                        </div>
+                        <div class="attention-item">
+                            <div class="attention-content">
+                                <div class="attention-title">Calibrate tone of voice</div>
+                                <div class="attention-desc">TOV scorer flagged in two refund responses</div>
+                            </div>
+                            <button class="attention-action">Review</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Activity -->
+                <div class="home-section">
+                    <div class="home-section-header">
+                        <span class="home-section-dot green"></span>
+                        <span class="home-section-title">Activity</span>
+                        <span class="home-section-meta">Updated 2 min ago</span>
+                        <svg class="home-section-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+                    </div>
+                    <div>
+                        <div class="activity-item">
+                            <div class="activity-title">"Shipping status" skill improved</div>
+                            <div class="activity-desc">Adherence rate increased from 71% to 83% after last update</div>
+                            <div class="activity-time">Deployed 5h ago</div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-title">"Shipping status" skill created</div>
+                            <div class="activity-desc">New skill trained on 120 conversations about order tracking</div>
+                            <div class="activity-time">Deployed 10h ago</div>
+                            <div class="activity-delta">↗ +12% success rate</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ════ PANELS LAYOUT (Inbox, Skills, Knowledge, Performance, Settings) ════ -->
+        <div class="panels-layout hidden" id="panels-layout">
+            <!-- Left Panel: Copilot -->
+            <div class="left-panel">
+                <div class="left-panel-inner">
+                    <div class="left-panel-header">
+                        <svg class="left-panel-header-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/></svg>
+                        <div class="left-panel-header-title">Copilot</div>
+                    </div>
+                    <div class="left-panel-body" id="copilot-body">
+                        <div class="copilot-message">
+                            <div class="copilot-message-text">You have 12 open tickets. 3 are flagged for potential escalation. The delivery issue in #TK-4521 looks routine, but the customer has been waiting 48 hours.</div>
+                            <div class="prompt-buttons">
+                                <button class="prompt-button">Show urgent items only</button>
+                                <button class="prompt-button">Draft response to #TK-4521</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="left-panel-input">
+                        <div class="input-card">
+                            <textarea placeholder="Ask anything..." rows="2"></textarea>
+                            <div class="input-actions">
+                                <button class="input-icon-btn" title="Send">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel -->
+            <div class="right-panel">
+                <div class="right-panel-inner">
+                    <!-- Inbox -->
+                    <div class="section" id="inbox-section">
+                        <div class="right-panel-header">
+                            <div class="right-panel-header-content">
+                                <div style="display:flex;align-items:center;">
+                                    <span class="right-panel-header-title">Inbox</span>
+                                    <span class="right-panel-header-badge">12 open</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="right-panel-body">
+                            <div class="ticket-cards">
+                                <div class="ticket-card"><div class="ticket-header"><div><div class="ticket-id">#TK-4521</div><div class="ticket-subject">Order #ORD-89234 delayed shipping</div></div><div class="ticket-status">Pending</div></div><div class="ticket-preview">Customer asking for update on shipment status. Marked for escalation.</div></div>
+                                <div class="ticket-card"><div class="ticket-header"><div><div class="ticket-id">#TK-4520</div><div class="ticket-subject">Can't apply gift message to order</div></div><div class="ticket-status">Pending</div></div><div class="ticket-preview">Shipping address includes special instructions. Agent needs clarification.</div></div>
+                                <div class="ticket-card"><div class="ticket-header"><div><div class="ticket-id">#TK-4519</div><div class="ticket-subject">Return request - wrong item received</div></div><div class="ticket-status">Pending</div></div><div class="ticket-preview">Customer received substitute flower arrangement. Requesting full return.</div></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Skills -->
+                    <div class="section hidden" id="skills-section">
+                        <div class="right-panel-header"><div class="right-panel-header-content"><div class="right-panel-header-title">Skills</div><div class="right-panel-header-subtitle">What the agent does</div></div></div>
+                        <div class="right-panel-body">
+                            <div class="skills-grid">
+                                <div class="skill-card"><div class="skill-header"><div class="skill-name">Order Tracking</div><button class="skill-toggle active"></button></div><div class="skill-desc">Provides real-time tracking and delivery status updates.</div></div>
+                                <div class="skill-card"><div class="skill-header"><div class="skill-name">Delivery Issues</div><button class="skill-toggle active"></button></div><div class="skill-desc">Resolves late deliveries and address corrections.</div></div>
+                                <div class="skill-card"><div class="skill-header"><div class="skill-name">Gift Messaging</div><button class="skill-toggle active"></button></div><div class="skill-desc">Applies gift messages and personalization to orders.</div></div>
+                                <div class="skill-card inactive"><div class="skill-header"><div class="skill-name">Subscription Mgmt</div><button class="skill-toggle"></button></div><div class="skill-desc">Manages subscription frequency and cancellations.</div></div>
+                                <div class="skill-card inactive"><div class="skill-header"><div class="skill-name">Return & Refund</div><button class="skill-toggle"></button></div><div class="skill-desc">Processes returns and refund requests.</div></div>
+                                <div class="skill-card inactive"><div class="skill-header"><div class="skill-name">Recommendations</div><button class="skill-toggle"></button></div><div class="skill-desc">Suggests products based on purchase history.</div></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Knowledge -->
+                    <div class="section hidden" id="knowledge-section">
+                        <div class="right-panel-header"><div class="right-panel-header-content"><div class="right-panel-header-title">Knowledge</div><div class="right-panel-header-subtitle">What the agent knows</div></div></div>
+                        <div class="right-panel-body">
+                            <div class="knowledge-cards">
+                                <div class="knowledge-card"><div class="knowledge-title">Refund Policy</div><div class="knowledge-meta">Last updated 2 weeks ago · 4.2 KB</div></div>
+                                <div class="knowledge-card"><div class="knowledge-title">Shipping & Delivery</div><div class="knowledge-meta">Last updated 5 days ago · 6.8 KB</div></div>
+                                <div class="knowledge-card"><div class="knowledge-title">Pet Safety & Allergens</div><div class="knowledge-meta">Last updated 1 day ago · 3.1 KB</div></div>
+                                <div class="knowledge-card"><div class="knowledge-title">Subscription Guide</div><div class="knowledge-meta">Last updated 3 weeks ago · 5.4 KB</div></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Performance -->
+                    <div class="section hidden" id="performance-section">
+                        <div class="right-panel-header"><div class="right-panel-header-content"><div class="right-panel-header-title">Performance</div></div></div>
+                        <div class="right-panel-body">
+                            <div class="tabs"><div class="tab active">Analytics</div><div class="tab">Experiments</div><div class="tab">Offline Eval</div></div>
+                            <div class="metrics-grid">
+                                <div class="metric-card"><div class="metric-label">Total Interactions</div><div class="metric-value">2,340</div><div class="metric-subtext">This week</div></div>
+                                <div class="metric-card"><div class="metric-label">Automation Rate</div><div class="metric-value">64%</div><div class="metric-subtext">End-to-end resolution</div></div>
+                                <div class="metric-card"><div class="metric-label">Escalation Rate</div><div class="metric-value">12%</div><div class="metric-subtext">Down from 14%</div></div>
+                                <div class="metric-card"><div class="metric-label">Avg Response Time</div><div class="metric-value">1.2s</div><div class="metric-subtext">Per interaction</div></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Settings -->
+                    <div class="section hidden" id="settings-section">
+                        <div class="right-panel-header"><div class="right-panel-header-content"><div class="right-panel-header-title">Settings</div></div></div>
+                        <div class="right-panel-body">
+                            <div class="settings-sections">
+                                <div class="settings-section"><div class="settings-section-title">Brand Voice</div><div class="settings-item"><div class="settings-item-label"><div class="settings-item-title">Tone</div><div class="settings-item-desc">Friendly, helpful, conversational</div></div></div></div>
+                                <div class="settings-section"><div class="settings-section-title">Escalation Rules</div><div class="settings-item"><div class="settings-item-label"><div class="settings-item-title">VIP Customers</div><div class="settings-item-desc">Always escalate to human agent</div></div></div><div class="settings-item"><div class="settings-item-label"><div class="settings-item-title">Complex Returns</div><div class="settings-item-desc">Escalate if refund > $100</div></div></div></div>
+                                <div class="settings-section"><div class="settings-section-title">Channel Configuration</div><div class="settings-item"><div class="settings-item-label"><div class="settings-item-title">Email</div><div class="settings-item-desc">Agent enabled</div></div></div><div class="settings-item"><div class="settings-item-label"><div class="settings-item-title">Live Chat</div><div class="settings-item-desc">Agent enabled</div></div></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const navButtons = document.querySelectorAll('.nav-btn');
+        const homeLayout = document.getElementById('home-layout');
+        const panelsLayout = document.getElementById('panels-layout');
+        const copilotBody = document.getElementById('copilot-body');
+        const allSections = document.querySelectorAll('.section');
+
+        const copilotMessages = {
+            inbox: `<div class="copilot-message"><div class="copilot-message-text">You have 12 open tickets. 3 are flagged for potential escalation. The delivery issue in #TK-4521 looks routine, but the customer has been waiting 48 hours.</div><div class="prompt-buttons"><button class="prompt-button">Show urgent items only</button><button class="prompt-button">Draft response to #TK-4521</button></div></div>`,
+            skills: `<div class="copilot-message"><div class="copilot-message-text">You have 3 active skills. Order Tracking and Delivery Issues are handling 78% of volume. Consider enabling Return & Refund — it could capture 8% more interactions.</div><div class="prompt-buttons"><button class="prompt-button">Show skill performance breakdown</button><button class="prompt-button">Enable Return & Refund</button></div></div>`,
+            knowledge: `<div class="copilot-message"><div class="copilot-message-text">Your knowledge base is up to date. Pet Safety & Allergens was updated yesterday. Consider adding a section on seasonal delivery delays for this time of year.</div><div class="prompt-buttons"><button class="prompt-button">Add seasonal guidance</button><button class="prompt-button">Review last week's updates</button></div></div>`,
+            performance: `<div class="copilot-message"><div class="copilot-message-text">Strong week. Automation rate hit 64%, up 2 points from last week. Escalation rate dropped to 12%. The experiment group (stricter qualification) is showing +3% success rate.</div><div class="prompt-buttons"><button class="prompt-button">Show experiment details</button><button class="prompt-button">Drill into escalations</button></div></div>`,
+            settings: `<div class="copilot-message"><div class="copilot-message-text">Settings are stable. Your brand voice is consistent across channels. Escalation rules are working well, but you might want to adjust the VIP escalation threshold.</div><div class="prompt-buttons"><button class="prompt-button">Review escalation rules</button><button class="prompt-button">Test brand voice on new ticket</button></div></div>`
+        };
+
+        navButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const sectionId = button.getAttribute('data-section');
+
+                // Update active nav
+                navButtons.forEach(b => b.classList.remove('active'));
+                button.classList.add('active');
+
+                if (sectionId === 'home') {
+                    // Show full-width Home layout, hide panels
+                    homeLayout.classList.remove('hidden');
+                    panelsLayout.classList.add('hidden');
+                } else {
+                    // Hide Home, show panels
+                    homeLayout.classList.add('hidden');
+                    panelsLayout.classList.remove('hidden');
+
+                    // Activate the right section
+                    allSections.forEach(s => { s.classList.add('hidden'); s.style.display = 'none'; });
+                    const target = document.getElementById(`${sectionId}-section`);
+                    target.classList.remove('hidden');
+                    target.style.display = 'contents';
+
+                    // Update copilot
+                    copilotBody.innerHTML = copilotMessages[sectionId] || '';
+                }
+            });
+        });
+
+        // Skill toggles
+        document.querySelectorAll('.skill-toggle').forEach(toggle => {
+            toggle.addEventListener('click', () => {
+                toggle.classList.toggle('active');
+                toggle.closest('.skill-card').classList.toggle('inactive');
+            });
+        });
+    </script>
+</body>
+</html>
