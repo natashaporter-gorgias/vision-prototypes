@@ -24,7 +24,13 @@ This journey demonstrates: the home page as a daily entry point, insight cards f
 
 5. **Maya fixes the damage.** She messages Marcus with a correction, offers a free swap to a pet-safe arrangement. Handles the other 3 tickets — same pattern every time: check toxicity, suggest safe alternative, process swap.
 
-6. **The agent proposes a proactive skill update.** "These 4 customers caught the issue after ordering — but how many didn't? If I proactively ask gift buyers whether the recipient has pets, I can recommend pet-safe arrangements before the order goes through." Maya reviews and activates.
+6. **The agent proposes a proactive skill update.** "These 4 customers caught the issue after ordering — but how many didn't? If I proactively ask gift buyers whether the recipient has pets, I can recommend pet-safe arrangements before the order goes through."
+
+7. **Maya reviews the proposed skill instructions.** She reads the agent's draft and adjusts: "Only ask for gift orders, not self-purchases. And don't lead with 'Are there pets?' — weave it naturally: 'Would you like me to check that this arrangement is safe for any pets in the home?'"
+
+8. **Offline evaluation — 124 historical gift-order tickets.** The agent replays every gift-order conversation from the past 2 months through the new pet-safety instructions. Results: 118 handled correctly (95%), 4 correctly escalated (ambiguous), 2 false positives — a customer named "Kitty" and someone mentioning "my pet project." Adherence: 95%.
+
+9. **Maya fixes edge cases and publishes.** She tightens the trigger language, re-runs. Adherence → 98%, false positives → 0. She publishes the skill — live immediately. The whole review-eval-fix-publish loop takes ~15 minutes.
 
 ## Key Ticket Examples
 
@@ -56,4 +62,5 @@ Each insight card has: badge (Alert/Review/Tracking), relative timestamp, title,
 - Don't show the agent connecting to external APIs for insights (FedEx, etc.) — all insights must come from reading conversation data
 - Don't use "Merchant Quality Rate" or "CSAT" — use "Customer Satisfaction" (AI-derived from 100% of conversations, not a survey)
 - The failure (Marcus Webb) is important — don't sanitize it. The agent should have escalated but instead guessed confidently and got it wrong
+- The fix matters too — Maya doesn't just "activate" the pet safety skill. She reviews, evaluates offline, iterates, then publishes with confidence. This is the same eval loop as Journey 4, just smaller scale.
 - Don't use "shadow mode" — skills are either on or off

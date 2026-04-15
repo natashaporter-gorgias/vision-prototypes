@@ -10,20 +10,26 @@ A vision prototype for the Gorgias AI Agent — showing what the product could l
 
 Five designers are each building a separate prototype (in Claude, Lovable, or code), but they tell one cohesive story. Same merchant, same protagonist, same navigation, same metrics, same design language.
 
-## The story
+## The story — Two Personas, One Agent
 
-Maya Torres is a CX Operations Manager at UrbanStems, a premium flower and gifting brand (~4,200 tickets/mo, AOV $68). She's migrating from Zendesk to Gorgias. We follow her over 7 weeks — from first-day setup to a self-improving AI agent.
+The story follows two protagonists at UrbanStems, a premium flower and gifting brand (~4,200 tickets/mo, AOV $68). As the agent matures, the ICP shifts from CX manager to GM of ecommerce.
 
-The arc: **trust builds gradually.** Maya starts cautious (only activating 3 of 6 skills), encounters a real failure (the agent gives wrong pet safety advice), sees the agent learn from her corrections, watches it handle a Mother's Day peak, and ultimately sees it discover patterns in conversations and propose its own improvements.
+**Maya Torres, CX Operations Manager** — protagonist for Journeys 1-2. Former senior support agent, manages 3 human agents. She sets up the agent, handles escalations, builds new skills. Cares about: agent accuracy, escalation quality, team workload, automation rate.
+
+**Daniel Reyes, GM of E-Commerce** — enters in Journey 3, protagonist for Journey 4. Oversees the full customer lifecycle (acquisition, conversion, support, retention). Reports to CEO. He starts paying attention when the agent crosses from support into revenue. Cares about: conversion rate, customer LTV, churn, unified shopping experience.
+
+**The thesis:** Support and marketing are both "skills" the agent uses at the right moment. Maya sees the operational side. Daniel sees the unified picture — and that's the ultimate ICP.
+
+The arc: **trust builds, then the lens widens.** Maya starts cautious (only activating 3 of 6 skills), encounters a real failure (wrong pet safety advice), runs an offline eval to validate the fix, watches the agent handle a Mother's Day peak. Then Daniel enters — he sees support and marketing merging, and by Journey 4 he's evaluating the agent as a commerce platform that finds business problems spanning teams and validates its own solutions.
 
 ## The 4 journeys
 
-| # | Journey | Week | Owner | What happens |
-|---|---|---|---|---|
-| 1 | Onboarding | 1 | Mac / Lisa | Maya sets up Gorgias. The agent ingests 58,000 Zendesk tickets, proposes 6 skills, Maya activates 3. Brand voice calibration. |
-| 2 | Daily Digest → Inbox → Automation | 3 | Ines / Chris | Maya opens the morning digest, sees metrics + insight cards. Drops into inbox — discovers the agent gave wrong advice about lilies being safe for dogs (they're toxic). Fixes the damage. Agent proposes proactive pet safety skill. |
-| 3 | Mother's Day Campaign | 5 | Lisa | Peak season. Marketing as skills (not campaigns). Elena Vargas shopper journey from browse-abandon to review. Skill transitions mid-conversation. |
-| 4 | Evaluation at Scale | 7 | Natasha | The agent finds that 35% of cancellations are about frequency, not dissatisfaction. Tests a fix against 847 historical tickets (offline eval). Runs an A/B test. Self-critiques its 3 worst misclassifications. |
+| # | Journey | Week | Persona | Owner | What happens |
+|---|---|---|---|---|---|
+| 1 | Onboarding | 1 | Maya | Mac / Lisa | Maya sets up Gorgias. The agent ingests 58,000 Zendesk tickets, proposes 6 skills, Maya activates 3. Brand voice calibration. |
+| 2 | Daily Digest → Inbox → Automation | 3 | Maya | Ines / Chris | Maya opens the morning digest, sees metrics + insight cards. Drops into inbox — discovers wrong lily advice. Fixes the damage. Agent proposes pet safety skill → Maya reviews, runs offline eval on 124 tickets, fixes edge cases, publishes. |
+| 3 | Mother's Day Campaign | 5 | Maya + Daniel | Lisa | The transition journey. Marketing as skills. Daniel enters — sees support and marketing unifying. Elena Vargas shopper journey. Skill transitions mid-conversation. |
+| 4 | E2E Performance | 7 | Daniel | Natasha | Daniel evaluates the agent as a commerce platform. Frequency cancellation insight spans support + retention. Offline eval → A/B test → self-critique. Business outcomes: LTV, churn, revenue retention. |
 
 ## The connected thread
 
@@ -31,9 +37,11 @@ In Journey 2, the digest shows an insight card: "5 of 14 cancellations yesterday
 
 This seed pays off in Journey 4, where the agent has now read 89 cancellation conversations and surfaces the full pattern — proposing a frequency-aware skill that offers schedule changes instead of immediate cancellation.
 
-**If you're building Journey 2:** Make sure the frequency tracking insight card is visible in the digest. It doesn't need to be the focus — it's a background observation.
+**If you're building Journey 2:** Make sure the frequency tracking insight card is visible in the digest. It doesn't need to be the focus — it's a background observation. Also: the pet safety fix now includes an offline eval (124 tickets, edge case review, publish). This is the same eval loop that appears at scale in Journey 4.
 
-**If you're building Journey 4:** Reference that the agent has been tracking this since Week 3. The insight didn't come from nowhere.
+**If you're building Journey 3:** Daniel Reyes enters here. He sees marketing skills merging with support and realizes the agent is a commerce platform. Maya is still running ops. Both personas appear.
+
+**If you're building Journey 4:** This is Daniel's journey. He's evaluating e2e shopping performance, not just support metrics. Reference that the agent has been tracking the frequency pattern since Week 3. Frame outcomes as business metrics (LTV, churn, revenue retention).
 
 ## Navigation (all journeys must use this)
 
@@ -63,7 +71,8 @@ Home · Inbox · Skills · Knowledge · Performance · Settings
 
 ## Recurring characters
 
-- **Maya Torres** — CX Operations Manager at UrbanStems. The protagonist across all journeys.
+- **Maya Torres** — CX Operations Manager at UrbanStems. Protagonist for Journeys 1-2; supporting role in 3-4.
+- **Daniel Reyes** — GM of E-Commerce at UrbanStems. Enters in Journey 3; protagonist for Journey 4. Oversees full customer lifecycle.
 - **Marcus Webb** — Customer whose dog was put at risk by wrong lily advice (Journey 2)
 - **Elena Vargas** — Shopper whose Mother's Day gift journey spans browse-abandon to review (Journey 3)
 - **Lena Morrison** — Subscriber who cancels because of frequency, not dissatisfaction (Journey 4)

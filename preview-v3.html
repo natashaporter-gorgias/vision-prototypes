@@ -24,6 +24,7 @@
     #loading-msg .spinner { width:24px; height:24px; border:3px solid #e5e5e5; border-top-color:#7E55F6; border-radius:50%; animation: spin 0.8s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
   </style>
+  <script crossorigin="anonymous" src="https://cdn.jsdelivr.net/npm/motion@12.4.7/dist/motion.js"></script>
   <script crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.development.js"></script>
   <script crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.development.js"></script>
   <script crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
@@ -1807,6 +1808,10 @@ const FlowView = ({ flow, onBack, onFlowComplete }) => {
     }
   }, [currentStep, step, isTransitioning, flow.steps.length]);
 
+  const promptBtnRef = useRef(null);
+  const userBubbleRef = useRef(null);
+  const motionAnimate = typeof Motion !== "undefined" ? Motion.animate : null;
+
   const handlePromptClick = () => {
     if (currentStep >= flow.steps.length - 1 || isTransitioning) return;
 
@@ -1814,14 +1819,35 @@ const FlowView = ({ flow, onBack, onFlowComplete }) => {
     setIsTransitioning(true);
     setShowNewContent(false);
 
-    // Step 1: Show user message bubble (the prompt they clicked)
-    setShowUserMessage(promptText);
+    // Animate button out — shrink toward right and fade
+    const btn = promptBtnRef.current;
+    if (btn && motionAnimate) {
+      motionAnimate(btn, { opacity: 0, scale: 0.92, x: 6 }, { duration: 0.2, easing: [0.9, 0, 0, 1] });
+    }
 
-    // Step 2: After 400ms, show typing indicator
+    // Step 1: After button fades, show user message bubble
+    setTimeout(() => {
+      setShowUserMessage(promptText);
+      scrollToBottom(leftPanelRef);
+      // Animate bubble in — slide up from button position with spring feel
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          const bubble = userBubbleRef.current;
+          if (bubble && motionAnimate) {
+            motionAnimate(bubble,
+              { opacity: [0, 1], y: [8, 0], scale: [0.96, 1] },
+              { duration: 0.35, easing: [0.22, 1, 0.36, 1] }
+            );
+          }
+        });
+      });
+    }, 180);
+
+    // Step 2: After 550ms, show typing indicator
     setTimeout(() => {
       setShowTyping(true);
       scrollToBottom(leftPanelRef);
-    }, 400);
+    }, 550);
 
     // Step 3: After 1200-1800ms, advance step, hide typing, show content
     const thinkTime = 1200 + Math.random() * 600;
@@ -1958,20 +1984,29 @@ const FlowView = ({ flow, onBack, onFlowComplete }) => {
                 { key: "prompt", delay: s.left ? s.left.length * 200 + 100 : 100 },
                 React.createElement(
                   "div",
-                  { style: { display: "flex", justifyContent: "flex-end", marginTop: "4px" } },
+                  { ref: promptBtnRef, style: { display: "flex", justifyContent: "flex-end", marginTop: "4px" } },
                   React.createElement("button", {
                     onClick: handlePromptClick,
                     style: {
-                      padding: "8px",
-                      background: t.promptBg,
+                      padding: "0 12px",
+                      height: "32px",
+                      background: "#ffffff",
                       color: t.text900,
-                      border: "none",
-                      borderRadius: "8px",
+                      border: "1px solid #d0d4da",
+                      borderRadius: "6px",
                       cursor: "pointer",
                       fontSize: "14px",
-                      fontWeight: 400,
+                      fontWeight: 500,
                       lineHeight: "20px",
+                      letterSpacing: "0",
+                      fontFamily: "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+                      boxShadow: "0px 2px 3px 0px rgba(0, 0, 0, 0.05)",
+                      transition: "all 0.15s cubic-bezier(0.9, 0, 0, 1)",
                     },
+                    onMouseEnter: (e) => { e.currentTarget.style.background = "#f5f5f7"; e.currentTarget.style.borderColor = "#b8bcc4"; e.currentTarget.style.boxShadow = "0px 2px 6px 0px rgba(0, 0, 0, 0.08)"; },
+                    onMouseLeave: (e) => { e.currentTarget.style.background = "#ffffff"; e.currentTarget.style.borderColor = "#d0d4da"; e.currentTarget.style.boxShadow = "0px 2px 3px 0px rgba(0, 0, 0, 0.05)"; },
+                    onMouseDown: (e) => { e.currentTarget.style.background = "#ededf0"; e.currentTarget.style.boxShadow = "none"; },
+                    onMouseUp: (e) => { e.currentTarget.style.background = "#f5f5f7"; e.currentTarget.style.boxShadow = "0px 2px 6px 0px rgba(0, 0, 0, 0.08)"; },
                   }, step.prompt)
                 )
               )
@@ -1979,21 +2014,23 @@ const FlowView = ({ flow, onBack, onFlowComplete }) => {
           ),
           // User message bubble (shown during transition)
           showUserMessage && React.createElement(
-            FadeIn,
-            { delay: 0 },
+            "div",
+            null,
             React.createElement(
               "div",
-              { style: { display: "flex", justifyContent: "flex-end", marginTop: "4px" } },
+              { ref: userBubbleRef, style: { display: "flex", justifyContent: "flex-end", marginTop: "6px" } },
               React.createElement("div", {
                 style: {
-                  padding: "8px",
-                  background: t.promptBg,
-                  border: "none",
-                  borderRadius: "8px",
+                  padding: "8px 14px",
+                  background: t.accent,
+                  borderRadius: "16px 16px 4px 16px",
                   fontSize: "14px",
-                  fontWeight: 400,
-                  color: t.text900,
+                  fontWeight: 500,
+                  color: "#ffffff",
                   lineHeight: "20px",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  maxWidth: "85%",
                 },
               }, showUserMessage)
             )

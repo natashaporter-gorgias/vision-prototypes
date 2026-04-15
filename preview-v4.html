@@ -1,3 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gorgias AI Agent — Evaluations</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    #root { height: 100vh; }
+    @keyframes typingDot {
+      0%, 60%, 100% { opacity: 0.3; transform: translateY(0); }
+      30% { opacity: 1; transform: translateY(-3px); }
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+    input::placeholder { color: #5c6370; }
+    #loading-msg { display:flex; align-items:center; justify-content:center; height:100vh; font-size:16px; color:#5c6370; flex-direction:column; gap:12px; }
+    #loading-msg .spinner { width:24px; height:24px; border:3px solid #e5e5e5; border-top-color:#7E55F6; border-radius:50%; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+  <script crossorigin="anonymous" src="https://cdn.jsdelivr.net/npm/motion@12.4.7/dist/motion.js"></script>
+  <script crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.development.js"></script>
+  <script crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.development.js"></script>
+  <script crossorigin="anonymous" src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.9/babel.min.js"></script>
+</head>
+<body>
+  <div id="root"><div id="loading-msg"><div class="spinner"></div><span>Loading prototype...</span></div></div>
+  <script>
+    window.addEventListener('DOMContentLoaded', function() {
+      try {
+        var jsxSource = document.getElementById('jsx-source').textContent;
+        var output = Babel.transform(jsxSource, { presets: ['react'] });
+        var fn = new Function('React', 'ReactDOM', output.code);
+        fn(React, ReactDOM);
+      } catch (e) {
+        document.getElementById('root').innerHTML =
+          '<div style="padding:40px;font-family:monospace;max-width:800px">' +
+          '<h2 style="color:#d32f2f;margin-bottom:16px">Prototype Error</h2>' +
+          '<p style="margin-bottom:8px;font-size:14px">' + (e.message || e) + '</p>' +
+          '<pre style="background:#f5f5f5;padding:16px;border-radius:8px;overflow:auto;font-size:12px;max-height:400px">' +
+          (e.stack || '') + '</pre></div>';
+        console.error(e);
+      }
+    });
+  </script>
+  <script id="jsx-source" type="text/plain">
 // Gorgias AI Agent — Vision v3: Two-Panel Evaluation Prototype
 // Left panel: Conversation flow with agent messages and user prompts
 // Right panel: Working area with evaluation results, tickets, skill diffs
@@ -227,8 +279,8 @@ const FLOWS = [
                 skill: "Quality Issue / Damaged Order",
                 focus: "Resolution without handover",
                 totalTickets: 1502,
-                scorer: "Resolution & Policy Compliance",
-                finalScores: { accuracy: 92, resolution: 84, effort: 91, overall: 89 },
+                scorer: "Adherence & Resolution",
+                finalScores: { adherence: 92, resolution: 84, tone: 91, overall: 89 },
               },
             ],
           },
@@ -237,7 +289,7 @@ const FLOWS = [
       },
       {
         left: [
-          { type: "text", content: "**Resolution went from 13 → 84.** The AI now issues credits and arranges reships directly instead of handing over. Accuracy jumped from 79 → 92 because the skill has clear policy rules." },
+          { type: "text", content: "**Adherence went from 38 → 92.** The AI now follows the skill instructions correctly — issuing credits and arranging reships instead of handing over. Resolution jumped from 13 → 84 because the agent can actually take action now." },
         ],
         right: [
           {
@@ -250,18 +302,18 @@ const FLOWS = [
                 before: {
                   overall: 38,
                   scores: [
-                    { label: "Accuracy", value: 79 },
+                    { label: "Adherence", value: 38 },
                     { label: "Resolution", value: 13 },
-                    { label: "Efficiency", value: 41 },
+                    { label: "Tone", value: 72 },
                   ],
                   distribution: [18, 28, 22, 16, 8, 4, 2, 1, 0, 0],
                 },
                 after: {
                   overall: 89,
                   scores: [
-                    { label: "Accuracy", value: 92 },
+                    { label: "Adherence", value: 92 },
                     { label: "Resolution", value: 84 },
-                    { label: "Efficiency", value: 91 },
+                    { label: "Tone", value: 91 },
                   ],
                   distribution: [0, 0, 1, 3, 5, 8, 14, 28, 48, 42],
                 },
@@ -279,19 +331,100 @@ const FLOWS = [
             ],
           },
         ],
-        prompt: "Apply it",
+        prompt: "Apply and set up monitoring",
       },
       {
         left: [
           { type: "applied", items: [
             { label: "Skill published", detail: "Quality Issue / Damaged Order — rewritten with resolution logic" },
             { label: "Actions configured", detail: "Credit issuance and reship actions now live" },
-            { label: "Monitor created", detail: "Quality issue resolution rate — alerts below 75%" },
-            { label: "Eval baseline saved", detail: "eval-quality-issue-v2 (overall: 89)" },
           ]},
-          { type: "text", content: "Done. This should eliminate roughly **1,260 handovers per quarter** on quality issues alone." },
+          { type: "text", content: "Skill is live. Now let's set up a **monitor** so you'll know immediately if anything goes wrong in production. Here's what I recommend tracking:" },
         ],
-        right: [],
+        right: [
+          {
+            type: "section",
+            title: "Production monitor",
+            subtitle: "Continuously scores every ticket handled by this skill against your evaluation criteria.",
+            cards: [
+              {
+                type: "monitor_setup",
+                skill: "Quality Issue / Damaged Order",
+                scorers: [
+                  { name: "Adherence", description: "Is the agent following the skill instructions?", threshold: 85, enabled: true, isNorthStar: true },
+                  { name: "Resolution", description: "Was the issue resolved without handover?", threshold: 75, enabled: true },
+                  { name: "Tone", description: "Does the response match UrbanStems' brand voice?", threshold: 80, enabled: true },
+                  { name: "Policy compliance", description: "Are refund limits, eligibility windows, and escalation rules respected?", threshold: 90, enabled: true },
+                  { name: "Action accuracy", description: "When credits or reships were issued, were amounts and details correct?", threshold: 95, enabled: true },
+                ],
+                customScorer: { name: "Always mention satisfaction guarantee", description: "Check that every resolution response includes a reference to our satisfaction guarantee", enabled: true },
+                alertChannels: ["In-app", "Email", "Slack #cx-alerts"],
+              },
+            ],
+          },
+        ],
+        prompt: "Start monitoring",
+      },
+      {
+        left: [
+          { type: "text", content: "Monitor is live. Every ticket handled by this skill is now being scored in real-time against your 6 scorers. Here's the production feed:" },
+        ],
+        right: [
+          {
+            type: "section",
+            cards: [
+              {
+                type: "live_monitor_dashboard",
+                skill: "Quality Issue / Damaged Order",
+                scorers: ["Adherence", "Resolution", "Tone", "Policy compliance", "Action accuracy", "Satisfaction guarantee"],
+                tickets: [
+                  { id: "TK-49801221", time: "2m ago", subject: "Bouquet arrived wilted", adherence: 96, resolution: true, status: "pass" },
+                  { id: "TK-49801198", time: "5m ago", subject: "Wrong arrangement delivered", adherence: 93, resolution: true, status: "pass" },
+                  { id: "TK-49801187", time: "8m ago", subject: "Damaged roses in transit", adherence: 91, resolution: true, status: "pass" },
+                  { id: "TK-49801162", time: "12m ago", subject: "Missing stems in bouquet", adherence: 88, resolution: true, status: "pass" },
+                  { id: "TK-49801155", time: "14m ago", subject: "Flowers dead on arrival", adherence: 94, resolution: true, status: "pass" },
+                  { id: "TK-49801140", time: "18m ago", subject: "Quality issue — brown petals", adherence: 89, resolution: false, status: "warn" },
+                ],
+                liveStats: { ticketsScored: 23, avgAdherence: 92, resolutionRate: 87, alerts: 0 },
+              },
+            ],
+          },
+        ],
+        prompt: "Simulate an alert",
+      },
+      {
+        left: [
+          { type: "text", content: "This is what happens when a scorer drops below threshold. You'd get an alert like this wherever you are — in Gorgias, Slack, or email." },
+        ],
+        right: [
+          {
+            type: "section",
+            cards: [
+              {
+                type: "live_monitor_dashboard",
+                skill: "Quality Issue / Damaged Order",
+                scorers: ["Adherence", "Resolution", "Tone", "Policy compliance", "Action accuracy", "Satisfaction guarantee"],
+                tickets: [
+                  { id: "TK-49801221", time: "2m ago", subject: "Bouquet arrived wilted", adherence: 96, resolution: true, status: "pass" },
+                  { id: "TK-49801198", time: "5m ago", subject: "Wrong arrangement delivered", adherence: 93, resolution: true, status: "pass" },
+                  { id: "TK-49801187", time: "8m ago", subject: "Damaged roses in transit", adherence: 91, resolution: true, status: "pass" },
+                  { id: "TK-49801162", time: "12m ago", subject: "Missing stems in bouquet", adherence: 88, resolution: true, status: "pass" },
+                  { id: "TK-49801155", time: "14m ago", subject: "Flowers dead on arrival", adherence: 94, resolution: true, status: "pass" },
+                  { id: "TK-49801140", time: "18m ago", subject: "Quality issue — brown petals", adherence: 89, resolution: false, status: "warn" },
+                ],
+                liveStats: { ticketsScored: 23, avgAdherence: 92, resolutionRate: 87, alerts: 1 },
+                showAlert: true,
+              },
+            ],
+          },
+        ],
+        showPushNotification: {
+          delay: 800,
+          title: "Gorgias AI Agent",
+          subtitle: "Quality Issue — Monitor Alert",
+          body: "Tone adherence dropped to 71% (threshold: 80%) on 3 recent tickets. Tap to investigate.",
+          icon: "warning",
+        },
       },
     ],
   },
@@ -374,18 +507,18 @@ const FLOWS = [
                 before: {
                   overall: 31,
                   scores: [
-                    { label: "Accuracy", value: 62 },
+                    { label: "Adherence", value: 31 },
                     { label: "Resolution", value: 10 },
-                    { label: "Efficiency", value: 35 },
+                    { label: "Tone", value: 68 },
                   ],
                   distribution: [22, 30, 18, 14, 8, 4, 2, 1, 0, 0],
                 },
                 after: {
                   overall: 86,
                   scores: [
-                    { label: "Accuracy", value: 94 },
+                    { label: "Adherence", value: 94 },
                     { label: "Resolution", value: 78 },
-                    { label: "Efficiency", value: 88 },
+                    { label: "Tone", value: 88 },
                   ],
                   distribution: [0, 0, 2, 3, 6, 10, 16, 24, 42, 38],
                 },
@@ -507,7 +640,7 @@ const FLOWS = [
 // COMPONENT: Icon Navigation Bar
 // ═══════════════════════════════════════════════════════════════════════════════════
 
-const IconNavBar = ({ activeFlowId }) => {
+const IconNavBar = ({ activeFlowId, activeView, onNavigate }) => {
   return React.createElement(
     "div",
     {
@@ -557,22 +690,35 @@ const IconNavBar = ({ activeFlowId }) => {
       React.createElement(
         "div",
         {
+          onClick: onNavigate ? () => onNavigate("landing") : undefined,
           style: {
             width: "24px",
             height: "24px",
-            backgroundColor: "#fee1f9",
+            backgroundColor: activeView === "landing" ? t.accent : "#fee1f9",
             borderRadius: "8px",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            cursor: "pointer",
+            cursor: onNavigate ? "pointer" : "default",
+            transition: "background-color 0.2s ease",
           },
         },
-        Icon.sparkle("#c026d3")
+        Icon.sparkle(activeView === "landing" ? "white" : "#c026d3")
       ),
       Icon.revenue(t.navText),
       Icon.users(t.navText),
-      Icon.chart(t.navText),
+      React.createElement(
+        "div",
+        {
+          onClick: onNavigate ? () => onNavigate("monitors") : undefined,
+          style: {
+            cursor: onNavigate ? "pointer" : "default",
+            opacity: activeView === "monitors" ? 1 : 0.6,
+            transition: "opacity 0.2s ease",
+          },
+        },
+        Icon.chart(activeView === "monitors" ? t.accent : t.navText)
+      ),
       Icon.settings(t.navText)
     ),
     // Bottom user avatar
@@ -872,7 +1018,7 @@ const SkillDiffCard = ({ card }) => {
 
 const LiveEvalCard = ({ data }) => {
   const [processedTickets, setProcessedTickets] = useState([]);
-  const [scores, setScores] = useState({ accuracy: 0, resolution: 0, effort: 0, overall: 0 });
+  const [scores, setScores] = useState({ adherence: 0, resolution: 0, tone: 0, overall: 0 });
   const [progress, setProgress] = useState(0);
   const feedRef = useRef(null);
   const intervalRef = useRef(null);
@@ -967,9 +1113,9 @@ const LiveEvalCard = ({ data }) => {
         setProcessedTickets(prev => [...prev, currentTicket]);
         setProgress(Math.round(pct * 100));
         setScores({
-          accuracy: Math.round(pct * data.finalScores.accuracy),
+          adherence: Math.round(pct * data.finalScores.adherence),
           resolution: Math.round(pct * data.finalScores.resolution),
-          effort: Math.round(pct * data.finalScores.effort),
+          tone: Math.round(pct * data.finalScores.tone),
           overall: Math.round(pct * data.finalScores.overall),
         });
         idx++;
@@ -1051,8 +1197,8 @@ const LiveEvalCard = ({ data }) => {
       React.createElement(
         "div",
         null,
-        React.createElement("div", { style: { fontSize: "10px", color: t.text500, marginBottom: "4px", fontWeight: 400 } }, "Accuracy"),
-        React.createElement("div", { style: { fontSize: "18px", fontWeight: 600, color: scoreColor(scores.accuracy), lineHeight: "24px" } }, scores.accuracy)
+        React.createElement("div", { style: { fontSize: "10px", color: t.text500, marginBottom: "4px", fontWeight: 400 } }, "Adherence"),
+        React.createElement("div", { style: { fontSize: "18px", fontWeight: 600, color: scoreColor(scores.adherence), lineHeight: "24px" } }, scores.adherence)
       ),
       React.createElement(
         "div",
@@ -1063,8 +1209,8 @@ const LiveEvalCard = ({ data }) => {
       React.createElement(
         "div",
         null,
-        React.createElement("div", { style: { fontSize: "10px", color: t.text500, marginBottom: "4px", fontWeight: 400 } }, "Effort"),
-        React.createElement("div", { style: { fontSize: "18px", fontWeight: 600, color: scoreColor(scores.effort), lineHeight: "24px" } }, scores.effort)
+        React.createElement("div", { style: { fontSize: "10px", color: t.text500, marginBottom: "4px", fontWeight: 400 } }, "Tone"),
+        React.createElement("div", { style: { fontSize: "18px", fontWeight: 600, color: scoreColor(scores.tone), lineHeight: "24px" } }, scores.tone)
       ),
       React.createElement(
         "div",
@@ -1517,6 +1663,319 @@ const DeploymentTimelineCard = ({ data }) => {
 };
 
 // ═══════════════════════════════════════════════════════════════════════════════════
+// COMPONENT: Monitor Setup Card
+// ═══════════════════════════════════════════════════════════════════════════════════
+
+const MonitorSetupCard = ({ data }) => {
+  return React.createElement(
+    "div",
+    {
+      style: {
+        border: `1px solid ${t.border}`,
+        borderRadius: "8px",
+        padding: "20px 24px",
+        backgroundColor: t.surface,
+        marginBottom: "12px",
+      },
+    },
+    // Header
+    React.createElement(
+      "div",
+      { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" } },
+      React.createElement(
+        "div",
+        null,
+        React.createElement("div", { style: { fontSize: "10px", color: t.text500, marginBottom: "4px", fontWeight: 400 } }, "Monitoring"),
+        React.createElement("div", { style: { fontSize: "14px", fontWeight: 600, color: t.text900, lineHeight: "20px" } }, data.skill)
+      ),
+      React.createElement(
+        "div",
+        { style: { display: "flex", alignItems: "center", gap: "6px" } },
+        React.createElement("div", { style: { width: "8px", height: "8px", backgroundColor: t.greenDot, borderRadius: "50%", animation: "pulse 2s infinite" } }),
+        React.createElement("span", { style: { fontSize: "12px", fontWeight: 600, color: t.green } }, "Ready")
+      )
+    ),
+    // Scorers section
+    React.createElement("div", { style: { fontSize: "12px", fontWeight: 600, color: t.text900, marginBottom: "10px", lineHeight: "16px" } }, "Scorers"),
+    React.createElement(
+      "div",
+      { style: { marginBottom: "16px" } },
+      data.scorers.map((scorer, i) => React.createElement(
+        "div",
+        { key: i, style: { display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 10px", backgroundColor: scorer.isNorthStar ? t.surfaceInset : t.surfaceMuted, borderRadius: "6px", marginBottom: "4px", border: scorer.isNorthStar ? `1px solid ${t.accent}30` : "none" } },
+        React.createElement(
+          "div",
+          { style: { flex: 1 } },
+          React.createElement(
+            "div",
+            { style: { display: "flex", alignItems: "center", gap: "6px" } },
+            React.createElement("span", { style: { fontSize: "13px", fontWeight: 600, color: scorer.isNorthStar ? t.accent : t.text900, lineHeight: "18px" } }, scorer.name),
+            scorer.isNorthStar && React.createElement("span", { style: { fontSize: "10px", fontWeight: 600, color: t.accent, backgroundColor: `${t.accent}15`, padding: "1px 6px", borderRadius: "4px" } }, "NORTH STAR")
+          ),
+          React.createElement("div", { style: { fontSize: "11px", color: t.text500, lineHeight: "16px" } }, scorer.description)
+        ),
+        React.createElement(
+          "div",
+          { style: { display: "flex", alignItems: "center", gap: "8px", flexShrink: 0, marginLeft: "12px" } },
+          React.createElement("span", { style: { fontSize: "12px", color: t.text700, fontWeight: 500 } }, "≥ " + scorer.threshold + "%"),
+          React.createElement("div", { style: { width: "28px", height: "16px", backgroundColor: scorer.enabled ? t.accent : "#d0d4da", borderRadius: "8px", position: "relative", cursor: "pointer" } },
+            React.createElement("div", { style: { width: "12px", height: "12px", backgroundColor: "#fff", borderRadius: "50%", position: "absolute", top: "2px", left: scorer.enabled ? "14px" : "2px", transition: "left 0.2s ease", boxShadow: "0 1px 2px rgba(0,0,0,0.15)" } })
+          )
+        )
+      ))
+    ),
+    // Custom scorer
+    data.customScorer && React.createElement(
+      "div",
+      { style: { marginBottom: "16px" } },
+      React.createElement("div", { style: { fontSize: "12px", fontWeight: 600, color: t.text900, marginBottom: "8px", lineHeight: "16px", display: "flex", alignItems: "center", gap: "6px" } },
+        "Custom scorer",
+        React.createElement("span", { style: { fontSize: "10px", fontWeight: 500, color: t.accent, backgroundColor: t.surfaceInset, padding: "1px 6px", borderRadius: "4px" } }, "NEW")
+      ),
+      React.createElement(
+        "div",
+        { style: { display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 12px", backgroundColor: t.surfaceMuted, borderRadius: "6px", border: `1px dashed ${t.border}` } },
+        React.createElement(
+          "div",
+          { style: { flex: 1 } },
+          React.createElement("div", { style: { fontSize: "13px", fontWeight: 500, color: t.text900, lineHeight: "18px" } }, "\"" + data.customScorer.name + "\""),
+          React.createElement("div", { style: { fontSize: "11px", color: t.text500, lineHeight: "16px" } }, data.customScorer.description)
+        ),
+        React.createElement("div", { style: { width: "28px", height: "16px", backgroundColor: data.customScorer.enabled ? t.accent : "#d0d4da", borderRadius: "8px", position: "relative", cursor: "pointer", flexShrink: 0, marginLeft: "12px" } },
+          React.createElement("div", { style: { width: "12px", height: "12px", backgroundColor: "#fff", borderRadius: "50%", position: "absolute", top: "2px", left: data.customScorer.enabled ? "14px" : "2px", boxShadow: "0 1px 2px rgba(0,0,0,0.15)" } })
+        )
+      )
+    ),
+    // Alert channels
+    React.createElement("div", { style: { fontSize: "12px", fontWeight: 600, color: t.text900, marginBottom: "8px", lineHeight: "16px" } }, "Alert channels"),
+    React.createElement(
+      "div",
+      { style: { display: "flex", gap: "8px", flexWrap: "wrap" } },
+      data.alertChannels.map((ch, i) => React.createElement(
+        "div",
+        { key: i, style: { padding: "4px 10px", fontSize: "12px", fontWeight: 500, color: t.text900, backgroundColor: t.surfaceMuted, borderRadius: "4px", border: `1px solid ${t.border}`, display: "flex", alignItems: "center", gap: "4px" } },
+        Icon.check(t.accent),
+        ch
+      ))
+    )
+  );
+};
+
+// ═══════════════════════════════════════════════════════════════════════════════════
+// COMPONENT: Live Monitor Dashboard
+// ═══════════════════════════════════════════════════════════════════════════════════
+
+const LiveMonitorDashboard = ({ data }) => {
+  const [visibleTickets, setVisibleTickets] = useState(0);
+  const [currentStats, setCurrentStats] = useState({ ticketsScored: 0, avgAdherence: 0, resolutionRate: 0, alerts: 0 });
+
+  // Animate tickets appearing one by one
+  useEffect(() => {
+    if (!data.tickets) return;
+    const timers = [];
+    data.tickets.forEach((_, i) => {
+      timers.push(setTimeout(() => {
+        setVisibleTickets(i + 1);
+        // Update stats progressively
+        const progress = (i + 1) / data.tickets.length;
+        setCurrentStats({
+          ticketsScored: Math.round(data.liveStats.ticketsScored * progress),
+          avgAdherence: Math.round(data.liveStats.avgAdherence * (0.85 + 0.15 * progress)),
+          resolutionRate: Math.round(data.liveStats.resolutionRate * (0.8 + 0.2 * progress)),
+          alerts: data.liveStats.alerts,
+        });
+      }, 400 + i * 350));
+    });
+    return () => timers.forEach(clearTimeout);
+  }, []);
+
+  return React.createElement(
+    "div",
+    {
+      style: {
+        border: `1px solid ${t.border}`,
+        borderRadius: "8px",
+        padding: "20px 24px",
+        backgroundColor: t.surface,
+        marginBottom: "12px",
+      },
+    },
+    // Header with live indicator
+    React.createElement(
+      "div",
+      { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" } },
+      React.createElement(
+        "div",
+        null,
+        React.createElement("div", { style: { fontSize: "10px", color: t.text500, marginBottom: "4px", fontWeight: 400 } }, "Production monitor"),
+        React.createElement("div", { style: { fontSize: "14px", fontWeight: 600, color: t.text900, lineHeight: "20px" } }, data.skill)
+      ),
+      React.createElement(
+        "div",
+        { style: { display: "flex", alignItems: "center", gap: "6px", padding: "4px 10px", backgroundColor: t.greenBg, borderRadius: "12px" } },
+        React.createElement("div", { style: { width: "6px", height: "6px", backgroundColor: t.greenDot, borderRadius: "50%", animation: "pulse 1.5s infinite" } }),
+        React.createElement("span", { style: { fontSize: "11px", fontWeight: 600, color: t.green } }, "LIVE")
+      )
+    ),
+    // Stats row
+    React.createElement(
+      "div",
+      { style: { display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: "8px", marginBottom: "16px" } },
+      React.createElement(
+        "div",
+        { style: { padding: "10px 12px", backgroundColor: t.surfaceMuted, borderRadius: "6px", textAlign: "center" } },
+        React.createElement("div", { style: { fontSize: "18px", fontWeight: 700, color: t.text900, lineHeight: "24px" } }, currentStats.ticketsScored),
+        React.createElement("div", { style: { fontSize: "10px", color: t.text500, fontWeight: 400 } }, "scored")
+      ),
+      React.createElement(
+        "div",
+        { style: { padding: "10px 12px", backgroundColor: t.surfaceInset, borderRadius: "6px", textAlign: "center" } },
+        React.createElement("div", { style: { fontSize: "18px", fontWeight: 700, color: t.accent, lineHeight: "24px" } }, currentStats.avgAdherence + "%"),
+        React.createElement("div", { style: { fontSize: "10px", color: t.text500, fontWeight: 400 } }, "adherence")
+      ),
+      React.createElement(
+        "div",
+        { style: { padding: "10px 12px", backgroundColor: t.greenBg, borderRadius: "6px", textAlign: "center" } },
+        React.createElement("div", { style: { fontSize: "18px", fontWeight: 700, color: t.green, lineHeight: "24px" } }, currentStats.resolutionRate + "%"),
+        React.createElement("div", { style: { fontSize: "10px", color: t.text500, fontWeight: 400 } }, "resolved")
+      ),
+      React.createElement(
+        "div",
+        { style: { padding: "10px 12px", backgroundColor: currentStats.alerts > 0 ? t.redBg : t.surfaceMuted, borderRadius: "6px", textAlign: "center" } },
+        React.createElement("div", { style: { fontSize: "18px", fontWeight: 700, color: currentStats.alerts > 0 ? t.red : t.green, lineHeight: "24px" } }, currentStats.alerts),
+        React.createElement("div", { style: { fontSize: "10px", color: t.text500, fontWeight: 400 } }, "alerts")
+      )
+    ),
+    // Ticket feed
+    React.createElement("div", { style: { fontSize: "12px", fontWeight: 600, color: t.text900, marginBottom: "8px", lineHeight: "16px" } }, "Recent tickets"),
+    React.createElement(
+      "div",
+      { style: { maxHeight: "220px", overflow: "hidden" } },
+      data.tickets.slice(0, visibleTickets).map((ticket, i) => React.createElement(
+        "div",
+        {
+          key: ticket.id,
+          style: {
+            display: "flex", alignItems: "center", justifyContent: "space-between",
+            padding: "8px 10px", marginBottom: "4px", borderRadius: "6px",
+            backgroundColor: ticket.status === "warn" ? t.amberBg : t.surfaceMuted,
+            opacity: i === visibleTickets - 1 ? 0 : 1,
+            transform: i === visibleTickets - 1 ? "translateY(4px)" : "none",
+            transition: "opacity 0.3s ease, transform 0.3s ease",
+            animation: i === visibleTickets - 1 ? "none" : undefined,
+          },
+          ref: (el) => {
+            if (el && i === visibleTickets - 1) {
+              requestAnimationFrame(() => {
+                el.style.opacity = "1";
+                el.style.transform = "translateY(0)";
+              });
+            }
+          },
+        },
+        React.createElement(
+          "div",
+          { style: { flex: 1, minWidth: 0 } },
+          React.createElement(
+            "div",
+            { style: { display: "flex", alignItems: "center", gap: "6px" } },
+            React.createElement("span", { style: { fontSize: "10px", color: t.text500, fontWeight: 400, flexShrink: 0 } }, ticket.id),
+            React.createElement("span", { style: { fontSize: "10px", color: t.text500 } }, "·"),
+            React.createElement("span", { style: { fontSize: "10px", color: t.text500, fontWeight: 400 } }, ticket.time)
+          ),
+          React.createElement("div", { style: { fontSize: "12px", color: t.text900, fontWeight: 400, lineHeight: "18px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, ticket.subject)
+        ),
+        React.createElement(
+          "div",
+          { style: { display: "flex", alignItems: "center", gap: "8px", flexShrink: 0, marginLeft: "12px" } },
+          React.createElement("span", { style: { fontSize: "12px", fontWeight: 600, color: scoreColor(ticket.adherence) } }, ticket.adherence + "%"),
+          ticket.status === "pass"
+            ? React.createElement("div", { style: { width: "18px", height: "18px", backgroundColor: t.greenBg, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center" } }, Icon.check(t.green))
+            : React.createElement("div", { style: { width: "18px", height: "18px", backgroundColor: t.amberBg, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center" } }, Icon.warning(t.amber))
+        )
+      ))
+    )
+  );
+};
+
+// ═══════════════════════════════════════════════════════════════════════════════════
+// COMPONENT: Push Notification Overlay
+// ═══════════════════════════════════════════════════════════════════════════════════
+
+const PushNotification = ({ config, onDismiss }) => {
+  const [visible, setVisible] = useState(false);
+  const notifRef = useRef(null);
+  const motionAnimate = typeof Motion !== "undefined" ? Motion.animate : null;
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setVisible(true);
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          const el = notifRef.current;
+          if (el && motionAnimate) {
+            motionAnimate(el,
+              { opacity: [0, 1], y: [-20, 0], scale: [0.97, 1] },
+              { duration: 0.4, easing: [0.22, 1, 0.36, 1] }
+            );
+          }
+        });
+      });
+    }, config.delay || 800);
+
+    // Auto-dismiss after 8 seconds
+    const dismiss = setTimeout(() => {
+      const el = notifRef.current;
+      if (el && motionAnimate) {
+        motionAnimate(el, { opacity: 0, y: -12 }, { duration: 0.3, easing: [0.9, 0, 0, 1] });
+      }
+    }, (config.delay || 800) + 8000);
+
+    return () => { clearTimeout(timer); clearTimeout(dismiss); };
+  }, []);
+
+  if (!visible) return null;
+
+  return React.createElement(
+    "div",
+    {
+      ref: notifRef,
+      style: {
+        position: "fixed",
+        top: "16px",
+        right: "16px",
+        width: "360px",
+        backgroundColor: "#fff",
+        borderRadius: "12px",
+        boxShadow: "0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.08)",
+        padding: "14px 16px",
+        zIndex: 10000,
+        cursor: "pointer",
+        border: "1px solid rgba(0,0,0,0.06)",
+        opacity: 0,
+      },
+      onClick: onDismiss,
+    },
+    // macOS-style notification header
+    React.createElement(
+      "div",
+      { style: { display: "flex", alignItems: "center", gap: "10px", marginBottom: "6px" } },
+      // App icon
+      React.createElement(
+        "div",
+        { style: { width: "20px", height: "20px", borderRadius: "4px", background: `linear-gradient(135deg, ${t.accent}, #5a3cc4)`, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 } },
+        Icon.sparkle("white")
+      ),
+      React.createElement("span", { style: { fontSize: "13px", fontWeight: 600, color: t.text900, flex: 1 } }, config.title),
+      React.createElement("span", { style: { fontSize: "11px", color: t.text500, fontWeight: 400 } }, "now")
+    ),
+    // Notification body
+    React.createElement("div", { style: { fontSize: "13px", fontWeight: 600, color: t.text900, lineHeight: "18px", marginBottom: "2px", marginLeft: "30px" } }, config.subtitle),
+    React.createElement("div", { style: { fontSize: "12px", color: t.text700, lineHeight: "18px", marginLeft: "30px" } }, config.body)
+  );
+};
+
+// ═══════════════════════════════════════════════════════════════════════════════════
 // COMPONENT: Landing Page (Persona Selection)
 // ═══════════════════════════════════════════════════════════════════════════════════
 
@@ -1767,30 +2226,35 @@ const FlowView = ({ flow, onBack, onFlowComplete }) => {
     setIsTransitioning(true);
     setShowNewContent(false);
 
-    // Animate button out with motion.dev
+    // Animate button out — shrink toward right and fade
     const btn = promptBtnRef.current;
     if (btn && motionAnimate) {
-      motionAnimate(btn, { opacity: 0, scale: 0.95, y: -4 }, { duration: 0.25, easing: [0.9, 0, 0, 1] });
+      motionAnimate(btn, { opacity: 0, scale: 0.92, x: 6 }, { duration: 0.2, easing: [0.9, 0, 0, 1] });
     }
 
     // Step 1: After button fades, show user message bubble
     setTimeout(() => {
       setShowUserMessage(promptText);
       scrollToBottom(leftPanelRef);
-      // Animate bubble in after React renders it
+      // Animate bubble in — slide up from button position with spring feel
       requestAnimationFrame(() => {
-        const bubble = userBubbleRef.current;
-        if (bubble && motionAnimate) {
-          motionAnimate(bubble, { opacity: [0, 1], x: [12, 0] }, { duration: 0.3, easing: [0.9, 0, 0, 1] });
-        }
+        requestAnimationFrame(() => {
+          const bubble = userBubbleRef.current;
+          if (bubble && motionAnimate) {
+            motionAnimate(bubble,
+              { opacity: [0, 1], y: [8, 0], scale: [0.96, 1] },
+              { duration: 0.35, easing: [0.22, 1, 0.36, 1] }
+            );
+          }
+        });
       });
-    }, 200);
+    }, 180);
 
-    // Step 2: After 500ms, show typing indicator
+    // Step 2: After 550ms, show typing indicator
     setTimeout(() => {
       setShowTyping(true);
       scrollToBottom(leftPanelRef);
-    }, 500);
+    }, 550);
 
     // Step 3: After 1200-1800ms, advance step, hide typing, show content
     const thinkTime = 1200 + Math.random() * 600;
@@ -1804,6 +2268,11 @@ const FlowView = ({ flow, onBack, onFlowComplete }) => {
   };
 
   return React.createElement(
+    React.Fragment,
+    null,
+    // Push notification overlay (rendered outside grid, fixed positioned)
+    step && step.showPushNotification && showNewContent && React.createElement(PushNotification, { config: step.showPushNotification }),
+    React.createElement(
     "div",
     { style: { display: "grid", gridTemplateColumns: "minmax(320px, 487px) 1fr", height: "100vh", gap: 0 } },
     // Left panel (conversation)
@@ -1931,21 +2400,25 @@ const FlowView = ({ flow, onBack, onFlowComplete }) => {
                   React.createElement("button", {
                     onClick: handlePromptClick,
                     style: {
-                      padding: "6px 12px",
+                      padding: "0 12px",
                       height: "32px",
-                      background: "rgba(255, 255, 255, 0.50)",
+                      background: "#ffffff",
                       color: t.text900,
-                      border: "0.5px solid rgba(103, 113, 131, 0.50)",
-                      borderRadius: "8px",
+                      border: "1px solid #d0d4da",
+                      borderRadius: "6px",
                       cursor: "pointer",
                       fontSize: "14px",
-                      fontWeight: 600,
+                      fontWeight: 500,
                       lineHeight: "20px",
+                      letterSpacing: "0",
+                      fontFamily: "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
                       boxShadow: "0px 2px 3px 0px rgba(0, 0, 0, 0.05)",
-                      transition: "border-color 0.15s ease, box-shadow 0.15s ease",
+                      transition: "all 0.15s cubic-bezier(0.9, 0, 0, 1)",
                     },
-                    onMouseEnter: (e) => { e.currentTarget.style.borderColor = "rgba(103, 113, 131, 0.8)"; e.currentTarget.style.boxShadow = "0px 2px 6px 0px rgba(0, 0, 0, 0.1)"; },
-                    onMouseLeave: (e) => { e.currentTarget.style.borderColor = "rgba(103, 113, 131, 0.5)"; e.currentTarget.style.boxShadow = "0px 2px 3px 0px rgba(0, 0, 0, 0.05)"; },
+                    onMouseEnter: (e) => { e.currentTarget.style.background = "#f5f5f7"; e.currentTarget.style.borderColor = "#b8bcc4"; e.currentTarget.style.boxShadow = "0px 2px 6px 0px rgba(0, 0, 0, 0.08)"; },
+                    onMouseLeave: (e) => { e.currentTarget.style.background = "#ffffff"; e.currentTarget.style.borderColor = "#d0d4da"; e.currentTarget.style.boxShadow = "0px 2px 3px 0px rgba(0, 0, 0, 0.05)"; },
+                    onMouseDown: (e) => { e.currentTarget.style.background = "#ededf0"; e.currentTarget.style.boxShadow = "none"; },
+                    onMouseUp: (e) => { e.currentTarget.style.background = "#f5f5f7"; e.currentTarget.style.boxShadow = "0px 2px 6px 0px rgba(0, 0, 0, 0.08)"; },
                   }, step.prompt)
                 )
               )
@@ -1957,21 +2430,19 @@ const FlowView = ({ flow, onBack, onFlowComplete }) => {
             null,
             React.createElement(
               "div",
-              { ref: userBubbleRef, style: { display: "flex", justifyContent: "flex-end", marginTop: "4px" } },
+              { ref: userBubbleRef, style: { display: "flex", justifyContent: "flex-end", marginTop: "6px" } },
               React.createElement("div", {
                 style: {
-                  padding: "6px 12px",
-                  height: "32px",
-                  background: "rgba(255, 255, 255, 0.50)",
-                  border: "0.5px solid rgba(103, 113, 131, 0.50)",
-                  borderRadius: "8px",
+                  padding: "8px 14px",
+                  background: t.accent,
+                  borderRadius: "16px 16px 4px 16px",
                   fontSize: "14px",
-                  fontWeight: 600,
-                  color: t.text900,
+                  fontWeight: 500,
+                  color: "#ffffff",
                   lineHeight: "20px",
-                  boxShadow: "0px 2px 3px 0px rgba(0, 0, 0, 0.05)",
-                  display: "flex",
+                  display: "inline-flex",
                   alignItems: "center",
+                  maxWidth: "85%",
                 },
               }, showUserMessage)
             )
@@ -2053,7 +2524,9 @@ const FlowView = ({ flow, onBack, onFlowComplete }) => {
                     card.type === "corrected_example" && React.createElement(CorrectedExampleCard, { data: card }),
                     card.type === "morning_briefing" && React.createElement(MorningBriefingCard, { data: card }),
                     card.type === "deployment_timeline" && React.createElement(DeploymentTimelineCard, { data: card }),
-                    card.type === "monitor_alert" && React.createElement(MonitorAlertCard, { data: card })
+                    card.type === "monitor_alert" && React.createElement(MonitorAlertCard, { data: card }),
+                    card.type === "monitor_setup" && React.createElement(MonitorSetupCard, { data: card }),
+                    card.type === "live_monitor_dashboard" && React.createElement(LiveMonitorDashboard, { data: card })
                   );
                   return isNew
                     ? React.createElement(FadeIn, { key: ci, delay: ci * 250 + 200 }, cardContent)
@@ -2068,10 +2541,574 @@ const FlowView = ({ flow, onBack, onFlowComplete }) => {
         )
       )
     )
+    )
   );
 };
 
 // Note: Right panel section rendering uses bordered group containers
+
+// ═══════════════════════════════════════════════════════════════════════════════════
+// COMPONENT: Monitor Detail View (Right panel detail for a single monitor)
+// ═══════════════════════════════════════════════════════════════════════════════════
+
+const MonitorDetailView = ({ monitor, onBack }) => {
+  const getStatusColor = (status) => {
+    if (status === "green") return t.greenDot;
+    if (status === "amber") return t.amber;
+    return t.red;
+  };
+
+  const getStatusText = (status) => {
+    if (status === "green") return "Healthy";
+    if (status === "amber") return "Needs attention";
+    return "Alert";
+  };
+
+  // Sample scorers for demo
+  const scorers = [
+    { name: "Adherence", score: monitor.adherence, type: "percent" },
+    { name: "Resolution Rate", score: 87, type: "percent" },
+    { name: "Tone", score: 92, type: "percent" },
+    { name: "Policy Compliance", score: 89, type: "percent" },
+  ];
+
+  // Sample recent tickets for demo
+  const recentTickets = [
+    { id: "TK-51234", time: "2 min ago", subject: "Package delayed", score: 88, pass: true },
+    { id: "TK-51233", time: "14 min ago", subject: "Shipping inquiry - when will it arrive?", score: 92, pass: true },
+    { id: "TK-51232", time: "31 min ago", subject: "Still no tracking update", score: monitor.name === "Shipping Delay" ? 65 : 85, pass: monitor.name === "Shipping Delay" ? false : true },
+    { id: "TK-51231", time: "47 min ago", subject: "Where's my order?", score: 79, pass: monitor.name === "Shipping Delay" ? false : true },
+    { id: "TK-51230", time: "1h ago", subject: "Delivery status update needed", score: 71, pass: monitor.name === "Shipping Delay" ? false : true },
+    { id: "TK-51229", time: "1h 15m ago", subject: "Order not arrived yet", score: 85, pass: true },
+    { id: "TK-51228", time: "1h 32m ago", subject: "Can you track my order?", score: 90, pass: true },
+    { id: "TK-51227", time: "2h ago", subject: "Shipping delay - flowers died", score: monitor.name === "Shipping Delay" ? 68 : 86, pass: monitor.name === "Shipping Delay" ? false : true },
+  ];
+
+  return React.createElement(
+    "div",
+    { style: { display: "flex", flexDirection: "column", height: "100%", overflow: "hidden" } },
+    // Header
+    React.createElement(
+      "div",
+      { style: { padding: "24px 24px 0", borderBottom: `1px solid ${t.border}` } },
+      React.createElement(
+        "div",
+        { style: { display: "flex", alignItems: "center", gap: "12px", marginBottom: "16px", cursor: "pointer" } },
+        React.createElement(
+          "button",
+          {
+            onClick: onBack,
+            style: {
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              padding: 0,
+              display: "flex",
+              alignItems: "center",
+            },
+          },
+          Icon.backArrow(t.text900)
+        ),
+        React.createElement("div", { style: { fontSize: "16px", fontWeight: 600, color: t.text900 } }, monitor.name),
+        React.createElement(
+          "div",
+          {
+            style: {
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "4px",
+              backgroundColor: getStatusColor(monitor.status) === t.greenDot ? t.greenBg : monitor.status === "amber" ? t.amberBg : t.redBg,
+              padding: "4px 8px",
+              borderRadius: "4px",
+              fontSize: "11px",
+              fontWeight: 500,
+              color: getStatusColor(monitor.status),
+            },
+          },
+          React.createElement("span", { style: { display: "inline-block", width: "4px", height: "4px", borderRadius: "50%", backgroundColor: getStatusColor(monitor.status) } }),
+          getStatusText(monitor.status)
+        )
+      ),
+      React.createElement(
+        "div",
+        { style: { display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "16px", marginBottom: "24px" } },
+        scorers.map((scorer, i) =>
+          React.createElement(
+            "div",
+            { key: i, style: { borderRight: i < scorers.length - 1 ? `1px solid ${t.border}` : "none", paddingRight: "16px" } },
+            React.createElement("div", { style: { fontSize: "10px", color: t.text500, fontWeight: 500, marginBottom: "4px", textTransform: "uppercase" } }, scorer.name),
+            React.createElement("div", { style: { fontSize: "18px", fontWeight: 700, color: scoreColor(scorer.score) } }, `${scorer.score}%`)
+          )
+        )
+      )
+    ),
+    // Scrollable content
+    React.createElement(
+      "div",
+      { style: { flex: 1, overflowY: "auto", padding: "24px" } },
+      React.createElement("div", { style: { fontSize: "14px", fontWeight: 600, color: t.text900, marginBottom: "16px" } }, "Active Scorers"),
+      React.createElement(
+        "div",
+        { style: { display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "16px", marginBottom: "32px" } },
+        scorers.map((scorer, i) =>
+          React.createElement(
+            "div",
+            {
+              key: i,
+              style: {
+                border: `1px solid ${t.border}`,
+                borderRadius: "8px",
+                padding: "12px 16px",
+                backgroundColor: t.surface,
+              },
+            },
+            React.createElement("div", { style: { fontSize: "12px", color: t.text700, marginBottom: "8px" } }, scorer.name),
+            React.createElement("div", { style: { fontSize: "16px", fontWeight: 700, color: scoreColor(scorer.score) } }, `${scorer.score}%`)
+          )
+        )
+      ),
+      React.createElement("div", { style: { fontSize: "14px", fontWeight: 600, color: t.text900, marginBottom: "16px" } }, "Recent Tickets"),
+      React.createElement(
+        "div",
+        { style: { display: "flex", flexDirection: "column", gap: "8px" } },
+        recentTickets.map((ticket, i) =>
+          React.createElement(
+            "div",
+            {
+              key: i,
+              style: {
+                border: `1px solid ${t.border}`,
+                borderRadius: "8px",
+                padding: "12px 16px",
+                backgroundColor: t.surface,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              },
+            },
+            React.createElement(
+              "div",
+              { style: { flex: 1 } },
+              React.createElement("div", { style: { fontSize: "12px", fontWeight: 600, color: t.text900, marginBottom: "2px" } }, ticket.subject),
+              React.createElement("div", { style: { fontSize: "11px", color: t.text700 } }, `${ticket.id} · ${ticket.time}`)
+            ),
+            React.createElement(
+              "div",
+              { style: { display: "flex", alignItems: "center", gap: "12px" } },
+              React.createElement("div", { style: { fontSize: "12px", fontWeight: 700, color: scoreColor(ticket.score), minWidth: "30px", textAlign: "right" } }, `${ticket.score}%`),
+              React.createElement(
+                "div",
+                {
+                  style: {
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "4px",
+                    backgroundColor: ticket.pass ? t.greenBg : t.redBg,
+                    padding: "4px 8px",
+                    borderRadius: "4px",
+                    fontSize: "10px",
+                    fontWeight: 600,
+                    color: ticket.pass ? t.green : t.red,
+                  },
+                },
+                ticket.pass ? Icon.check(ticket.pass ? t.green : t.red) : null,
+                ticket.pass ? "Pass" : "Fail"
+              )
+            )
+          )
+        )
+      )
+    )
+  );
+};
+
+// ═══════════════════════════════════════════════════════════════════════════════════
+// COMPONENT: Monitors Page
+// ═══════════════════════════════════════════════════════════════════════════════════
+
+const MonitorsPage = ({ onBack }) => {
+  const [selectedMonitor, setSelectedMonitor] = useState(null);
+
+  // Monitor data for UrbanStems
+  const monitors = [
+    {
+      id: 1,
+      name: "Quality Issue / Damaged Order",
+      adherence: 92,
+      status: "green",
+      tickets: 214,
+      bars: [85, 88, 90, 87, 91, 93, 92],
+    },
+    {
+      id: 2,
+      name: "Cancel an Order",
+      adherence: 94,
+      status: "green",
+      tickets: 156,
+      bars: [78, 82, 88, 91, 93, 94, 94],
+    },
+    {
+      id: 3,
+      name: "Shipping Delay",
+      adherence: 74,
+      status: "red",
+      tickets: 189,
+      bars: [88, 86, 84, 82, 79, 76, 74],
+      alertCount: 12,
+    },
+    {
+      id: 4,
+      name: "Subscription Management",
+      adherence: 81,
+      status: "amber",
+      tickets: 98,
+      bars: [70, 73, 75, 78, 80, 81, 81],
+    },
+    {
+      id: 5,
+      name: "Order Status Inquiry",
+      adherence: 96,
+      status: "green",
+      tickets: 190,
+      bars: [94, 95, 95, 96, 96, 96, 96],
+    },
+  ];
+
+  const getStatusColor = (status) => {
+    if (status === "green") return t.greenDot;
+    if (status === "amber") return t.amber;
+    return t.red;
+  };
+
+  const getStatusText = (status) => {
+    if (status === "green") return "Healthy";
+    if (status === "amber") return "Needs attention";
+    return "Alert";
+  };
+
+  const miniBarColor = (score) => {
+    if (score >= 85) return t.green;
+    if (score >= 70) return t.amber;
+    return t.red;
+  };
+
+  // Left panel: Conversational
+  const leftPanel = React.createElement(
+    "div",
+    {
+      style: {
+        flex: "0 0 360px",
+        display: "flex",
+        flexDirection: "column",
+        backgroundColor: t.surface,
+        borderRight: `1px solid ${t.border}`,
+      },
+    },
+    // Messages area
+    React.createElement(
+      "div",
+      {
+        style: {
+          flex: 1,
+          overflowY: "auto",
+          padding: "24px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "12px",
+        },
+      },
+      React.createElement(
+        FadeIn,
+        { delay: 0 },
+        React.createElement(
+          "div",
+          {
+            style: {
+              backgroundColor: t.surfaceInset,
+              border: `1px solid ${t.border}`,
+              borderRadius: "12px",
+              padding: "16px",
+              fontSize: "14px",
+              color: t.text900,
+              lineHeight: "20px",
+            },
+          },
+          renderText("Here's your monitoring dashboard. You have **5 active skill monitors** tracking production traffic.")
+        )
+      ),
+      React.createElement(
+        FadeIn,
+        { delay: 300 },
+        React.createElement(
+          "div",
+          {
+            style: {
+              backgroundColor: t.surfaceInset,
+              border: `1px solid ${t.border}`,
+              borderRadius: "12px",
+              padding: "16px",
+              fontSize: "14px",
+              color: t.text900,
+              lineHeight: "20px",
+            },
+          },
+          renderText("Overall adherence is **91%** across all skills today. **Quality Issue** and **Cancel an Order** are running smoothly after last week's improvements.")
+        )
+      ),
+      React.createElement(
+        FadeIn,
+        { delay: 600 },
+        React.createElement(
+          "div",
+          {
+            style: {
+              backgroundColor: t.surfaceInset,
+              border: `1px solid ${t.border}`,
+              borderRadius: "12px",
+              padding: "16px",
+              fontSize: "14px",
+              color: t.text900,
+              lineHeight: "20px",
+            },
+          },
+          renderText("**Shipping Delay** needs attention — adherence dipped to **74%** overnight. I've flagged 12 tickets in the review queue.")
+        )
+      ),
+      React.createElement(
+        FadeIn,
+        { delay: 900 },
+        React.createElement(
+          "div",
+          {
+            style: {
+              backgroundColor: t.surfaceInset,
+              border: `1px solid ${t.border}`,
+              borderRadius: "12px",
+              padding: "16px",
+              fontSize: "14px",
+              color: t.text900,
+              lineHeight: "20px",
+            },
+          },
+          "Click any monitor to drill down, or ask me about a specific skill."
+        )
+      )
+    ),
+    // Input area
+    React.createElement(
+      "div",
+      {
+        style: {
+          padding: "16px",
+          borderTop: `1px solid ${t.border}`,
+          display: "flex",
+          gap: "8px",
+        },
+      },
+      React.createElement("input", {
+        type: "text",
+        placeholder: "Ask about a skill...",
+        style: {
+          flex: 1,
+          padding: "10px 12px",
+          border: `1px solid ${t.border}`,
+          borderRadius: "6px",
+          fontSize: "13px",
+          fontFamily: "'Inter', sans-serif",
+          outline: "none",
+        },
+      }),
+      React.createElement(
+        "button",
+        {
+          style: {
+            width: "32px",
+            height: "32px",
+            backgroundColor: t.accent,
+            border: "none",
+            borderRadius: "6px",
+            color: "white",
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          },
+        },
+        Icon.sendArrow("white")
+      )
+    )
+  );
+
+  // Right panel: Dashboard
+  const rightPanel = selectedMonitor
+    ? React.createElement(MonitorDetailView, {
+        monitor: monitors.find(m => m.id === selectedMonitor),
+        onBack: () => setSelectedMonitor(null),
+      })
+    : React.createElement(
+        "div",
+        {
+          style: {
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            overflow: "hidden",
+          },
+        },
+        // Header
+        React.createElement(
+          "div",
+          {
+            style: {
+              padding: "24px",
+              borderBottom: `1px solid ${t.border}`,
+              backgroundColor: t.surface,
+            },
+          },
+          React.createElement("div", { style: { fontSize: "18px", fontWeight: 700, color: t.text900, marginBottom: "4px" } }, "Monitors"),
+          React.createElement("div", { style: { fontSize: "14px", color: t.text700 } }, "Continuous quality scoring on every ticket")
+        ),
+        // Summary stats
+        React.createElement(
+          "div",
+          {
+            style: {
+              padding: "24px",
+              backgroundColor: t.surface,
+              display: "grid",
+              gridTemplateColumns: "repeat(4, 1fr)",
+              gap: "16px",
+            },
+          },
+          [
+            { label: "Total tickets scored", value: "847", subtitle: "today" },
+            { label: "Overall adherence", value: "91%", subtitle: "" },
+            { label: "Active monitors", value: "5", subtitle: "" },
+            { label: "Alerts", value: "1", subtitle: "" },
+          ].map((stat, i) =>
+            React.createElement(
+              "div",
+              { key: i },
+              React.createElement("div", { style: { fontSize: "11px", color: t.text500, fontWeight: 500, marginBottom: "8px", textTransform: "uppercase" } }, stat.label),
+              React.createElement(
+                "div",
+                { style: { display: "flex", alignItems: "baseline", gap: "6px" } },
+                React.createElement("div", { style: { fontSize: "20px", fontWeight: 700, color: t.text900 } }, stat.value),
+                stat.subtitle && React.createElement("div", { style: { fontSize: "11px", color: t.text700 } }, stat.subtitle)
+              )
+            )
+          )
+        ),
+        // Monitor grid
+        React.createElement(
+          "div",
+          {
+            style: {
+              flex: 1,
+              overflowY: "auto",
+              padding: "24px",
+              display: "grid",
+              gridTemplateColumns: "repeat(2, 1fr)",
+              gap: "16px",
+            },
+          },
+          monitors.map((monitor) =>
+            React.createElement(
+              "div",
+              {
+                key: monitor.id,
+                onClick: () => setSelectedMonitor(monitor.id),
+                style: {
+                  border: `1px solid ${t.border}`,
+                  borderRadius: "8px",
+                  padding: "16px",
+                  backgroundColor: t.surface,
+                  cursor: "pointer",
+                  transition: "border-color 0.2s ease, box-shadow 0.2s ease",
+                },
+                onMouseEnter: (e) => {
+                  e.currentTarget.style.borderColor = t.accent;
+                  e.currentTarget.style.boxShadow = `0 0 0 2px ${t.accentLight}`;
+                },
+                onMouseLeave: (e) => {
+                  e.currentTarget.style.borderColor = t.border;
+                  e.currentTarget.style.boxShadow = "none";
+                },
+              },
+              React.createElement(
+                "div",
+                { style: { display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "12px" } },
+                React.createElement("div", { style: { fontSize: "13px", fontWeight: 600, color: t.text900 } }, monitor.name),
+                monitor.alertCount && React.createElement(
+                  "div",
+                  {
+                    style: {
+                      backgroundColor: t.red,
+                      color: "white",
+                      padding: "2px 6px",
+                      borderRadius: "4px",
+                      fontSize: "10px",
+                      fontWeight: 600,
+                    },
+                  },
+                  `${monitor.alertCount} unreviewed`
+                )
+              ),
+              React.createElement(
+                "div",
+                { style: { display: "flex", alignItems: "center", gap: "8px", marginBottom: "12px" } },
+                React.createElement(
+                  "span",
+                  {
+                    style: {
+                      display: "inline-block",
+                      width: "6px",
+                      height: "6px",
+                      borderRadius: "50%",
+                      backgroundColor: getStatusColor(monitor.status),
+                    },
+                  }
+                ),
+                React.createElement("span", { style: { fontSize: "12px", color: t.text700 } }, getStatusText(monitor.status))
+              ),
+              React.createElement("div", { style: { fontSize: "24px", fontWeight: 700, color: scoreColor(monitor.adherence), marginBottom: "12px" } }, `${monitor.adherence}%`),
+              React.createElement("div", { style: { fontSize: "11px", color: t.text700, marginBottom: "12px" } }, `${monitor.tickets} tickets today`),
+              React.createElement(
+                "div",
+                { style: { display: "flex", gap: "2px", marginBottom: "12px", height: "24px", alignItems: "flex-end" } },
+                monitor.bars.map((score, i) =>
+                  React.createElement("div", {
+                    key: i,
+                    style: {
+                      flex: 1,
+                      backgroundColor: miniBarColor(score),
+                      borderRadius: "2px",
+                      height: `${(score / 100) * 100}%`,
+                      minHeight: "2px",
+                    },
+                  })
+                )
+              ),
+              React.createElement("div", { style: { fontSize: "12px", color: t.accent, cursor: "pointer", fontWeight: 500 } }, "View details →")
+            )
+          )
+        )
+      );
+
+  return React.createElement(
+    "div",
+    {
+      style: {
+        display: "flex",
+        flex: 1,
+        height: "100%",
+        backgroundColor: t.pageBg,
+      },
+    },
+    leftPanel,
+    rightPanel
+  );
+};
 
 // ═══════════════════════════════════════════════════════════════════════════════════
 // ERROR BOUNDARY (class component required for componentDidCatch)
@@ -2117,17 +3154,25 @@ const App = () => {
   const [view, setView] = useState("landing");
   const [activeFlowIdx, setActiveFlowIdx] = useState(0);
   const [completedFlows, setCompletedFlows] = useState([]);
-  
+
   const handleFlowComplete = () => {
     if (!completedFlows.includes(activeFlowIdx)) {
       setCompletedFlows(prev => [...prev, activeFlowIdx]);
     }
   };
 
+  const handleNavigate = (newView) => {
+    setView(newView);
+  };
+
   return React.createElement(
     "div",
     { style: { display: "flex", height: "100vh", backgroundColor: t.pageBg, fontFamily: "'Inter', sans-serif" } },
-    React.createElement(IconNavBar, { activeFlowId: FLOWS[activeFlowIdx]?.id }),
+    React.createElement(IconNavBar, {
+      activeFlowId: FLOWS[activeFlowIdx]?.id,
+      activeView: view,
+      onNavigate: handleNavigate,
+    }),
     React.createElement(
       ErrorBoundary,
       null,
@@ -2145,13 +3190,18 @@ const App = () => {
           onBack: () => setView("landing"),
           onFlowComplete: handleFlowComplete,
           completedFlows: completedFlows,
+        }),
+        view === "monitors" && React.createElement(MonitorsPage, {
+          onBack: () => setView("landing"),
         })
       )
     )
   );
 };
 
-export default App;
-if (typeof window !== 'undefined') {
-  window.__APP__ = App;
-}
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(React.createElement(App));
+
+  </script>
+</body>
+</html>

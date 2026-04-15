@@ -46,6 +46,7 @@
     .sidebar.collapsed .sidebar-user span { opacity: 0; width: 0; overflow: hidden; pointer-events: none; }
     .sidebar.collapsed .sidebar-nav { padding: 0 8px; }
     .sidebar.collapsed .sidebar-item { justify-content: center; padding: 8px; gap: 0; }
+    .sidebar.collapsed .sidebar-label { opacity: 0; width: 0; overflow: hidden; pointer-events: none; }
     .sidebar.collapsed .sidebar-bottom { padding: 12px 14px; display: flex; justify-content: center; }
     .sidebar.collapsed .sidebar-user { justify-content: center; }
     .sidebar.collapsed .sidebar-logo { gap: 0; }
@@ -138,7 +139,7 @@
     .story-label.critique { background: #fde8ec; color: #c4314b; }
     .story-label.opportunity { background: #f1ecff; color: #7E55F6; }
     .story-card .story-title { font-size: 14px; font-weight: 600; line-height: 20px; margin-bottom: 4px; }
-    .story-card .story-title-xl { font-size: 24px; font-weight: 600; line-height: 30px; letter-spacing: -0.01em; color: #1e242e; margin-bottom: 4px; }
+    .story-card .story-title-xl { font-size: 18px; font-weight: 600; line-height: 24px; letter-spacing: -0.01em; color: #1e242e; margin-bottom: 4px; }
 
     /* Verdict card */
     .verdict-banner { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: #f0fbf6; border: 1px solid #b8ecd8; border-radius: 10px; margin-bottom: 16px; }
@@ -168,6 +169,31 @@
     .eval-metric-delta.positive { color: #147656; }
     .eval-metric-delta.warn { color: #b45309; }
 
+    /* New, hierarchy-driven evaluation layout */
+    .eval-hero { background: #f0fbf6; border: 1px solid #b8ecd8; border-radius: 12px; padding: 14px 18px; margin-bottom: 10px; display: flex; align-items: center; gap: 16px; }
+    .eval-hero-main { flex: 1; min-width: 0; }
+    .eval-hero-label { font-size: 11px; font-weight: 600; color: #147656; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 2px; }
+    .eval-hero-value { font-size: 30px; font-weight: 700; color: #1e242e; line-height: 36px; display: flex; align-items: center; gap: 10px; }
+    .eval-hero-delta { font-size: 12px; font-weight: 600; color: #147656; background: #d0f3e0; padding: 3px 8px; border-radius: 5px; letter-spacing: 0; line-height: 16px; }
+    .eval-hero-sub { font-size: 12px; color: #5c6370; margin-top: 2px; }
+
+    .eval-strip { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid #e8e8ec; border-radius: 10px; overflow: hidden; margin-bottom: 16px; background: #fff; }
+    .eval-strip-stat { padding: 12px 16px; display: flex; flex-direction: column; gap: 2px; border-right: 1px solid #f0f0f4; min-width: 0; position: relative; }
+    .eval-strip-stat:last-of-type { border-right: none; }
+    .eval-strip-stat.warn { background: #fef6e7; }
+    .eval-strip-label { font-size: 11px; font-weight: 600; color: #5c6370; letter-spacing: 0.02em; text-transform: uppercase; }
+    .eval-strip-value { font-size: 22px; font-weight: 600; color: #1e242e; line-height: 28px; }
+    .eval-strip-value.warn { color: #b45309; }
+    .eval-strip-explain { display: inline-flex; align-items: center; gap: 4px; margin-top: 6px; font-size: 12px; font-weight: 600; color: #7E55F6; background: none; border: none; padding: 0; cursor: pointer; font-family: inherit; }
+    .eval-strip-explain:hover { text-decoration: underline; }
+    .eval-strip-explain svg { width: 12px; height: 12px; flex-shrink: 0; }
+
+    .eval-dist-takeaway { font-size: 13px; color: #1e242e; font-weight: 500; margin-bottom: 6px; }
+    .eval-dist-takeaway strong { font-weight: 600; color: #147656; }
+
+    /* Count-up animation utility — set data-count-to and data-count-suffix */
+    .count-up { display: inline-block; font-variant-numeric: tabular-nums; }
+
     .score-dist-inline { margin-top: 4px; padding: 12px 14px; background: #fafafa; border: 1px solid #e8e8ec; border-radius: 10px; }
     .score-dist-label { font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #5c6370; margin-bottom: 8px; }
 
@@ -181,10 +207,9 @@
     .status-pill.ok::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #147656; }
 
     /* Explain link (entry-point into left-panel conversation) */
-    .explain-link { display: inline-flex; align-items: center; gap: 4px; margin-top: 6px; font-size: 12px; font-weight: 500; color: #7E55F6; background: none; border: none; padding: 0; cursor: pointer; font-family: inherit; }
+    .explain-link { display: inline-flex; align-items: center; gap: 6px; margin-top: 6px; font-size: 12px; font-weight: 500; color: #7E55F6; background: none; border: none; padding: 0; cursor: pointer; font-family: inherit; }
     .explain-link:hover { color: #5a3dd2; text-decoration: underline; }
-    .explain-link svg { width: 10px; height: 10px; transition: transform 120ms; }
-    .explain-link:hover svg { transform: translateX(2px); }
+    .explain-link svg { width: 14px; height: 14px; flex-shrink: 0; }
 
     /* Test set card */
     .test-set-card { margin-top: 16px; padding: 16px 18px; background: #fafafa; border: 1px solid #e8e8ec; border-radius: 10px; }
@@ -301,9 +326,18 @@
     .outcomes-samples-sub { font-size: 12px; color: #5c6370; }
 
     /* Outcome tag on saved-conversation rows (Beat 7 samples) */
-    .outcome-tag { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; color: #147656; background: #e7f5ec; border: 1px solid #d7ecd7; padding: 3px 8px; border-radius: 999px; white-space: nowrap; }
+    .outcome-tag { display: inline-flex; align-self: flex-start; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; color: #147656; background: #e7f5ec; border: 1px solid #d7ecd7; padding: 3px 8px; border-radius: 999px; white-space: nowrap; width: auto; max-width: max-content; }
     .outcome-tag-dot { width: 6px; height: 6px; border-radius: 50%; background: #147656; }
     .ticket-card .outcome-tag { margin-top: 2px; }
+    .outcomes-show-more { display: flex; justify-content: center; padding: 10px 0 2px; }
+    .outcomes-show-more-btn { background: transparent; border: 1px solid #e8e8ec; color: #1e242e; font-size: 12px; font-weight: 600; padding: 7px 14px; border-radius: 8px; cursor: pointer; transition: background 120ms, border-color 120ms; }
+    .outcomes-show-more-btn:hover { background: #f5f6f7; border-color: #d0d4da; }
+    .outcomes-cta-row { display: flex; gap: 8px; justify-content: flex-end; margin-top: 18px; padding-top: 16px; border-top: 1px solid #f0f0f4; }
+    .outcomes-cta-primary { background: #1e242e; color: #fff; border: none; padding: 9px 14px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; transition: background 120ms; }
+    .outcomes-cta-primary:hover { background: #000; }
+    .outcomes-cta-secondary { background: transparent; color: #1e242e; border: 1px solid #e8e8ec; padding: 9px 14px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; transition: background 120ms; }
+    .outcomes-cta-secondary:hover { background: #f5f6f7; }
+    .outcomes-annualized-pill { display: inline-flex; align-items: center; gap: 5px; margin-left: 8px; padding: 2px 8px; border-radius: 999px; background: #e7f5ec; color: #147656; font-size: 11px; font-weight: 600; vertical-align: middle; }
 
     /* Outcome block inside the ticket side-panel for saved threads */
     .saved-outcome-block { background: #f5fbf7; border: 1px solid #d7ecd7; border-radius: 10px; padding: 14px 16px; margin-top: 16px; }
@@ -364,6 +398,74 @@
     .diff-add { background: #d7f5e7; color: #0f5a3f; padding: 1px 3px; border-radius: 3px; font-weight: 500; }
 
     .highlight { background: #f1ecff; padding: 1px 4px; border-radius: 3px; color: #7E55F6; font-weight: 500; }
+
+    /* Ticket overlay — Chris-escalation-style (Copilot + View ticket tabs) */
+    .ticket-modal-backdrop { position: fixed; inset: 0; background: rgba(15, 18, 24, 0.32); z-index: 110; opacity: 0; transition: opacity 180ms ease; pointer-events: none; }
+    .ticket-modal-backdrop.open { opacity: 1; pointer-events: auto; }
+    .ticket-modal { position: fixed; top: 24px; left: 50%; transform: translate(-50%, 10px); width: calc(100vw - 96px); max-width: 1080px; height: calc(100vh - 48px); background: #fff; border-radius: 14px; box-shadow: 0 20px 60px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.06); z-index: 111; display: flex; flex-direction: column; overflow: hidden; opacity: 0; pointer-events: none; transition: opacity 180ms ease, transform 220ms cubic-bezier(0.22,1,0.36,1); }
+    .ticket-modal.open { opacity: 1; pointer-events: auto; transform: translate(-50%, 0); }
+    .tm-topbar { display: flex; align-items: center; justify-content: space-between; padding: 14px 22px; border-bottom: 1px solid #eef0f2; flex-shrink: 0; gap: 16px; }
+    .tm-breadcrumb { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #5c6370; min-width: 0; flex: 1; }
+    .tm-breadcrumb .crumb-link { color: #8a8f98; }
+    .tm-breadcrumb .crumb-sep { color: #d0d4da; }
+    .tm-breadcrumb .crumb-id { font-weight: 600; color: #1e242e; }
+    .tm-breadcrumb .crumb-subject { color: #1e242e; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .tm-topbar-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .tm-badge { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 500; padding: 3px 9px; border-radius: 999px; border: 1px solid transparent; }
+    .tm-badge.open { background: #e9fbf0; color: #147a3a; border-color: #c8efd6; }
+    .tm-badge.crit { background: #fdecee; color: #c4314b; border-color: #f7c8ce; }
+    .tm-badge.crit::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #c4314b; }
+    .tm-icon-btn { width: 28px; height: 28px; border: none; background: transparent; border-radius: 6px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #5c6370; transition: all 120ms; }
+    .tm-icon-btn:hover { background: #f5f6f7; color: #1e242e; }
+    .tm-icon-btn:disabled { opacity: 0.35; cursor: default; }
+    .tm-icon-btn:disabled:hover { background: transparent; color: #5c6370; }
+    .tm-tabs { display: flex; align-items: center; gap: 4px; padding: 0 22px; border-bottom: 1px solid #eef0f2; flex-shrink: 0; }
+    .tm-tab { font-size: 13px; font-weight: 500; color: #5c6370; padding: 12px 4px; margin-right: 20px; background: transparent; border: none; cursor: pointer; border-bottom: 2px solid transparent; font-family: 'Inter', sans-serif; transition: color 120ms; }
+    .tm-tab:hover { color: #1e242e; }
+    .tm-tab.active { color: #1e242e; border-bottom-color: #1e242e; }
+    .tm-content { flex: 1; overflow: hidden; display: flex; min-height: 0; }
+    .tm-pane { display: none; flex: 1; min-height: 0; }
+    .tm-pane.active { display: flex; }
+
+    /* Copilot pane */
+    .tm-copilot { flex: 1; overflow-y: auto; padding: 28px 32px 32px; display: flex; flex-direction: column; gap: 18px; align-items: center; }
+    .tm-copilot-inner { width: 100%; max-width: 640px; display: flex; flex-direction: column; gap: 18px; }
+    .tm-meta { font-size: 12px; color: #8a8f98; }
+    .tm-title { font-size: 18px; font-weight: 600; color: #1e242e; line-height: 26px; letter-spacing: -0.01em; }
+    .tm-customer-card { border: 1px solid #eef0f2; border-radius: 10px; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px; }
+    .tm-customer-row { display: flex; align-items: center; gap: 10px; }
+    .tm-customer-avatar { width: 32px; height: 32px; border-radius: 50%; background: #f1ecff; color: #7E55F6; font-size: 11px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .tm-customer-name { font-size: 14px; font-weight: 600; color: #1e242e; }
+    .tm-vip { font-size: 10px; font-weight: 600; letter-spacing: 0.04em; padding: 2px 7px; border-radius: 4px; background: #fff4dc; color: #92610b; border: 1px solid #f2dfa5; }
+    .tm-customer-summary { font-size: 13px; line-height: 20px; color: #5c6370; }
+    .tm-section-heading { font-size: 13px; font-weight: 600; color: #1e242e; margin-bottom: 6px; }
+    .tm-quote-wrap { background: linear-gradient(180deg, #faf8ff 0%, #f6f2ff 100%); border: 1px solid #e7defb; border-radius: 12px; padding: 24px 24px 20px; position: relative; }
+    .tm-quote-mark { position: absolute; top: 8px; left: 16px; font-family: Georgia, serif; font-size: 48px; line-height: 1; color: #d4c2fb; font-weight: 700; user-select: none; }
+    .tm-quote { font-size: 22px; line-height: 32px; font-weight: 500; color: #1e242e; padding-left: 24px; letter-spacing: -0.01em; }
+    .tm-quote .q-highlight { background: #ece0ff; color: #5a2fe0; padding: 1px 6px; border-radius: 4px; font-weight: 600; }
+    .tm-footnote { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #8a8f98; margin-top: 10px; }
+    .tm-footnote svg { width: 13px; height: 13px; flex-shrink: 0; }
+    .tm-footnote .tm-tab-inline { color: #5c6370; font-weight: 500; }
+
+    /* View ticket pane */
+    .tm-viewticket { flex: 1; display: flex; min-height: 0; }
+    .tm-thread { flex: 1; overflow-y: auto; padding: 24px 28px; display: flex; flex-direction: column; gap: 14px; background: #fafafa; min-width: 0; }
+    .tm-thread-title { font-size: 13px; font-weight: 600; color: #1e242e; margin-bottom: 4px; }
+    .tm-rail { width: 280px; border-left: 1px solid #eef0f2; padding: 22px 22px 22px; overflow-y: auto; flex-shrink: 0; display: flex; flex-direction: column; gap: 20px; background: #fff; }
+    .tm-rail-label { font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #8a8f98; margin-bottom: 10px; }
+    .tm-rail-row { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #1e242e; margin-bottom: 8px; }
+    .tm-rail-row svg { width: 14px; height: 14px; color: #8a8f98; flex-shrink: 0; }
+    .tm-rail-customer { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    .tm-rail-customer-info { display: flex; flex-direction: column; gap: 1px; }
+    .tm-rail-customer-name { font-size: 13px; font-weight: 600; color: #1e242e; }
+    .tm-rail-customer-sub { font-size: 12px; color: #8a8f98; }
+    .tm-rail-note { font-size: 12px; color: #8a8f98; font-style: italic; line-height: 17px; margin-top: 8px; }
+    .tm-rail-order { border: 1px solid #eef0f2; border-radius: 8px; padding: 12px 14px; }
+    .tm-rail-order-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+    .tm-rail-order-id { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: #1e242e; }
+    .tm-rail-order-id svg { width: 13px; height: 13px; color: #8a8f98; }
+    .tm-rail-order-status { font-size: 10px; font-weight: 600; letter-spacing: 0.04em; padding: 2px 7px; border-radius: 4px; background: #fff2db; color: #b45309; border: 1px solid #f5dca6; }
+    .tm-rail-order-sub { font-size: 12px; color: #5c6370; }
 
     /* Ticket thread side panel */
     .ticket-panel-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.08); z-index: 100; opacity: 0; transition: opacity 200ms ease; pointer-events: none; }
@@ -445,6 +547,26 @@
     .signal-count { font-size: 13px; font-weight: 600; color: #7E55F6; }
     .signal-fill { height: 6px; border-radius: 3px; background: #7E55F6; }
     .signal-track { flex: 1; height: 6px; border-radius: 3px; background: #e8e8ec; overflow: hidden; }
+
+    /* Stacked distribution bar for in-card breakdowns */
+    .stacked-bar-label { font-size: 11px; font-weight: 600; color: #5c6370; letter-spacing: 0.02em; margin-bottom: 8px; text-transform: uppercase; }
+    .stacked-bar { display: flex; width: 100%; height: 10px; border-radius: 5px; overflow: hidden; background: #e8e8ec; }
+    .stacked-bar-seg { height: 100%; transition: flex-grow 400ms cubic-bezier(0.6, 0, 0, 1); }
+    .stacked-legend { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px 20px; margin-top: 12px; }
+    .stacked-legend-item { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #1e242e; }
+    .stacked-legend-swatch { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+    .stacked-legend-label { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #5c6370; }
+    .stacked-legend-count { font-weight: 600; color: #1e242e; }
+
+    /* Two-column insight header: title/body on left, hero metric on right */
+    .insight-header { display: flex; gap: 20px; align-items: flex-start; margin-bottom: 16px; }
+    .insight-header-main { flex: 1; min-width: 0; }
+    .insight-stat-line { font-size: 13px; color: #5c6370; margin-top: 4px; margin-bottom: 10px; }
+    .insight-hero-metric { width: 200px; flex-shrink: 0; background: #fff7f8; border: 1px solid #f8d4da; border-radius: 10px; padding: 16px 18px; }
+    .insight-hero-metric-label { font-size: 11px; font-weight: 600; color: #c4314b; letter-spacing: 0.02em; text-transform: uppercase; margin-bottom: 6px; }
+    .insight-hero-metric-value { font-size: 28px; font-weight: 700; color: #1e242e; line-height: 32px; }
+    .insight-hero-metric-unit { font-size: 14px; font-weight: 500; color: #5c6370; margin-left: 4px; }
+    .insight-hero-metric-sub { font-size: 12px; color: #5c6370; margin-top: 4px; }
 
     /* Edge case card */
     .edge-case { display: flex; gap: 12px; padding: 12px 14px; background: #fef3e2; border-radius: 8px; margin-bottom: 8px; }
@@ -547,13 +669,31 @@
     .eval-table-footer { padding: 10px 14px; background: #fafafa; border-top: 1px solid #e8e8ec; display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: #5c6370; }
 
     /* Side panel overlay — Notion-style */
-    .eval-side-panel-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.08); z-index: 100; opacity: 0; transition: opacity 200ms ease; pointer-events: none; }
+    /* Eval modal — centered, mirrors the ticket-modal pattern */
+    .eval-side-panel-backdrop { position: fixed; inset: 0; background: rgba(15, 18, 24, 0.32); z-index: 100; opacity: 0; transition: opacity 180ms ease; pointer-events: none; }
     .eval-side-panel-backdrop.open { opacity: 1; pointer-events: auto; }
-    .eval-side-panel { position: fixed; top: 0; right: 0; bottom: 0; width: 480px; background: #fff; z-index: 101; box-shadow: -8px 0 32px rgba(0,0,0,0.10); transform: translateX(100%); transition: transform 280ms cubic-bezier(0.22, 1, 0.36, 1); display: flex; flex-direction: column; overflow: hidden; }
-    .eval-side-panel.open { transform: translateX(0); }
-    .eval-side-panel-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px 16px; border-bottom: 1px solid #e8e8ec; flex-shrink: 0; }
-    .eval-side-panel-header-left { display: flex; align-items: center; gap: 10px; min-width: 0; }
-    .eval-side-panel-name { font-size: 16px; font-weight: 600; color: #1e242e; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .eval-side-panel { position: fixed; top: 24px; left: 50%; transform: translate(-50%, 10px); width: calc(100vw - 96px); max-width: 1120px; height: calc(100vh - 48px); background: #fff; border-radius: 14px; box-shadow: 0 20px 60px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.06); z-index: 101; display: flex; flex-direction: column; overflow: hidden; opacity: 0; pointer-events: none; transition: opacity 180ms ease, transform 220ms cubic-bezier(0.22,1,0.36,1); }
+    .eval-side-panel.open { opacity: 1; pointer-events: auto; transform: translate(-50%, 0); }
+    .eval-side-panel-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; border-bottom: 1px solid #eef0f2; flex-shrink: 0; gap: 16px; background: #fff; }
+    .eval-side-panel-header-left { display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1; }
+    .em-breadcrumb { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #8a8f98; min-width: 0; }
+    .em-breadcrumb .crumb-link { color: #8a8f98; }
+    .em-breadcrumb .crumb-sep { color: #d0d4da; }
+    .em-breadcrumb .crumb-subject { color: #1e242e; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 260px; }
+    .em-header-verdict { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 999px; border: 1px solid transparent; letter-spacing: 0.02em; }
+    .em-header-verdict.ok { background: #e9fbf5; color: #147656; border-color: #c8efd6; }
+    .em-header-verdict.flag { background: #fef3e2; color: #b45309; border-color: #f5dca6; }
+    .em-header-verdict.err { background: #fdecee; color: #c4314b; border-color: #f7c8ce; }
+    .em-header-score { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: #5c6370; }
+    .em-header-score strong { font-size: 14px; font-weight: 700; color: #1e242e; }
+    .em-header-score .em-delta { font-size: 11px; font-weight: 600; padding: 2px 6px; border-radius: 4px; }
+    .em-header-score .em-delta.pos { background: #d0f3e0; color: #147656; }
+    .em-header-score .em-delta.neg { background: #fde8ec; color: #c4314b; }
+    /* Nav filter segmented control */
+    .em-filter { display: inline-flex; align-items: center; background: #f5f6f7; border-radius: 6px; padding: 2px; gap: 2px; flex-shrink: 0; }
+    .em-filter button { font-size: 11px; font-weight: 500; color: #5c6370; padding: 4px 9px; background: transparent; border: none; border-radius: 4px; cursor: pointer; font-family: inherit; white-space: nowrap; }
+    .em-filter button.active { background: #fff; color: #1e242e; font-weight: 600; box-shadow: 0 1px 2px rgba(0,0,0,0.06); }
+    .em-filter button:hover:not(.active) { color: #1e242e; }
     .eval-side-panel-close { width: 28px; height: 28px; border: none; background: transparent; border-radius: 6px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #5c6370; transition: all 120ms; flex-shrink: 0; }
     .eval-side-panel-close:hover { background: #f5f6f7; color: #1e242e; }
     .eval-side-panel-nav { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
@@ -561,7 +701,161 @@
     .eval-side-panel-nav-btn:hover { border-color: #7E55F6; color: #7E55F6; }
     .eval-side-panel-nav-btn:disabled { opacity: 0.3; cursor: default; border-color: #e8e8ec; color: #d0d4da; }
     .eval-side-panel-nav-btn:disabled:hover { border-color: #e8e8ec; color: #d0d4da; }
-    .eval-side-panel-body { flex: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 20px; }
+    /* Tabs */
+    .em-tabs { display: flex; align-items: center; gap: 4px; padding: 0 20px; border-bottom: 1px solid #eef0f2; flex-shrink: 0; background: #fff; }
+    .em-tab { font-size: 13px; font-weight: 500; color: #5c6370; padding: 10px 4px; margin-right: 20px; background: transparent; border: none; cursor: pointer; border-bottom: 2px solid transparent; font-family: inherit; transition: color 120ms; }
+    .em-tab:hover { color: #1e242e; }
+    .em-tab.active { color: #1e242e; border-bottom-color: #1e242e; font-weight: 600; }
+    /* 2-column body */
+    .eval-side-panel-body { flex: 1; overflow: hidden; padding: 0; display: flex; min-height: 0; background: #fafafa; }
+    .em-main { flex: 1; overflow-y: auto; padding: 20px 22px 24px; display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+    .em-rail { width: 300px; border-left: 1px solid #eef0f2; padding: 20px 20px; overflow-y: auto; flex-shrink: 0; display: flex; flex-direction: column; gap: 18px; background: #fff; }
+    .em-rail-section-label { font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #8a8f98; margin-bottom: 10px; }
+    .em-rail-row { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #1e242e; margin-bottom: 8px; }
+    .em-rail-row svg { width: 14px; height: 14px; color: #8a8f98; flex-shrink: 0; }
+    .em-rail-kv { display: flex; justify-content: space-between; align-items: baseline; font-size: 12px; padding: 4px 0; }
+    .em-rail-kv .k { color: #8a8f98; }
+    .em-rail-kv .v { color: #1e242e; font-weight: 500; }
+    .em-action-btn { display: flex; align-items: flex-start; gap: 10px; width: 100%; text-align: left; padding: 10px 12px; border: 1px solid #e8e8ec; background: #fff; border-radius: 8px; cursor: pointer; font-family: inherit; transition: all 120ms; margin-bottom: 8px; }
+    .em-action-btn:hover { border-color: #7E55F6; background: #faf7ff; }
+    .em-action-btn.primary { border-color: #7E55F6; background: #f4eeff; }
+    .em-action-btn.primary:hover { background: #ede3ff; }
+    .em-action-icon { width: 20px; height: 20px; border-radius: 5px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; flex-shrink: 0; margin-top: 1px; }
+    .em-action-icon.guard { background: #fef3e2; color: #b45309; }
+    .em-action-icon.accept { background: #e9fbf5; color: #147656; }
+    .em-action-icon.synth { background: #f1ecff; color: #7E55F6; }
+    .em-action-icon.override { background: #f5f6f7; color: #5c6370; }
+    .em-action-title { font-size: 13px; font-weight: 600; color: #1e242e; line-height: 18px; }
+    .em-action-sub { font-size: 11px; color: #5c6370; line-height: 15px; margin-top: 1px; }
+    /* Compare card (diff-style) */
+    .em-compare { border: 1px solid #e8e8ec; border-radius: 10px; overflow: hidden; background: #fff; }
+    .em-compare-row { display: grid; grid-template-columns: 110px 1fr; border-bottom: 1px solid #eef0f2; }
+    .em-compare-row:last-child { border-bottom: none; }
+    .em-compare-label-cell { padding: 12px 14px; background: #fafafa; border-right: 1px solid #eef0f2; font-size: 10px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #5c6370; display: flex; align-items: flex-start; gap: 6px; }
+    .em-compare-label-cell.draft { color: #7E55F6; background: #faf7ff; }
+    .em-compare-body-cell { padding: 12px 16px; font-size: 13px; line-height: 20px; color: #1e242e; }
+    .em-compare-body-cell.draft.fail { background: #fff7f8; }
+    .em-compare-body-cell.draft.ok { background: #f4fbf7; }
+    .em-compare-body-cell .diff-add { background: #dcfce7; color: #065f46; padding: 1px 3px; border-radius: 3px; }
+    .em-compare-body-cell .diff-rem { background: #fee2e2; color: #991b1b; padding: 1px 3px; border-radius: 3px; text-decoration: line-through; text-decoration-color: #dc2626; text-decoration-thickness: 1px; }
+    /* Adherence hero in review pane */
+    .em-adh-hero { display: grid; grid-template-columns: 120px 1fr; gap: 16px; border: 1px solid #e8e8ec; border-radius: 10px; padding: 14px 16px; background: #fff; align-items: center; }
+    .em-adh-hero.fail { background: #fff7f8; border-color: #f8d4da; }
+    .em-adh-hero.pass { background: #f4fbf7; border-color: #c8efd6; }
+    .em-adh-hero-val { font-size: 36px; font-weight: 700; line-height: 40px; letter-spacing: -0.02em; }
+    .em-adh-hero-val.fail { color: #c4314b; }
+    .em-adh-hero-val.pass { color: #147656; }
+    .em-adh-hero-label { font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #5c6370; margin-bottom: 4px; }
+    .em-adh-hero-title { font-size: 13px; font-weight: 600; color: #1e242e; margin-bottom: 2px; }
+    .em-adh-hero-reason { font-size: 12px; line-height: 18px; color: #5c6370; }
+    .em-adh-hero-reason .freq-hl { background: #ece0ff; color: #5a2fe0; padding: 0 4px; border-radius: 3px; font-weight: 600; }
+    .em-secondary-scorers { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .em-secondary-scorer { border: 1px solid #e8e8ec; background: #fff; border-radius: 8px; padding: 10px 12px; }
+    .em-secondary-scorer-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 3px; }
+    .em-secondary-scorer-name { font-size: 11px; font-weight: 600; color: #1e242e; }
+    .em-secondary-scorer-val { font-size: 14px; font-weight: 700; }
+    .em-secondary-scorer-reason { font-size: 11px; line-height: 15px; color: #5c6370; }
+    /* Fix / guardrail suggestion card */
+    .em-fix-card { border: 1px solid #f5dca6; background: #fffbeb; border-radius: 10px; padding: 14px 16px; }
+    .em-fix-card.pass { border-color: #c8efd6; background: #f4fbf7; }
+    .em-fix-header { display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #b45309; margin-bottom: 6px; }
+    .em-fix-card.pass .em-fix-header { color: #147656; }
+    .em-fix-title { font-size: 13px; font-weight: 600; color: #1e242e; margin-bottom: 4px; }
+    .em-fix-body { font-size: 12px; line-height: 18px; color: #3a4048; margin-bottom: 10px; }
+    .em-fix-cta { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; color: #7E55F6; background: #fff; border: 1px solid #d4c2fb; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-family: inherit; }
+    .em-fix-cta:hover { background: #f4eeff; }
+    /* Section header */
+    .em-section-head { font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #8a8f98; margin-bottom: 8px; }
+    /* Customer message card */
+    .em-customer-card { background: #fff; border: 1px solid #e8e8ec; border-radius: 10px; padding: 12px 14px; display: flex; gap: 10px; align-items: flex-start; }
+    .em-customer-avatar { width: 26px; height: 26px; border-radius: 50%; background: #e8e8ec; color: #5c6370; font-size: 10px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .em-customer-body { flex: 1; font-size: 13px; line-height: 20px; color: #1e242e; }
+    .em-customer-meta { font-size: 11px; color: #8a8f98; margin-bottom: 3px; }
+    /* Thread (conversation tab) */
+    .em-thread { padding: 20px 24px; overflow-y: auto; background: #fafafa; flex: 1; }
+    .em-thread-inner { max-width: 680px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
+    .em-thread-subject { font-size: 13px; font-weight: 600; color: #1e242e; margin-bottom: 8px; }
+    .em-thread-msg { display: flex; gap: 10px; align-items: flex-start; }
+    .em-thread-msg.outbound { flex-direction: row-reverse; }
+    .em-thread-avatar { width: 28px; height: 28px; border-radius: 50%; font-size: 10px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .em-thread-avatar.customer { background: #e8e8ec; color: #5c6370; }
+    .em-thread-avatar.agent { background: #f1ecff; color: #7E55F6; }
+    .em-thread-bubble-wrap { display: flex; flex-direction: column; gap: 3px; max-width: 75%; }
+    .em-thread-msg.outbound .em-thread-bubble-wrap { align-items: flex-end; }
+    .em-thread-meta { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #8a8f98; padding: 0 4px; }
+    .em-thread-meta strong { color: #5c6370; font-weight: 600; }
+    .em-thread-bubble { padding: 10px 14px; font-size: 13px; line-height: 20px; color: #1e242e; border-radius: 12px; background: #fff; border: 1px solid #e8e8ec; }
+    .em-thread-bubble.customer { border-bottom-left-radius: 4px; }
+    .em-thread-bubble.production { border-bottom-right-radius: 4px; }
+    .em-thread-bubble.draft { border-bottom-right-radius: 4px; background: #faf7ff; border-color: #d4c2fb; }
+    .em-thread-bubble.draft.fail { background: #fff7f8; border-color: #f8d4da; }
+    .em-thread-divider { display: flex; align-items: center; gap: 10px; padding: 4px 0; }
+    .em-thread-divider-line { flex: 1; height: 1px; background: #e8e8ec; }
+    .em-thread-divider-label { font-size: 10px; color: #8a8f98; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 600; }
+    /* Hide old body styles when using modal layout */
+    .em-pane { display: none; flex: 1; min-height: 0; }
+    .em-pane.active { display: flex; flex-direction: column; }
+
+    /* ----- Simplified review pane (v2) ----- */
+    /* Verdict strip (one tonal chip) */
+    .em-verdict-strip { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 8px; background: #f5f6f7; border: 1px solid #eef0f2; }
+    .em-verdict-strip.flag { background: #fef8ee; border-color: #f5e6c4; }
+    .em-verdict-strip.ok   { background: #f2faf5; border-color: #d7ecd7; }
+    .em-verdict-strip-icon { width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; background: #fff; }
+    .em-verdict-strip.flag .em-verdict-strip-icon { color: #b45309; }
+    .em-verdict-strip.ok   .em-verdict-strip-icon { color: #147656; }
+    .em-verdict-strip-text { font-size: 13px; line-height: 18px; color: #1e242e; font-weight: 500; }
+    .em-verdict-strip-text strong { font-weight: 600; }
+
+    /* Customer message (neutral) */
+    .em-msg-card { background: #fff; border: 1px solid #eef0f2; border-radius: 10px; padding: 14px 16px; }
+    .em-msg-head { font-size: 11px; color: #8a8f98; margin-bottom: 6px; }
+    .em-msg-body { font-size: 14px; line-height: 22px; color: #1e242e; }
+    .em-msg-body .freq-hl { background: #f1ecff; color: #5a2fe0; padding: 1px 4px; border-radius: 3px; font-weight: 500; }
+
+    /* Outcome narrative (the main content) */
+    .em-outcome { background: #fff; border: 1px solid #eef0f2; border-radius: 10px; padding: 16px 18px; }
+    .em-outcome-body { font-size: 14px; line-height: 24px; color: #1e242e; }
+    .em-outcome-body .prod-pill, .em-outcome-body .draft-pill { font-size: 11px; font-weight: 600; padding: 2px 6px; border-radius: 4px; letter-spacing: 0.02em; margin-right: 2px; white-space: nowrap; }
+    .em-outcome-body .prod-pill  { background: #f1f2f4; color: #5c6370; }
+    .em-outcome-body .draft-pill { background: #f1ecff; color: #5a2fe0; }
+    .em-outcome-body em.em-strong { font-style: normal; font-weight: 600; color: #1e242e; }
+
+    /* Tiny section label above cards */
+    .em-mini-label { font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #8a8f98; margin-bottom: 6px; }
+
+    /* Collapsible details */
+    .em-collapsible { background: #fff; border: 1px solid #eef0f2; border-radius: 10px; overflow: hidden; }
+    .em-collapsible-head { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; cursor: pointer; user-select: none; background: #fff; transition: background 120ms; }
+    .em-collapsible-head:hover { background: #fafafa; }
+    .em-collapsible-title { font-size: 12px; font-weight: 600; color: #1e242e; }
+    .em-collapsible-sub { font-size: 11px; color: #8a8f98; margin-left: 8px; font-weight: 400; }
+    .em-collapsible-chev { width: 14px; height: 14px; color: #8a8f98; transition: transform 180ms; }
+    .em-collapsible.open .em-collapsible-chev { transform: rotate(90deg); }
+    .em-collapsible-body { display: none; padding: 0 16px 16px; border-top: 1px solid #f0f0f4; padding-top: 14px; }
+    .em-collapsible.open .em-collapsible-body { display: block; }
+
+    /* Simplified rail: actions-first */
+    .em-rail-v2 { padding: 20px 18px; }
+    .em-action-btn-v2 { display: flex; align-items: center; gap: 10px; width: 100%; text-align: left; padding: 10px 12px; border: 1px solid #e8e8ec; background: #fff; border-radius: 8px; cursor: pointer; font-family: inherit; transition: all 120ms; margin-bottom: 6px; color: #1e242e; font-size: 13px; font-weight: 500; }
+    .em-action-btn-v2:hover { background: #fafafa; border-color: #d7d9de; }
+    .em-action-btn-v2.primary { background: #1e242e; color: #fff; border-color: #1e242e; font-weight: 600; }
+    .em-action-btn-v2.primary:hover { background: #2a3240; border-color: #2a3240; }
+    .em-action-btn-v2 svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+    /* Inline compare rows (used inside collapsible) */
+    .em-inline-compare { display: flex; flex-direction: column; gap: 8px; }
+    .em-inline-row { display: grid; grid-template-columns: 80px 1fr; gap: 12px; font-size: 13px; line-height: 20px; align-items: start; }
+    .em-inline-row-label { font-size: 11px; font-weight: 600; letter-spacing: 0.02em; text-transform: uppercase; color: #8a8f98; padding-top: 2px; }
+    .em-inline-row-label.draft { color: #5a2fe0; }
+    .em-inline-row-body { color: #1e242e; }
+
+    /* Score chips inside collapsible */
+    .em-score-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+    .em-score-chip { border: 1px solid #eef0f2; border-radius: 8px; padding: 10px 12px; background: #fafafa; }
+    .em-score-chip-name { font-size: 11px; color: #8a8f98; margin-bottom: 2px; }
+    .em-score-chip-val { font-size: 18px; font-weight: 700; color: #1e242e; }
+    .em-score-chip-reason { font-size: 11px; color: #5c6370; margin-top: 4px; line-height: 15px; }
 
     .eval-detail-section { margin-bottom: 0; }
     .eval-detail-label { font-size: 10px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: #5c6370; margin-bottom: 8px; }
@@ -619,12 +913,12 @@
 
     /* A/B split visual */
     .ab-split { display: flex; gap: 2px; height: 8px; border-radius: 4px; overflow: hidden; margin-top: 12px; }
-    .ab-split-a { flex: 1; background: #7E55F6; }
-    .ab-split-b { flex: 1; background: #d0d4da; }
+    .ab-split-a { flex: 1; background: #d0d4da; }
+    .ab-split-b { flex: 1; background: #7E55F6; }
     .ab-labels { display: flex; justify-content: space-between; margin-top: 6px; }
     .ab-label { font-size: 11px; font-weight: 500; letter-spacing: 0.01em; }
-    .ab-label.a { color: #7E55F6; }
-    .ab-label.b { color: #5c6370; }
+    .ab-label.a { color: #5c6370; }
+    .ab-label.b { color: #7E55F6; }
 
     /* Result comparison */
     .result-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; border-radius: 8px; margin-bottom: 6px; }
@@ -634,8 +928,8 @@
     .result-metric-name { font-size: 13px; font-weight: 500; color: #1e242e; }
     .result-values { display: flex; gap: 24px; }
     .result-val { font-size: 13px; font-weight: 600; text-align: center; min-width: 60px; }
-    .result-val.a { color: #7E55F6; }
-    .result-val.b { color: #5c6370; }
+    .result-val.a { color: #5c6370; }
+    .result-val.b { color: #7E55F6; }
 
     /* Landing — audio pill, date, dashboard metrics */
     .landing-date { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 8px; border: 1px solid #e8e8ec; font-size: 12px; font-weight: 500; color: #5c6370; background: #fff; }
@@ -672,11 +966,27 @@
     .landing-insight-badges { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
     .landing-insight-badge { font-size: 11px; font-weight: 600; padding: 2px 10px; border-radius: 4px; letter-spacing: 0.02em; }
     .landing-insight-badge.tracking { background: #e9fbf5; color: #147656; }
+    .landing-insight-badge.signal { background: #fff4e0; color: #9a5a00; }
+    .landing-insight-badge.revenue { background: #e9fbf5; color: #147656; }
     .landing-insight-badge.alert { background: #fde8ec; color: #c4314b; }
     .landing-insight-badge.escalations { background: #f5f6f7; color: #5c6370; font-weight: 500; }
     .landing-insight-title { font-size: 14px; font-weight: 600; line-height: 20px; color: #1e242e; margin-bottom: 6px; }
+    .landing-insight-stat { font-size: 12px; color: #5c6370; margin: -2px 0 8px; }
     .landing-insight-body { font-size: 13px; line-height: 20px; color: #5c6370; }
     .landing-insight-time { font-size: 11px; color: #a0a0b0; margin-top: 10px; }
+
+    /* Split layout for insight cards with a chart */
+    .landing-insight-split { display: flex; gap: 24px; align-items: flex-start; }
+    .landing-insight-main { flex: 1; min-width: 0; }
+    .landing-insight-chart { width: 200px; flex-shrink: 0; display: flex; flex-direction: column; gap: 8px; align-items: flex-end; }
+    .landing-insight-chart svg { width: 100%; height: 72px; display: block; }
+    .landing-insight-chart-caption { font-size: 11px; color: #a0a0b0; }
+
+    /* Inline metric strip — scannable numbers pulled out of prose */
+    .landing-insight-metrics { display: flex; gap: 20px; margin: 12px 0 4px; padding: 10px 0 0; border-top: 1px solid #f0f0f4; }
+    .landing-insight-metric-label { font-size: 11px; color: #5c6370; margin-bottom: 2px; letter-spacing: 0.02em; }
+    .landing-insight-metric-value { font-size: 16px; font-weight: 600; color: #1e242e; line-height: 20px; }
+    .landing-insight-metric-value .pos { color: #147656; font-size: 12px; font-weight: 500; margin-left: 4px; }
 
     /* Skeleton loader */
     @keyframes shimmer { 0% { background-position: -400px 0; } 100% { background-position: 400px 0; } }
@@ -732,8 +1042,8 @@
     <div class="sidebar">
       <div class="sidebar-top">
         <div class="sidebar-logo">
-          <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#7E55F6"/><path d="M8 12.5c0-2.5 1.8-4.5 4-4.5s4 2 4 4.5-1.8 4.5-4 4.5-4-2-4-4.5z" fill="#fff"/></svg>
-          <span class="sidebar-logo-text">Home</span>
+          <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="32" height="32" rx="8" fill="#213B56"/><path d="M8.00034 7.93848C13.9466 7.93848 15.433 11.9027 15.433 13.8848V26.2461C14.0978 26.2461 12.9885 26.0047 12.0697 25.6055V22.9209L11.0521 22.6084V25.0527C8.66497 23.4581 7.98239 20.6395 8.00034 18.9697V7.93848ZM24.0003 18.9697C24.0267 21.3951 22.5612 26.2461 16.4896 26.2461V13.8848C16.4895 11.9028 17.9918 7.93854 24.0003 7.93848V18.9697ZM13.0863 21.4346L14.1029 21.7871V19.8311L13.0863 19.5186V21.4346ZM11.0521 20.7305L12.0697 21.083V19.166L11.0521 18.8535V20.7305ZM9.0189 20.0664L10.0355 20.418V18.501L9.0189 18.1885V20.0664ZM13.0863 17.6787L14.1029 18.0312V16.0752L13.0863 15.7617V17.6787ZM11.0521 16.9746L12.0697 17.3271V15.4102L11.0521 15.0967V16.9746ZM9.0189 16.3096L10.0355 16.6621V14.7451L9.0189 14.4326V16.3096ZM13.0863 13.9238L14.1029 14.2764V12.3203L13.0863 12.0068V13.9238ZM11.0521 13.2197L12.0697 13.5723V11.6553L11.0521 11.3418V13.2197ZM9.0189 12.5547L10.0355 12.9072V10.9902L9.0189 10.6777V12.5547ZM17.9369 8.95605C17.2849 9.52979 15.9808 10.8807 15.9808 11.6943C15.9808 10.8807 14.6768 9.52987 14.0248 8.95605L15.9808 7L17.9369 8.95605Z" fill="white"/></svg>
+          <span class="sidebar-logo-text">UrbanStems</span>
         </div>
         <div class="sidebar-icons">
           <button class="sidebar-icon-btn"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.3"/><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></button>
@@ -743,27 +1053,31 @@
       <div class="sidebar-nav">
         <button class="sidebar-item active" data-view="home" onclick="navigateTo('home')">
           <svg viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="9" y="2" width="5" height="3" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="2" y="9" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="9" y="7" width="5" height="7" rx="1" stroke="currentColor" stroke-width="1.3"/></svg>
-          Daily digest
+          <span class="sidebar-label">Daily digest</span>
         </button>
         <button class="sidebar-item" data-view="inbox">
           <svg viewBox="0 0 16 16" fill="none"><path d="M2 5.5l6 3.5 6-3.5M2 5.5v6.5a1 1 0 001 1h10a1 1 0 001-1V5.5M2 5.5l6-3.5 6 3.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Inbox
+          <span class="sidebar-label">Inbox</span>
+        </button>
+        <button class="sidebar-item" data-view="outbound">
+          <svg viewBox="0 0 16 16" fill="none"><path d="M2.5 8l11-5.5-3 11-2.5-4.5L2.5 8z" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="sidebar-label">Outbound</span>
         </button>
         <button class="sidebar-item" data-view="skills">
           <svg viewBox="0 0 16 16" fill="none"><path d="M9 1.5L4.5 9H8l-1 5.5L12.5 7H9L9 1.5z" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          Skills
+          <span class="sidebar-label">Skills</span>
         </button>
         <button class="sidebar-item" data-view="knowledge">
           <svg viewBox="0 0 16 16" fill="none"><rect x="2.5" y="1.5" width="11" height="13" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M5.5 5h5M5.5 8h3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
-          Knowledge
+          <span class="sidebar-label">Knowledge</span>
         </button>
         <button class="sidebar-item" data-view="performance" onclick="navigateTo('home')">
           <svg viewBox="0 0 16 16" fill="none"><path d="M2 11v3M6 8v6M10 5v9M14 2v12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-          Performance
+          <span class="sidebar-label">Performance</span>
         </button>
         <button class="sidebar-item" data-view="settings">
           <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.3"/><path d="M8 1.5v2M8 12.5v2M2.5 5l1.7 1M11.8 10l1.7 1M1.5 8h2M12.5 8h2M2.5 11l1.7-1M11.8 6l1.7-1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
-          Settings
+          <span class="sidebar-label">Settings</span>
         </button>
       </div>
       <div class="sidebar-section-label">Recents</div>
@@ -789,6 +1103,12 @@
 
       <!-- Task View (hidden initially) -->
       <div class="task-view hidden" id="taskView">
+        <div class="right-panel">
+          <div class="right-inner">
+            <div class="right-header"><h1 class="heading-xl" id="rightTitle">Performance</h1></div>
+            <div class="right-body" id="rightPanel"></div>
+          </div>
+        </div>
         <div class="left-panel">
           <div class="left-inner">
             <div class="left-frosted-header" id="leftHeader">
@@ -800,44 +1120,182 @@
             </div>
           </div>
         </div>
-        <div class="right-panel">
-          <div class="right-inner">
-            <div class="right-header"><h1 class="heading-xl" id="rightTitle">Performance</h1></div>
-            <div class="right-body" id="rightPanel"></div>
+      </div>
+    </div>
+  </div>
+
+  </div>
+
+  <!-- Eval Modal (replaces side panel) -->
+  <div class="eval-side-panel-backdrop" id="evalBackdrop" onclick="closeEvalPanel()"></div>
+  <div class="eval-side-panel" id="evalSidePanel" role="dialog" aria-modal="true">
+    <div class="eval-side-panel-header">
+      <div class="eval-side-panel-header-left">
+        <div class="em-breadcrumb">
+          <span class="crumb-link">Evaluation</span>
+          <span class="crumb-sep">/</span>
+          <span class="crumb-link">Cancel subscription &middot; draft</span>
+          <span class="crumb-sep">/</span>
+          <span class="crumb-subject" id="evalPanelName"></span>
+          <span class="em-header-verdict" id="evalPanelVerdictBadge"></span>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;flex-shrink:0;">
+        <div class="em-header-score" id="evalPanelHeaderScore"></div>
+        <div class="em-filter" id="evalPanelFilter">
+          <button class="active" data-filter="all" onclick="setEvalFilter('all')">All 8</button>
+          <button data-filter="flag" onclick="setEvalFilter('flag')">Needs review</button>
+          <button data-filter="ok" onclick="setEvalFilter('ok')">Passing</button>
+        </div>
+        <div class="eval-side-panel-nav">
+          <button class="eval-side-panel-nav-btn" id="evalPrevBtn" onclick="navigateEvalPanel(-1)" title="Previous (\u2190)">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M8.5 3.5L5 7l3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <button class="eval-side-panel-nav-btn" id="evalNextBtn" onclick="navigateEvalPanel(1)" title="Next (\u2192)">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5.5 3.5L9 7l-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+        <button class="eval-side-panel-close" onclick="closeEvalPanel()" title="Close (Esc)">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4.5 4.5l7 7M11.5 4.5l-7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="em-tabs">
+      <button class="em-tab active" data-emtab="review" onclick="switchEmTab('review')">Review</button>
+      <button class="em-tab" data-emtab="conversation" onclick="switchEmTab('conversation')">Conversation</button>
+    </div>
+    <div class="eval-side-panel-body">
+      <!-- Review pane: main + rail -->
+      <div class="em-pane active" data-empane="review" style="flex-direction:row;">
+        <div class="em-main" id="evalPanelMain"></div>
+        <aside class="em-rail" id="evalPanelRail"></aside>
+      </div>
+      <!-- Conversation pane -->
+      <div class="em-pane" data-empane="conversation">
+        <div class="em-thread" id="evalPanelThread"></div>
+      </div>
+    </div>
+    <!-- legacy mount point kept for backward compatibility with any older code path; not rendered -->
+    <div id="evalPanelBody" style="display:none;"></div>
+  </div>
+
+  <!-- Ticket Thread Side Panel -->
+  <!-- Ticket Overlay — mirrors Chris' escalation flow (Copilot + View ticket tabs) -->
+  <div class="ticket-modal-backdrop" id="ticketModalBackdrop" onclick="closeTicketModal()"></div>
+  <div class="ticket-modal" id="ticketModal" role="dialog" aria-modal="true">
+    <div class="tm-topbar">
+      <div class="tm-breadcrumb">
+        <span class="crumb-link">Tickets</span>
+        <span class="crumb-sep">/</span>
+        <span class="crumb-id" id="tmCrumbId">#8412</span>
+        <span class="crumb-sep">·</span>
+        <span class="crumb-subject" id="tmCrumbSubject"></span>
+      </div>
+      <div class="tm-topbar-right">
+        <span class="tm-badge open">Open</span>
+        <span class="tm-badge crit" id="tmPriorityBadge">Critical</span>
+        <button class="tm-icon-btn" id="tmPrevBtn" onclick="navigateTicketModal(-1)" aria-label="Previous">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 3L4 7l5 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="tm-icon-btn" id="tmNextBtn" onclick="navigateTicketModal(1)" aria-label="Next">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5 3l5 4-5 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <button class="tm-icon-btn" onclick="closeTicketModal()" aria-label="Close">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 3l8 8M11 3l-8 8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="tm-tabs">
+      <button class="tm-tab active" data-tmtab="copilot" onclick="switchTicketModalTab('copilot')">Copilot</button>
+      <button class="tm-tab" data-tmtab="view" onclick="switchTicketModalTab('view')">View ticket</button>
+    </div>
+    <div class="tm-content">
+      <!-- Copilot pane -->
+      <div class="tm-pane active" data-tmpane="copilot">
+        <div class="tm-copilot">
+          <div class="tm-copilot-inner">
+            <div class="tm-meta" id="tmMeta">Ticket #8412 · 2h ago</div>
+            <div class="tm-title" id="tmTitle"></div>
+            <div class="tm-customer-card">
+              <div class="tm-customer-row">
+                <div class="tm-customer-avatar" id="tmCustAvatar"></div>
+                <div class="tm-customer-name" id="tmCustName"></div>
+                <span class="tm-vip" id="tmCustVip" style="display:none;">VIP</span>
+              </div>
+              <div class="tm-customer-summary" id="tmCustSummary"></div>
+            </div>
+            <div>
+              <div class="tm-section-heading">Customer mentioned delivery frequency</div>
+              <div class="tm-quote-wrap">
+                <div class="tm-quote-mark">“</div>
+                <div class="tm-quote" id="tmQuote"></div>
+              </div>
+              <div class="tm-footnote">
+                <svg viewBox="0 0 14 14" fill="none"><path d="M2 4h10M2 7h7M2 10h10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+                Excerpt from this ticket — switch to the <span class="tm-tab-inline">View ticket</span> tab to see the full conversation thread.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- View ticket pane -->
+      <div class="tm-pane" data-tmpane="view">
+        <div class="tm-viewticket">
+          <div class="tm-thread" id="tmThread"></div>
+          <div class="tm-rail">
+            <div>
+              <div class="tm-rail-label">Ticket details</div>
+              <div class="tm-rail-row">
+                <svg viewBox="0 0 14 14" fill="none"><path d="M3 4.5h8v6H3v-6zm0 0l4 3 4-3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span id="tmRailChannel">Email</span>
+              </div>
+              <div class="tm-rail-row">
+                <svg viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M7 4.5V7l1.6 1.6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+                <span id="tmRailTime">2h ago</span>
+              </div>
+              <div class="tm-rail-row">
+                <svg viewBox="0 0 14 14" fill="none"><path d="M2.5 3.5h9v7h-9v-7zm2 2h5m-5 2h5m-5 2h3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+                <span id="tmRailSubject"></span>
+              </div>
+            </div>
+            <div>
+              <div class="tm-rail-label">Customer</div>
+              <div class="tm-rail-customer">
+                <div class="tm-customer-avatar" id="tmRailAvatar"></div>
+                <div class="tm-rail-customer-info">
+                  <div class="tm-rail-customer-name" id="tmRailName"></div>
+                  <div class="tm-rail-customer-sub" id="tmRailLtv"></div>
+                </div>
+              </div>
+              <div class="tm-rail-row">
+                <svg viewBox="0 0 14 14" fill="none"><rect x="2" y="3.5" width="10" height="7" rx="1" stroke="currentColor" stroke-width="1.2"/><path d="M2.5 4.5l4.5 3.5 4.5-3.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+                <span id="tmRailEmail"></span>
+              </div>
+              <div class="tm-rail-row">
+                <svg viewBox="0 0 14 14" fill="none"><path d="M3 3.5c0 4 3.5 7.5 7.5 7.5l.5-2-2.5-.8-1 1c-1.5-.8-2.7-2-3.4-3.4l1-1L4.3 2.5 2.2 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span id="tmRailPhone"></span>
+              </div>
+              <div class="tm-rail-note" id="tmRailNote"></div>
+            </div>
+            <div>
+              <div class="tm-rail-label">Order</div>
+              <div class="tm-rail-order">
+                <div class="tm-rail-order-head">
+                  <div class="tm-rail-order-id">
+                    <svg viewBox="0 0 14 14" fill="none"><rect x="2" y="3" width="10" height="8" rx="1" stroke="currentColor" stroke-width="1.2"/><path d="M2 5.5h10" stroke="currentColor" stroke-width="1.2"/></svg>
+                    <span id="tmRailOrderId"></span>
+                  </div>
+                  <span class="tm-rail-order-status" id="tmRailOrderStatus">Active</span>
+                </div>
+                <div class="tm-rail-order-sub" id="tmRailOrderSub"></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  </div>
-
-  <!-- Eval Side Panel -->
-  <div class="eval-side-panel-backdrop" id="evalBackdrop" onclick="closeEvalPanel()"></div>
-  <div class="eval-side-panel" id="evalSidePanel">
-    <div class="eval-side-panel-header">
-      <div class="eval-side-panel-header-left">
-        <span class="eval-side-panel-name" id="evalPanelName"></span>
-        <span class="eval-ticket-type" id="evalPanelType"></span>
-      </div>
-      <div style="display:flex;align-items:center;gap:8px;">
-        <div class="eval-side-panel-nav">
-          <button class="eval-side-panel-nav-btn" id="evalPrevBtn" onclick="navigateEvalPanel(-1)" title="Previous">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M8.5 3.5L5 7l3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </button>
-          <button class="eval-side-panel-nav-btn" id="evalNextBtn" onclick="navigateEvalPanel(1)" title="Next">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5.5 3.5L9 7l-3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </button>
-        </div>
-        <button class="eval-side-panel-close" onclick="closeEvalPanel()" title="Close">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4.5 4.5l7 7M11.5 4.5l-7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-        </button>
-      </div>
-    </div>
-    <div class="eval-side-panel-body" id="evalPanelBody"></div>
-  </div>
-
-  <!-- Ticket Thread Side Panel -->
   <div class="ticket-panel-backdrop" id="ticketBackdrop" onclick="closeTicketPanel()"></div>
   <div class="ticket-panel" id="ticketPanel">
     <div class="ticket-panel-header">
@@ -1007,20 +1465,82 @@
         <div class="home-insights">
           <div class="landing-insight" style="animation-delay:250ms" onclick="openTask(1)">
             <div class="landing-insight-badges">
-              <span class="landing-insight-badge tracking">Tracking</span>
+              <span class="landing-insight-badge signal">Signal</span>
             </div>
-            <div class="landing-insight-title">5 of 14 cancellations mention delivery frequency</div>
-            <div class="landing-insight-body">Customers are saying “too often,” “can’t keep up,” and “every two weeks is too much.” These may not be product-dissatisfied — they might be cadence-dissatisfied. I’m tracking this pattern and will have more data by end of week.</div>
+            <div class="landing-insight-split">
+              <div class="landing-insight-main">
+                <div class="landing-insight-title">Update Cancel Subscription skill — cadence, not quality, is driving cancellations</div>
+                <div class="landing-insight-stat">5 of 14 cancellations this week mention delivery frequency</div>
+                <div class="landing-insight-body">Customers are saying “too often,” “can’t keep up,” and “every two weeks is too much.” Frequency-language cancellations have doubled over the last 6 weeks — and the current skill treats them all as product cancellations.</div>
+              </div>
+              <div class="landing-insight-chart">
+                <svg viewBox="0 0 200 72" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <linearGradient id="signalFill" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#9a5a00" stop-opacity="0.18"/>
+                      <stop offset="100%" stop-color="#9a5a00" stop-opacity="0"/>
+                    </linearGradient>
+                  </defs>
+                  <line x1="0" y1="60" x2="200" y2="60" stroke="#f0f0f4" stroke-width="1"/>
+                  <path d="M0,54 L28,52 L56,48 L84,42 L112,36 L140,28 L168,22 L200,14 L200,72 L0,72 Z" fill="url(#signalFill)"/>
+                  <path d="M0,54 L28,52 L56,48 L84,42 L112,36 L140,28 L168,22 L200,14" stroke="#9a5a00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                  <circle cx="200" cy="14" r="3" fill="#9a5a00"/>
+                  <text x="0" y="70" font-family="Inter, sans-serif" font-size="9" fill="#a0a0b0">6 wks ago</text>
+                  <text x="200" y="70" text-anchor="end" font-family="Inter, sans-serif" font-size="9" fill="#a0a0b0">This week</text>
+                </svg>
+                <div class="landing-insight-chart-caption">Frequency-language cancellations / week</div>
+              </div>
+            </div>
             <div class="landing-insight-time">Last 24 hours</div>
           </div>
           <div class="landing-insight" style="animation-delay:350ms">
             <div class="landing-insight-badges">
-              <span class="landing-insight-badge alert">Alert</span>
-              <span class="landing-insight-badge escalations">4 escalations</span>
+              <span class="landing-insight-badge revenue">Revenue</span>
             </div>
-            <div class="landing-insight-title">Pet safety questions — no skill coverage</div>
-            <div class="landing-insight-body">4 customers asked whether their bouquet is safe for a recipient’s pet. I don’t have pet safety data in my product knowledge, so I escalated all 4. These follow the same resolution pattern.</div>
-            <div class="landing-insight-time">Overnight</div>
+            <div class="landing-insight-split">
+              <div class="landing-insight-main">
+                <div class="landing-insight-title">Mother’s Day re-engagement is your top revenue driver this week</div>
+                <div class="landing-insight-body">The campaign Maya approved last week — targeting the 847 customers who ordered Mother’s Day last year but haven’t reordered — launched May 1. Cart Abandonment and Browse Abandonment skills are recovering an additional $11K on the traffic it’s driving.</div>
+              </div>
+              <div class="landing-insight-chart">
+                <svg viewBox="0 0 200 72" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <linearGradient id="revFill" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#147656" stop-opacity="0.18"/>
+                      <stop offset="100%" stop-color="#147656" stop-opacity="0"/>
+                    </linearGradient>
+                  </defs>
+                  <!-- baseline grid -->
+                  <line x1="0" y1="60" x2="200" y2="60" stroke="#f0f0f4" stroke-width="1"/>
+                  <!-- area -->
+                  <path d="M0,55 L25,50 L50,46 L75,38 L100,32 L125,24 L150,18 L175,12 L200,8 L200,72 L0,72 Z" fill="url(#revFill)"/>
+                  <!-- line -->
+                  <path d="M0,55 L25,50 L50,46 L75,38 L100,32 L125,24 L150,18 L175,12 L200,8" stroke="#147656" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                  <!-- dashed projection segment to Mother's Day -->
+                  <path d="M200,8 L200,8" stroke="#147656" stroke-width="2" stroke-dasharray="3 3" fill="none"/>
+                  <!-- end dot -->
+                  <circle cx="200" cy="8" r="3" fill="#147656"/>
+                  <!-- axis labels -->
+                  <text x="0" y="70" font-family="Inter, sans-serif" font-size="9" fill="#a0a0b0">May 1</text>
+                  <text x="200" y="70" text-anchor="end" font-family="Inter, sans-serif" font-size="9" fill="#a0a0b0">Today</text>
+                </svg>
+                <div class="landing-insight-chart-caption">Daily revenue · last 14 days</div>
+              </div>
+            </div>
+            <div class="landing-insight-metrics">
+              <div>
+                <div class="landing-insight-metric-label">This week</div>
+                <div class="landing-insight-metric-value">$53K</div>
+              </div>
+              <div>
+                <div class="landing-insight-metric-label">On pace by Mother’s Day</div>
+                <div class="landing-insight-metric-value">$90K</div>
+              </div>
+              <div>
+                <div class="landing-insight-metric-label">vs. last year</div>
+                <div class="landing-insight-metric-value">+34%<span class="pos">▲</span></div>
+              </div>
+            </div>
           </div>
         </div>
       `;
@@ -1044,13 +1564,14 @@
     const renderTaskDetail = (taskId) => {
       const task = tasks.find(t => t.id === taskId);
       const header = document.getElementById('leftHeader');
-      header.style.cssText = 'flex-direction:column;align-items:flex-start;gap:4px;height:auto;padding:24px 24px 16px;';
+      header.style.cssText = 'flex-direction:column;align-items:flex-start;gap:6px;height:auto;padding:20px 24px 16px;';
       header.innerHTML = `
-        <div style="display:flex;align-items:center;gap:12px;cursor:pointer;" onclick="backToHome()">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2.75 8L5.67 10.92M2.75 8L5.67 5.08M2.75 8H13.25" stroke="#7E55F6" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <span class="heading-md">${task.title}</span>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1.75l1.8 4.05 4.45.4-3.37 2.95 1.02 4.35L8 11.15 4.1 13.5l1.02-4.35L1.75 6.2l4.45-.4L8 1.75z" stroke="#7E55F6" stroke-width="1.3" stroke-linejoin="round"/></svg>
+          <span style="font-size:13px;font-weight:600;color:#7E55F6;letter-spacing:0.02em;">Copilot</span>
         </div>
-        <div class="regular-md text-secondary" style="padding-left:28px;">${task.desc}</div>
+        <div class="heading-md" style="margin-top:2px;">${task.title}</div>
+        <div class="regular-md text-secondary">${task.desc}</div>
       `;
 
       const leftBody = document.getElementById('leftBody');
@@ -1327,7 +1848,7 @@
         agentTime: '2 weeks ago',
         customerReplyMsg: 'Every 3 weeks would be perfect, thank you!',
         customerReplyTime: '2 weeks ago',
-        outcomeTag: 'Switched to every 3 weeks \u00b7 still subscribed',
+        outcomeTag: 'weekly \u2192 every 3 weeks \u00b7 still subscribed at 30d',
         outcomeTitle: 'Kept subscription \u2014 switched to every 3 weeks',
         outcomeDetail: 'Subscription active 16 days after the save. Last delivery accepted on schedule. Revenue retained: $52/mo.'
       },
@@ -1340,7 +1861,7 @@
         agentTime: '2 weeks ago',
         customerReplyMsg: 'Every other week works. Appreciate the flexibility.',
         customerReplyTime: '2 weeks ago',
-        outcomeTag: 'Switched to bi-weekly \u00b7 still subscribed',
+        outcomeTag: 'weekly \u2192 bi-weekly \u00b7 still subscribed at 30d',
         outcomeTitle: 'Kept subscription \u2014 switched to bi-weekly',
         outcomeDetail: 'Subscription active 14 days after the save. Revenue retained: $52/mo.'
       },
@@ -1353,9 +1874,74 @@
         agentTime: '3 weeks ago',
         customerReplyMsg: 'Monthly would be great. Thanks!',
         customerReplyTime: '3 weeks ago',
-        outcomeTag: 'Switched to monthly \u00b7 still subscribed',
+        outcomeTag: 'bi-weekly \u2192 monthly \u00b7 still subscribed at 30d',
         outcomeTitle: 'Kept subscription \u2014 switched to monthly',
         outcomeDetail: 'Subscription active 21 days after the save. Revenue retained: $52/mo.'
+      },
+      {
+        initials: 'RP', name: 'Raj Patel', time: '2w ago', channel: 'Email',
+        subject: '"weekly feels excessive for my apartment"',
+        customerMsg: 'Weekly feels excessive for my small apartment \u2014 I\u2019m running out of vases. Need to cancel.',
+        customerTime: '2 weeks ago',
+        agentMsg: 'Totally hear you \u2014 weekly can be a lot in a smaller space. Want to try <strong>every 3 weeks or monthly</strong> so you\u2019re not overwhelmed?',
+        agentTime: '2 weeks ago',
+        customerReplyMsg: 'Monthly sounds perfect, thanks!',
+        customerReplyTime: '2 weeks ago',
+        outcomeTag: 'weekly \u2192 monthly \u00b7 still subscribed at 30d',
+        outcomeTitle: 'Kept subscription \u2014 switched to monthly',
+        outcomeDetail: 'Subscription active 15 days after the save. Revenue retained: $52/mo.'
+      },
+      {
+        initials: 'SK', name: 'Sarah Kim', time: '3w ago', channel: 'Chat',
+        subject: '"too many flowers at once"',
+        customerMsg: 'I\u2019m getting too many flowers at once. Please cancel.',
+        customerTime: '3 weeks ago',
+        agentMsg: 'Got it \u2014 sounds like the cadence is off rather than the flowers themselves. Would <strong>bi-weekly or monthly</strong> fit better?',
+        agentTime: '3 weeks ago',
+        customerReplyMsg: 'Bi-weekly, let\u2019s try that.',
+        customerReplyTime: '3 weeks ago',
+        outcomeTag: 'weekly \u2192 bi-weekly \u00b7 still subscribed at 30d',
+        outcomeTitle: 'Kept subscription \u2014 switched to bi-weekly',
+        outcomeDetail: 'Subscription active 22 days after the save. Revenue retained: $52/mo.'
+      },
+      {
+        initials: 'DT', name: 'Dani Torres', time: '3w ago', channel: 'Email',
+        subject: '"bouquets piling up, every week is too much"',
+        customerMsg: 'Bouquets are piling up. Every week is too much. Cancel please.',
+        customerTime: '3 weeks ago',
+        agentMsg: 'Makes sense \u2014 I don\u2019t want them going to waste. How about <strong>monthly</strong> so each one gets fully enjoyed?',
+        agentTime: '3 weeks ago',
+        customerReplyMsg: 'Yes, monthly works.',
+        customerReplyTime: '3 weeks ago',
+        outcomeTag: 'weekly \u2192 monthly \u00b7 still subscribed at 30d',
+        outcomeTitle: 'Kept subscription \u2014 switched to monthly',
+        outcomeDetail: 'Subscription active 20 days after the save. Revenue retained: $52/mo.'
+      },
+      {
+        initials: 'AB', name: 'Alex Brooks', time: '4w ago', channel: 'Email',
+        subject: '"can\u2019t keep up, every two weeks is too frequent"',
+        customerMsg: 'Every two weeks is too frequent for me, I can\u2019t keep up. Cancel it.',
+        customerTime: '4 weeks ago',
+        agentMsg: 'Understood. Would <strong>monthly</strong> feel more manageable?',
+        agentTime: '4 weeks ago',
+        customerReplyMsg: 'Monthly, yes.',
+        customerReplyTime: '4 weeks ago',
+        outcomeTag: 'bi-weekly \u2192 monthly \u00b7 still subscribed at 30d',
+        outcomeTitle: 'Kept subscription \u2014 switched to monthly',
+        outcomeDetail: 'Subscription active 28 days after the save. Revenue retained: $52/mo.'
+      },
+      {
+        initials: 'NW', name: 'Nia Williams', time: '4w ago', channel: 'Chat',
+        subject: '"every week is too often, it\u2019s wasteful"',
+        customerMsg: 'Every week is too often, it\u2019s wasteful. Cancel me.',
+        customerTime: '4 weeks ago',
+        agentMsg: 'I hear you. Let\u2019s avoid waste \u2014 would <strong>every 3 weeks</strong> be a better fit?',
+        agentTime: '4 weeks ago',
+        customerReplyMsg: 'Every 3 weeks works.',
+        customerReplyTime: '4 weeks ago',
+        outcomeTag: 'weekly \u2192 every 3 weeks \u00b7 still subscribed at 30d',
+        outcomeTitle: 'Kept subscription \u2014 switched to every 3 weeks',
+        outcomeDetail: 'Subscription active 30 days after the save. Revenue retained: $52/mo.'
       }
     ];
 
@@ -1831,7 +2417,7 @@
 
         setTimeout(() => {
           const agentMsg = createConversationMessage(
-            'The experiment is live. <strong>Variant A</strong> (frequency-aware) vs. <strong>Variant B</strong> (current skill), 50/50 split, running for 3 weeks. I\u2019ll report back when I have statistically significant results.'
+            'The experiment is live. <strong>Variant A</strong> (current skill) vs. <strong>Variant B</strong> (frequency-aware), 50/50 split, running for 3 weeks. I\u2019ll report back when I have statistically significant results.'
           );
           conv.appendChild(agentMsg);
           renderBeat6();
@@ -1859,19 +2445,56 @@
           sender: 'Gorgias AI Agent',
           initials: 'AI',
           time: 'just now',
-          message: '\u2705 <strong>Cancel Subscription</strong> experiment complete. <strong>Variant A won</strong> across every metric. Click to review results.',
+          message: '\u2705 <strong>Cancel Subscription</strong> experiment complete. <strong>Variant B won</strong> across every metric. Click to review results.',
           duration: 5000
         });
 
         setTimeout(() => {
           const agentMsg = createConversationMessage(
-            'The experiment is complete. <strong>Variant A wins across every metric.</strong> The frequency-aware skill saved 8 of 27 subscriptions that would have been cancelled \u2014 that\u2019s $416/mo in retained revenue, and the saves held: 7 of 8 customers are still subscribed at 30 days.'
+            'The experiment is complete. <strong>Variant B wins across every metric.</strong> The frequency-aware skill saved 8 of 27 subscriptions that would have been cancelled \u2014 that\u2019s $416/mo in retained revenue, and the saves held: 7 of 8 customers are still subscribed at 30 days.'
           );
           conv.appendChild(agentMsg);
           renderBeat7();
           startTypewriter(agentMsg, () => {
             const btns = createPromptButtons(
-              ['Any issues?', 'What did it get wrong?'],
+              ['Publish winning variant', 'What did it get wrong?'],
+              (text) => {
+                if (text === 'Publish winning variant') {
+                  selectPrompt(text, 7.5);
+                } else {
+                  selectPrompt(text, 8);
+                }
+              }
+            );
+            conv.appendChild(btns);
+            scrollConv();
+          });
+        }, 1500);
+      }
+
+      /* ---- BEAT 7.5: Publish the winning variant ---- */
+      else if (beat === 7.5) {
+        const msg = createConversationMessage(state.lastSelectedText, true);
+        conv.appendChild(msg);
+        scrollConv();
+
+        showSlackToast({
+          channel: '#ai-agent',
+          sender: 'Gorgias AI Agent',
+          initials: 'AI',
+          time: 'just now',
+          message: '\ud83d\ude80 <strong>Variant B</strong> (frequency-aware) is now live for 100% of Cancel Subscription traffic.',
+          duration: 5000
+        });
+
+        setTimeout(() => {
+          const agentMsg = createConversationMessage(
+            'Done. <strong>Variant B is live for 100% of Cancel Subscription traffic.</strong> I\u2019ll keep monitoring adherence and revenue retention, and flag any regressions. Anything else you want me to check before we move on?'
+          );
+          conv.appendChild(agentMsg);
+          startTypewriter(agentMsg, () => {
+            const btns = createPromptButtons(
+              ['What did it get wrong?'],
               (text) => selectPrompt(text, 8)
             );
             conv.appendChild(btns);
@@ -1930,39 +2553,38 @@
        =========================== */
 
     const renderBeat0 = () => {
-      document.getElementById('rightTitle').textContent = 'Retention Insight';
+      document.getElementById('rightTitle').textContent = 'Delivery frequency is driving cancellations';
       document.getElementById('rightPanel').innerHTML = '';
       addStoryCard(`
         <div class="story-card">
           <span class="story-label insight">Insight</span>
           <div class="regular-sm text-secondary" style="margin-bottom:8px;">89 cancellation conversations · Last 3 months</div>
-          <div class="story-title-xl">35% of cancellations contain frequency language — these customers aren\u2019t product-dissatisfied</div>
-          <div class="story-body" style="margin-bottom:16px;">31 of 89 customers who cancelled used language about delivery cadence, not product quality. The current Cancel Subscription skill treats all cancellations identically — confirm and cancel. Nobody on your team was tracking this.</div>
-          <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:16px;">
-            <div class="signal-bar">
-              <span class="signal-label">"too many / too often"</span>
-              <div class="signal-track"><div class="signal-fill" style="width:45%;"></div></div>
-              <span class="signal-count">14</span>
+          <div class="insight-header">
+            <div class="insight-header-main">
+              <div class="story-title-xl">These cancellations are a cadence problem, not a product problem</div>
+              <div class="insight-stat-line">35% of 89 cancellations mention delivery frequency</div>
+              <div class="story-body">Customers used language about delivery cadence, not product quality. The current Cancel Subscription skill treats all cancellations identically — confirm and cancel. Nobody on your team was tracking this.</div>
             </div>
-            <div class="signal-bar">
-              <span class="signal-label">"can\u2019t keep up"</span>
-              <div class="signal-track"><div class="signal-fill" style="width:26%;"></div></div>
-              <span class="signal-count">8</span>
-            </div>
-            <div class="signal-bar">
-              <span class="signal-label">"every week/biweekly is too much"</span>
-              <div class="signal-track"><div class="signal-fill" style="width:19%;"></div></div>
-              <span class="signal-count">6</span>
-            </div>
-            <div class="signal-bar">
-              <span class="signal-label">"overwhelming / piling up"</span>
-              <div class="signal-track"><div class="signal-fill" style="width:10%;"></div></div>
-              <span class="signal-count">3</span>
+            <div class="insight-hero-metric" style="animation:fadeInUp 400ms cubic-bezier(0.6,0,0,1) backwards;animation-delay:300ms;">
+              <div class="insight-hero-metric-label">Revenue at risk</div>
+              <div class="insight-hero-metric-value">$2,700<span class="insight-hero-metric-unit">/mo</span></div>
+              <div class="insight-hero-metric-sub">Attributed to frequency-language cancellations</div>
             </div>
           </div>
-          <div class="metrics-grid">
-            ${metricCard('Revenue at risk', '$2,700', '/mo', 100, 'plain')}
-            ${metricCard('Frequency signals', '31', 'of 89 (35%)', 200, 'plain')}
+          <div style="margin-bottom:4px;animation:fadeInUp 400ms cubic-bezier(0.6,0,0,1) backwards;animation-delay:700ms;">
+            <div class="stacked-bar-label">How those 31 customers described it</div>
+            <div class="stacked-bar">
+              <div class="stacked-bar-seg" style="flex:14;background:#7E55F6;"></div>
+              <div class="stacked-bar-seg" style="flex:8;background:#9d7ef9;"></div>
+              <div class="stacked-bar-seg" style="flex:6;background:#b8a0fb;"></div>
+              <div class="stacked-bar-seg" style="flex:3;background:#d3c2fd;"></div>
+            </div>
+            <div class="stacked-legend">
+              <div class="stacked-legend-item"><span class="stacked-legend-swatch" style="background:#7E55F6;"></span><span class="stacked-legend-label">"too many / too often"</span><span class="stacked-legend-count">14</span></div>
+              <div class="stacked-legend-item"><span class="stacked-legend-swatch" style="background:#9d7ef9;"></span><span class="stacked-legend-label">"can\u2019t keep up"</span><span class="stacked-legend-count">8</span></div>
+              <div class="stacked-legend-item"><span class="stacked-legend-swatch" style="background:#b8a0fb;"></span><span class="stacked-legend-label">"every week/biweekly is too much"</span><span class="stacked-legend-count">6</span></div>
+              <div class="stacked-legend-item"><span class="stacked-legend-swatch" style="background:#d3c2fd;"></span><span class="stacked-legend-label">"overwhelming / piling up"</span><span class="stacked-legend-count">3</span></div>
+            </div>
           </div>
         </div>
       `);
@@ -1971,6 +2593,9 @@
     const ticketThreads = [
       {
         initials: 'LM', name: 'Lena Morrison', time: '2h ago', channel: 'Email',
+        ticketId: '8412', ltv: '$1,240', orders: 14, vip: true,
+        summary: 'Loyal bi-weekly subscriber since 2024. Loves the product but feels overwhelmed by current cadence — asking to cancel rather than adjust frequency.',
+        pullQuote: 'every two weeks is just too much for me',
         subject: '"every two weeks is just too much for me"',
         customerMsg: 'Hi — I love the flowers honestly but <span class="highlight">every two weeks is just too much for me</span>. They\u2019re <span class="highlight">piling up</span> and I feel bad throwing them out. I think I need to cancel.',
         customerTime: 'Today, 9:42 AM',
@@ -1980,6 +2605,9 @@
       },
       {
         initials: 'JO', name: 'James Okafor', time: '4h ago', channel: 'Chat',
+        ticketId: '8408', ltv: '$620', orders: 8, vip: false,
+        summary: 'Weekly subscriber for 8 months. Enjoys the product but current cadence feels unmanageable — cancelling instead of asking to slow down.',
+        pullQuote: 'I just can\u2019t keep up with weekly deliveries anymore',
         subject: '"I just can\u2019t keep up with weekly deliveries"',
         customerMsg: 'Hey, I need to cancel my subscription. I <span class="highlight">just can\u2019t keep up</span> with <span class="highlight">weekly deliveries</span> anymore. It\u2019s a lot.',
         customerTime: 'Today, 7:18 AM',
@@ -1989,6 +2617,9 @@
       },
       {
         initials: 'MC', name: 'Maria Chen', time: '6h ago', channel: 'Email',
+        ticketId: '8394', ltv: '$1,850', orders: 21, vip: true,
+        summary: 'Long-time VIP, weekly cadence. Loves the product but says deliveries arrive faster than she can enjoy them — cancelling rather than spacing them out.',
+        pullQuote: 'getting flowers too often — they\u2019re dying before I can enjoy them all',
         subject: '"getting flowers too often, they\u2019re dying before I can enjoy them"',
         customerMsg: 'I\u2019m <span class="highlight">getting flowers too often</span> — they\u2019re dying before I can enjoy them all. I\u2019d love to keep getting them, just not <span class="highlight">every single week</span>. Can you cancel my subscription?',
         customerTime: 'Yesterday, 11:20 PM',
@@ -2000,7 +2631,7 @@
 
     const renderBeat1 = () => {
       const rows = ticketThreads.map((t, i) => `
-        <div class="ticket-card" data-ticket-idx="${i}" onclick="openTicketPanel(${i})">
+        <div class="ticket-card" data-ticket-idx="${i}" onclick="openTicketModal(${i})">
           <div class="ticket-header">
             <div class="ticket-header-avatar">${t.initials}</div>
             <div class="ticket-header-left">
@@ -2043,12 +2674,166 @@
     };
 
     const askAboutEdgeCases = () => {
-      askInChat(
-        'What are the 8 new failures?',
+      const conv = document.getElementById('conversation');
+      if (!conv) return;
+      // If we've already explained + shown the follow-up, just scroll back to it.
+      if (conv.dataset.edgeExplained === '1') {
+        if (typeof scrollConv === 'function') scrollConv();
+        return;
+      }
+      conv.dataset.edgeExplained = '1';
+
+      // Hide any existing decision card while the answer loads; we re-surface after.
+      conv.querySelectorAll('.decision-card').forEach(el => el.remove());
+
+      const userMsg = createConversationMessage('What are the 8 new failures?', true);
+      const agentMsg = createConversationMessage(
         'All 8 are <strong>false positives on frequency detection</strong> \u2014 tickets where the updated skill offered a schedule change, but the customer actually wanted to cancel for a different reason. Three patterns:<br><br>\u2022 <strong>Moving/relocation</strong> (3 tickets) \u2014 "weekly is too much right now, I\u2019m moving next month." The skill heard "weekly is too much" and offered a frequency change; the customer needed to pause or cancel.<br>\u2022 <strong>Gift subscriptions ending</strong> (3 tickets) \u2014 recipient said deliveries felt "too frequent," but the subscription was a fixed-term gift that was expiring anyway.<br>\u2022 <strong>Product quality complaints</strong> (2 tickets) \u2014 customer mentioned "every week they arrive wilted," which triggered the frequency rule instead of the quality-issue flow.<br><br>None of these existed as failures on the current skill because it cancels everything. They\u2019re new blind spots introduced by the new logic \u2014 worth tightening the detection rules before a wide rollout.'
       );
+      conv.appendChild(userMsg);
+      conv.appendChild(agentMsg);
+      if (typeof scrollConv === 'function') scrollConv();
+
+      startTypewriter(agentMsg, () => {
+        // Re-surface the decision so the user doesn't have to scroll back up.
+        const followUp = createDecisionCard(
+          'How do you want to handle the 8 edge cases?',
+          [
+            {
+              key: 'publish',
+              icon: '\u2191',
+              label: 'Publish now, monitor live',
+              desc: 'Ship v2 as-is. Live monitors will flag the 8 failure patterns if they recur.'
+            },
+            {
+              key: 'refine',
+              icon: '\u270e',
+              label: 'Edit skill and re-run',
+              desc: 'Add targeted guardrails for the 3 edge-case patterns, then replay the 847 tickets.'
+            }
+          ],
+          (key) => {
+            if (key === 'publish') selectPrompt('Publish', 4);
+            else if (key === 'refine') selectPrompt('Edit skill and re-run', 4);
+          }
+        );
+        conv.appendChild(followUp);
+        if (typeof scrollConv === 'function') scrollConv();
+      });
     };
     window.askAboutEdgeCases = askAboutEdgeCases;
+
+    // Ticket overlay — matches Chris' escalation-flow IA. Clicking a frequency-mention
+    // ticket opens a tabbed overlay (Copilot | View ticket) rather than a side panel.
+    let activeModalIdx = null;
+    const escapeHtml = (s) => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    const switchTicketModalTab = (tab) => {
+      document.querySelectorAll('.tm-tab').forEach(el => el.classList.toggle('active', el.dataset.tmtab === tab));
+      document.querySelectorAll('.tm-pane').forEach(el => el.classList.toggle('active', el.dataset.tmpane === tab));
+    };
+    const openTicketModal = (idx) => {
+      const t = ticketThreads[idx];
+      if (!t) return;
+      activeModalIdx = idx;
+      const ticketId = t.ticketId || (8400 + idx);
+
+      // --- Top bar ---
+      document.getElementById('tmCrumbId').textContent = `#${ticketId}`;
+      document.getElementById('tmCrumbSubject').textContent = (t.subject || '').replace(/^"|"$/g,'');
+      // All three tickets are cancellation-risk — mark priority accordingly
+      const priEl = document.getElementById('tmPriorityBadge');
+      priEl.textContent = t.vip ? 'High priority' : 'Medium priority';
+      priEl.className = 'tm-badge crit';
+
+      // --- Copilot tab ---
+      document.getElementById('tmMeta').textContent = `Ticket #${ticketId} · ${t.time} · ${t.channel}`;
+      document.getElementById('tmTitle').textContent = (t.subject || '').replace(/^"|"$/g,'');
+      document.getElementById('tmCustAvatar').textContent = t.initials;
+      document.getElementById('tmCustName').textContent = t.name;
+      document.getElementById('tmCustVip').style.display = t.vip ? 'inline-flex' : 'none';
+      document.getElementById('tmCustSummary').textContent = t.summary || '';
+      const quote = t.pullQuote || (t.subject || '').replace(/^"|"$/g,'');
+      document.getElementById('tmQuote').innerHTML = `<span class="q-highlight">${escapeHtml(quote)}</span>`;
+
+      // --- View ticket tab ---
+      document.getElementById('tmRailChannel').textContent = t.channel;
+      document.getElementById('tmRailTime').textContent = t.time;
+      document.getElementById('tmRailSubject').textContent = (t.subject || '').replace(/^"|"$/g,'');
+      document.getElementById('tmRailAvatar').textContent = t.initials;
+      document.getElementById('tmRailName').textContent = t.name;
+      const ltvSub = [t.ltv ? `${t.ltv} LTV` : null, t.orders ? `${t.orders} orders` : null].filter(Boolean).join(' · ');
+      document.getElementById('tmRailLtv').textContent = ltvSub;
+      const firstName = (t.name || '').split(' ')[0].toLowerCase();
+      const lastName = (t.name || '').split(' ').slice(1).join('').toLowerCase();
+      document.getElementById('tmRailEmail').textContent = `${firstName}.${lastName}@gmail.com`;
+      document.getElementById('tmRailPhone').textContent = `+1 (415) 555-0${String(100 + idx * 17).slice(0,3)}`;
+      document.getElementById('tmRailNote').textContent = t.vip
+        ? 'Loyal subscriber. Active on social media.'
+        : 'Long-time subscriber. Prefers email.';
+      document.getElementById('tmRailOrderId').textContent = `#SUB-${String(ticketId).slice(-4)}`;
+      document.getElementById('tmRailOrderStatus').textContent = 'Active subscription';
+      document.getElementById('tmRailOrderSub').textContent = t.channel === 'Chat'
+        ? 'Weekly cadence · Next delivery in 3 days'
+        : 'Bi-weekly cadence · Next delivery in 5 days';
+
+      // Thread content mirrors the side panel but inline in the overlay.
+      document.getElementById('tmThread').innerHTML = `
+        <div class="tm-thread-title">Conversation</div>
+        <div class="thread-msg inbound">
+          <div class="thread-avatar customer">${t.initials}</div>
+          <div class="thread-bubble-wrap">
+            <div class="thread-meta-row"><span class="thread-meta-author">${t.name}</span><span>${t.customerTime}</span></div>
+            <div class="thread-bubble customer">${t.customerMsg}</div>
+          </div>
+        </div>
+        <div class="thread-msg outbound">
+          <div class="thread-avatar agent">AI</div>
+          <div class="thread-bubble-wrap">
+            <div class="thread-meta-row"><span>${t.currentTime}</span><span class="thread-meta-author">AI Agent · sent</span></div>
+            <div class="thread-bubble agent-current">${t.currentResponse}</div>
+          </div>
+        </div>
+        <div class="thread-divider"><div class="thread-divider-line"></div><span class="thread-divider-label">Coaching suggestion</span><div class="thread-divider-line"></div></div>
+        <div class="coaching-block">
+          <div class="coaching-header">
+            <svg class="coaching-icon" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="#147656" stroke-width="1.5" stroke-linecap="round"/></svg>
+            What the agent could have said
+          </div>
+          <div class="coaching-text">${t.proposedResponse}</div>
+        </div>
+      `;
+
+      // Default to Copilot on open
+      switchTicketModalTab('copilot');
+
+      // Nav state
+      document.getElementById('tmPrevBtn').disabled = idx === 0;
+      document.getElementById('tmNextBtn').disabled = idx === ticketThreads.length - 1;
+
+      document.getElementById('ticketModalBackdrop').classList.add('open');
+      document.getElementById('ticketModal').classList.add('open');
+    };
+    const closeTicketModal = () => {
+      activeModalIdx = null;
+      document.getElementById('ticketModalBackdrop').classList.remove('open');
+      document.getElementById('ticketModal').classList.remove('open');
+    };
+    const navigateTicketModal = (dir) => {
+      if (activeModalIdx === null) return;
+      const next = activeModalIdx + dir;
+      if (next < 0 || next >= ticketThreads.length) return;
+      openTicketModal(next);
+    };
+    window.openTicketModal = openTicketModal;
+    window.closeTicketModal = closeTicketModal;
+    window.switchTicketModalTab = switchTicketModalTab;
+    window.navigateTicketModal = navigateTicketModal;
+    document.addEventListener('keydown', (e) => {
+      if (activeModalIdx === null) return;
+      if (e.key === 'Escape') closeTicketModal();
+      else if (e.key === 'ArrowLeft') { e.preventDefault(); navigateTicketModal(-1); }
+      else if (e.key === 'ArrowRight') { e.preventDefault(); navigateTicketModal(1); }
+    });
 
     let activeTicketIdx = null;
     const openTicketPanel = (idx) => {
@@ -2311,7 +3096,7 @@
         verdict: { v1: 'ok', v2: 'ok' }
       },
       {
-        id: 5, name: 'Rachel Novak', type: 'edge', typeLabel: 'Edge case',
+        id: 5, name: 'Rachel Novak', type: 'edge', typeLabel: 'Needs review',
         input: 'This is just <span class="freq-hl">too much</span> for my budget right now. I need to cut back on spending.',
         snippet: '\u201ctoo much for my budget\u201d',
         currentFull: 'I understand. I\u2019ve processed your cancellation.',
@@ -2329,7 +3114,7 @@
         verdict: { v1: 'flag', v2: 'ok' }
       },
       {
-        id: 6, name: 'Tom Bradley', type: 'edge', typeLabel: 'Edge case',
+        id: 6, name: 'Tom Bradley', type: 'edge', typeLabel: 'Needs review',
         input: 'I called last month about <span class="freq-hl">switching to monthly</span> and was told it would happen. But I\u2019m still getting biweekly deliveries. Just cancel the whole thing.',
         snippet: '\u201ccalled last month about switching to monthly\u201d',
         currentFull: 'I\u2019m sorry about that. I\u2019ve cancelled your subscription now.',
@@ -2347,7 +3132,7 @@
         verdict: { v1: 'flag', v2: 'ok' }
       },
       {
-        id: 7, name: 'Anna Walsh', type: 'edge', typeLabel: 'Edge case',
+        id: 7, name: 'Anna Walsh', type: 'edge', typeLabel: 'Needs review',
         input: 'I\u2019m getting way <span class="freq-hl">too many emails</span> from you guys. It\u2019s annoying. Cancel my subscription.',
         snippet: '\u201ctoo many emails from you\u201d',
         currentFull: 'I\u2019m sorry to hear that. Your subscription has been cancelled.',
@@ -2391,7 +3176,9 @@
       const bars = buckets.map((count, i) => {
         const h = Math.round((count / max) * 100);
         const color = i < 4 ? '#fca5a5' : i < 7 ? '#fde68a' : '#86efac';
-        return `<div class="eval-dist-bar" style="height:${h}%;background:${color};"></div>`;
+        const lo = (i / buckets.length).toFixed(2);
+        const hi = ((i + 1) / buckets.length).toFixed(2);
+        return `<div class="eval-dist-bar" style="height:${h}%;background:${color};" title="Adherence ${lo}\u2013${hi} \u00b7 ${count} tickets"></div>`;
       }).join('');
       return `
         <div class="eval-dist">${bars}</div>
@@ -2409,6 +3196,110 @@
       openEvalPanel(idx, version);
     };
 
+    // ========= Eval modal (centered, review + conversation tabs) =========
+
+    // Per-ticket mock context (ticket id, channel, order, customer LTV)
+    const evalContext = {
+      0: { tid: '#8412', channel: 'Email',   time: '2h ago',  subject: 'Re: My subscription', orderId: 'US-10421', orderStatus: 'Active',  orderSub: 'Biweekly \u00b7 $48 / delivery',  ltv: '$576 LTV \u00b7 12 orders', note: 'Subscribed 9 months ago.', priorTickets: 1 },
+      1: { tid: '#8407', channel: 'Chat',    time: '3h ago',  subject: 'Cancel please',       orderId: 'US-10383', orderStatus: 'Active',  orderSub: 'Weekly \u00b7 $42 / delivery',    ltv: '$294 LTV \u00b7 7 orders',  note: 'New-ish customer.',   priorTickets: 0 },
+      2: { tid: '#8401', channel: 'Email',   time: '5h ago',  subject: 'Too many flowers',     orderId: 'US-10355', orderStatus: 'Active',  orderSub: 'Weekly \u00b7 $38 / delivery',    ltv: '$456 LTV \u00b7 12 orders', note: 'Active gifter.',      priorTickets: 0 },
+      3: { tid: '#8395', channel: 'Email',   time: '7h ago',  subject: 'Moving abroad',        orderId: 'US-10321', orderStatus: 'Active',  orderSub: 'Monthly \u00b7 $52 / delivery',   ltv: '$312 LTV \u00b7 6 orders',  note: 'Moving out of US.',   priorTickets: 0 },
+      4: { tid: '#8388', channel: 'Chat',    time: '9h ago',  subject: 'Change frequency?',    orderId: 'US-10302', orderStatus: 'Active',  orderSub: 'Biweekly \u00b7 $45 / delivery', ltv: '$540 LTV \u00b7 12 orders', note: 'Long-time customer.', priorTickets: 0 },
+      5: { tid: '#8370', channel: 'Email',   time: '1d ago',  subject: 'Need to cancel',       orderId: 'US-10279', orderStatus: 'Active',  orderSub: 'Biweekly \u00b7 $42 / delivery', ltv: '$210 LTV \u00b7 5 orders',  note: 'Budget-sensitive.',   priorTickets: 0 },
+      6: { tid: '#8361', channel: 'Email',   time: '1d ago',  subject: 'Still getting biweekly', orderId: 'US-10254', orderStatus: 'Active', orderSub: 'Biweekly \u00b7 $48 / delivery', ltv: '$672 LTV \u00b7 14 orders', note: 'Previously asked to switch.', priorTickets: 1 },
+      7: { tid: '#8355', channel: 'Email',   time: '2d ago',  subject: 'Too many emails',      orderId: 'US-10231', orderStatus: 'Active',  orderSub: 'Monthly \u00b7 $52 / delivery',  ltv: '$416 LTV \u00b7 8 orders',  note: 'Opted into all emails.', priorTickets: 0 }
+    };
+
+    // Build a plausible 2\u20133 turn conversation preceding the decision
+    const buildConversation = (idx) => {
+      const t = evalTickets[idx];
+      const ctx = evalContext[idx] || {};
+      const custInitials = (t.name || '').split(' ').map(s => s[0]).filter(Boolean).slice(0,2).join('').toUpperCase();
+      return [
+        { role: 'customer', author: t.name, meta: ctx.time || '', text: t.input },
+      ];
+    };
+
+    // Plain-English outcome story per ticket — the main content of the Review tab.
+    // Goal: a non-technical reviewer can understand what would happen and why it's flagged,
+    // without ever seeing an adherence number.
+    const outcomeStory = (idx, v) => {
+      const t = evalTickets[idx];
+      const isFail = t.verdict[v] === 'flag';
+      // Per-ticket narratives. Keep each to 2 short sentences.
+      const stories = {
+        0: `Today, <span class="prod-pill">Production</span> <em class="em-strong">processes the cancellation immediately</em>. The <span class="draft-pill">Draft</span> would <em class="em-strong">offer a less-frequent schedule first</em> — the customer said biweekly is too much, which is a save opportunity production misses.`,
+        1: `Today, <span class="prod-pill">Production</span> <em class="em-strong">cancels the subscription</em>. The <span class="draft-pill">Draft</span> would <em class="em-strong">offer every other week or monthly first</em> — the customer said they can't keep up with weekly, so a schedule change likely saves this customer.`,
+        2: `Today, <span class="prod-pill">Production</span> <em class="em-strong">cancels as requested</em>. The <span class="draft-pill">Draft</span> would <em class="em-strong">suggest spacing deliveries to every 3 weeks</em> — the customer said they're getting flowers too often, which is exactly the frequency problem the draft is meant to catch.`,
+        3: `Both <span class="prod-pill">Production</span> and the <span class="draft-pill">Draft</span> <em class="em-strong">process the cancellation</em>. The draft correctly identifies that this isn't a frequency issue — the customer is moving abroad — and doesn't try to upsell a schedule change.`,
+        4: `Today, <span class="prod-pill">Production</span> <em class="em-strong">cancels the subscription</em>. The <span class="draft-pill">Draft</span> <em class="em-strong">confirms the monthly switch the customer explicitly asked for</em> — saving the subscription instead of ending it.`,
+        5: `Today, <span class="prod-pill">Production</span> <em class="em-strong">processes the cancellation</em>. The <span class="draft-pill">Draft</span> would <em class="em-strong">offer a less-frequent schedule to save money</em> — but the customer's problem is their budget, not the delivery rhythm. A schedule change doesn't solve a money problem.`,
+        6: `Today, <span class="prod-pill">Production</span> <em class="em-strong">cancels the subscription</em>. The <span class="draft-pill">Draft</span> would <em class="em-strong">offer to switch them to monthly</em> — but the customer already asked for that last month and it wasn't followed up on. Offering the same thing again will likely make the frustration worse.`,
+        7: `Today, <span class="prod-pill">Production</span> <em class="em-strong">cancels the subscription</em>. The <span class="draft-pill">Draft</span> would <em class="em-strong">offer a less-frequent delivery schedule</em> — but the customer's complaint is about marketing emails, not deliveries. Wrong category of fix.`
+      };
+      return stories[idx] || (isFail
+        ? `The <span class="draft-pill">Draft</span> would respond differently from <span class="prod-pill">Production</span>, but the response doesn't match the customer's actual problem.`
+        : `Both responses are appropriate for the customer's request.`);
+    };
+
+    // One-line "why flagged" reason in plain English (no scorer jargon).
+    const flagReason = (idx, v) => {
+      const t = evalTickets[idx];
+      if (t.verdict[v] !== 'flag') return null;
+      const reasons = {
+        5: `The phrase "too much" looks like a frequency complaint, but here it's about price. The draft would offer the wrong kind of fix.`,
+        6: `The customer already tried to switch once and it was ignored. Offering the same thing again compounds the frustration.`,
+        7: `"Too many emails" is about marketing communication, not delivery frequency. The draft applies the wrong remedy.`
+      };
+      return reasons[idx] || `The draft's response doesn't match what this customer is asking for.`;
+    };
+
+    // Toggle for collapsible sections in the modal
+    const toggleEmCollapsible = (id) => {
+      const el = document.getElementById(id);
+      if (el) el.classList.toggle('open');
+    };
+
+    // Suggested guardrail based on the edge-case pattern
+    const guardrailSuggestion = (idx) => {
+      const t = evalTickets[idx];
+      if (idx === 5) return { title: 'Add disqualifier: price / budget mention', body: 'Before the frequency offer fires, skip if the ticket mentions <strong>price</strong>, <strong>budget</strong>, <strong>cost</strong>, or <strong>cutting back</strong>. Matches 3 tickets in this batch.' };
+      if (idx === 6) return { title: 'Add disqualifier: prior failed attempt', body: 'Before the frequency offer fires, skip if the customer references a <strong>previous request that wasn\u2019t honored</strong>. Offering again compounds the frustration.' };
+      if (idx === 7) return { title: 'Disambiguate email frequency vs. delivery frequency', body: 'When the customer complains about <strong>emails</strong> or <strong>marketing</strong>, route to Email Preferences \u2014 don\u2019t offer a delivery schedule change.' };
+      return null;
+    };
+
+    // Score color helper
+    const scoreColor = (val) => val >= 0.9 ? '#147656' : val >= 0.7 ? '#b45309' : '#c4314b';
+
+    // Filter state
+    let evalFilter = 'all';
+    const setEvalFilter = (f) => {
+      evalFilter = f;
+      document.querySelectorAll('#evalPanelFilter button').forEach(b => b.classList.toggle('active', b.dataset.filter === f));
+      // Refresh nav button disabled state
+      if (activePanelRow !== null) refreshEvalNavButtons();
+    };
+    const filteredTicketIndices = () => {
+      const v = currentEvalVersion;
+      if (evalFilter === 'all') return evalTickets.map((_, i) => i);
+      return evalTickets.map((t, i) => ({ t, i })).filter(({t}) => t.verdict[v] === evalFilter).map(({i}) => i);
+    };
+    const refreshEvalNavButtons = () => {
+      const indices = filteredTicketIndices();
+      const pos = indices.indexOf(activePanelRow);
+      const prevBtn = document.getElementById('evalPrevBtn');
+      const nextBtn = document.getElementById('evalNextBtn');
+      if (prevBtn) prevBtn.disabled = pos <= 0;
+      if (nextBtn) nextBtn.disabled = pos === -1 || pos >= indices.length - 1;
+    };
+
+    // Tab switching
+    const switchEmTab = (tab) => {
+      document.querySelectorAll('.em-tab').forEach(b => b.classList.toggle('active', b.dataset.emtab === tab));
+      document.querySelectorAll('.em-pane').forEach(p => p.classList.toggle('active', p.dataset.empane === tab));
+    };
+
     const openEvalPanel = (idx, version) => {
       // Highlight active row
       document.querySelectorAll('.eval-summary-row.active-row').forEach(r => r.classList.remove('active-row'));
@@ -2420,77 +3311,208 @@
       const v = version;
       const s = t.scores[v];
       const r = t.reasoning[v];
+      const ctx = evalContext[idx] || {};
       const isEdge = t.type === 'edge';
-      const proposedClass = (isEdge && v === 'v1') ? 'proposed failed' : 'proposed';
-      const proposedLabel = (isEdge && v === 'v1') ? 'failed' : 'proposed';
+      const isFail = t.verdict[v] === 'flag';
 
-      // Verdict
-      const verdictMap = { ok: { cls: 'ok', icon: '✓', label: 'Passed — skill handled correctly' }, flag: { cls: 'flag', icon: '⚠', label: 'Flagged — needs review' }, err: { cls: 'err', icon: '✗', label: 'Failed' } };
+      // Verdict badge in header
+      const verdictMap = {
+        ok:   { cls: 'ok',   label: '\u2713 Passed' },
+        flag: { cls: 'flag', label: '\u26a0 Needs review' },
+        err:  { cls: 'err',  label: '\u2717 Failed' }
+      };
       const vd = verdictMap[t.verdict[v]] || verdictMap.ok;
 
-      // Scorer cards
-      const scorerCard = (name, val, reason) => {
-        if (val === null) return `
-          <div class="eval-detail-scorer blank-scorer">
-            <div class="eval-detail-scorer-name">${name}</div>
-            <div class="eval-detail-scorer-val">—</div>
-            <div class="eval-detail-scorer-reason" style="color:#b0b0b0;">No custom scorer added yet</div>
-          </div>`;
-        const color = val >= 0.9 ? '#147656' : val >= 0.7 ? '#b45309' : '#c4314b';
-        return `
-          <div class="eval-detail-scorer">
-            <div class="eval-detail-scorer-name">${name}</div>
-            <div class="eval-detail-scorer-val" style="color:${color}">${val.toFixed(2)}</div>
-            <div class="eval-detail-scorer-reason">${reason || ''}</div>
-          </div>`;
-      };
-
       // Header
-      document.getElementById('evalPanelName').textContent = t.name;
-      const typeEl = document.getElementById('evalPanelType');
-      typeEl.className = `eval-ticket-type ${t.type}`;
-      typeEl.textContent = t.typeLabel;
+      document.getElementById('evalPanelName').textContent = `${ctx.tid || ''} \u00b7 ${t.name}`;
+      const vb = document.getElementById('evalPanelVerdictBadge');
+      vb.className = `em-header-verdict ${vd.cls}`;
+      vb.textContent = vd.label;
 
-      // Nav buttons
-      document.getElementById('evalPrevBtn').disabled = idx === 0;
-      document.getElementById('evalNextBtn').disabled = idx === evalTickets.length - 1;
+      // Header score (adherence + delta vs production baseline 0.91)
+      const delta = (s.adh - 0.91);
+      const deltaCls = delta >= 0 ? 'pos' : 'neg';
+      const deltaSign = delta >= 0 ? '+' : '';
+      document.getElementById('evalPanelHeaderScore').innerHTML = `
+        <span>Adherence</span><strong style="color:${scoreColor(s.adh)};">${s.adh.toFixed(2)}</strong>
+        <span class="em-delta ${deltaCls}">${deltaSign}${delta.toFixed(2)} vs. production</span>`;
 
-      // Body
-      document.getElementById('evalPanelBody').innerHTML = `
-        <div class="eval-detail-verdict-bar ${vd.cls}">
-          <span style="font-size:14px;">${vd.icon}</span>
-          <span>${vd.label}</span>
+      refreshEvalNavButtons();
+
+      // ========= Review pane: main column (simplified) =========
+      const story = outcomeStory(idx, v);
+      const reason = flagReason(idx, v);
+
+      document.getElementById('evalPanelMain').innerHTML = `
+        <div class="em-verdict-strip ${isFail ? 'flag' : 'ok'}">
+          <div class="em-verdict-strip-icon">${isFail ? '\u26a0' : '\u2713'}</div>
+          <div class="em-verdict-strip-text">${isFail
+            ? `<strong>Needs review.</strong> The draft would not handle this correctly.`
+            : `<strong>Passing.</strong> The draft would handle this correctly.`}</div>
         </div>
-        <div class="eval-detail-section">
-          <div class="eval-detail-label">Customer message</div>
-          <div class="eval-detail-input">${t.input}</div>
-        </div>
-        <div class="eval-detail-section">
-          <div class="eval-detail-label">Responses</div>
-          <div class="eval-detail-responses">
-            <div class="eval-detail-resp-card current">
-              <div class="eval-detail-resp-label current">Current skill</div>
-              ${t.currentFull}
-            </div>
-            <div class="eval-detail-resp-card ${proposedClass}">
-              <div class="eval-detail-resp-label ${proposedLabel}">Proposed skill</div>
-              ${t.proposedFull[v]}
-            </div>
+
+        <div>
+          <div class="em-mini-label">What the customer said</div>
+          <div class="em-msg-card">
+            <div class="em-msg-head">${t.name} \u00b7 ${ctx.channel || 'Email'} \u00b7 ${ctx.time || ''}</div>
+            <div class="em-msg-body">${t.input}</div>
           </div>
         </div>
-        <div class="eval-detail-section">
-          <div class="eval-detail-label">Scorer breakdown</div>
-          <div class="eval-detail-scorers">
-            ${scorerCard('Adherence', s.adh, r.adh)}
-            ${scorerCard('Success Rate', s.success, r.success)}
-            ${scorerCard('Coverage', s.coverage, r.coverage)}
-            ${scorerCard('Tone', s.tone, r.tone || null)}
-            ${scorerCard('Accuracy', s.accuracy, r.accuracy || null)}
+
+        <div>
+          <div class="em-mini-label">What would happen</div>
+          <div class="em-outcome">
+            <div class="em-outcome-body">${story}</div>
+          </div>
+        </div>
+
+        ${reason ? `
+        <div>
+          <div class="em-mini-label">Why it's flagged</div>
+          <div class="em-msg-card" style="background:#fafafa;">
+            <div class="em-msg-body" style="font-size:13px;line-height:20px;color:#3a4048;">${reason}</div>
+          </div>
+        </div>` : ''}
+
+        <div class="em-collapsible" id="emDetails-scores">
+          <div class="em-collapsible-head" onclick="toggleEmCollapsible('emDetails-scores')">
+            <div>
+              <span class="em-collapsible-title">Details &amp; scores</span>
+              <span class="em-collapsible-sub">Adherence ${s.adh.toFixed(2)} \u00b7 Success ${s.success.toFixed(2)} \u00b7 Coverage ${s.coverage.toFixed(2)}</span>
+            </div>
+            <svg class="em-collapsible-chev" viewBox="0 0 14 14" fill="none"><path d="M5 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <div class="em-collapsible-body">
+            <div class="em-inline-compare" style="margin-bottom:16px;">
+              <div class="em-inline-row">
+                <div class="em-inline-row-label">Production</div>
+                <div class="em-inline-row-body">${t.currentFull}</div>
+              </div>
+              <div class="em-inline-row">
+                <div class="em-inline-row-label draft">Draft skill</div>
+                <div class="em-inline-row-body">${t.proposedFull[v]}</div>
+              </div>
+            </div>
+            <div class="em-score-row">
+              <div class="em-score-chip">
+                <div class="em-score-chip-name">Adherence</div>
+                <div class="em-score-chip-val" style="color:${scoreColor(s.adh)};">${s.adh.toFixed(2)}</div>
+                <div class="em-score-chip-reason">${r.adh || ''}</div>
+              </div>
+              <div class="em-score-chip">
+                <div class="em-score-chip-name">Success rate</div>
+                <div class="em-score-chip-val" style="color:${scoreColor(s.success)};">${s.success.toFixed(2)}</div>
+                <div class="em-score-chip-reason">${r.success || ''}</div>
+              </div>
+              <div class="em-score-chip">
+                <div class="em-score-chip-name">Coverage</div>
+                <div class="em-score-chip-val" style="color:${scoreColor(s.coverage)};">${s.coverage.toFixed(2)}</div>
+                <div class="em-score-chip-reason">${r.coverage || ''}</div>
+              </div>
+            </div>
           </div>
         </div>
       `;
 
-      // Open panel
+      // ========= Review pane: right rail =========
+      document.getElementById('evalPanelRail').innerHTML = `
+        <div>
+          <div class="em-rail-section-label">Ticket</div>
+          <div class="em-rail-kv"><span class="k">ID</span><span class="v">${ctx.tid || ''}</span></div>
+          <div class="em-rail-kv"><span class="k">Channel</span><span class="v">${ctx.channel || ''}</span></div>
+          <div class="em-rail-kv"><span class="k">Received</span><span class="v">${ctx.time || ''}</span></div>
+          <div class="em-rail-kv"><span class="k">Subject</span><span class="v" style="max-width:180px;text-align:right;">${ctx.subject || ''}</span></div>
+          <div class="em-rail-kv"><span class="k">Type</span><span class="v"><span class="eval-ticket-type ${t.type}" style="font-size:10px;">${t.typeLabel}</span></span></div>
+        </div>
+
+        <div>
+          <div class="em-rail-section-label">Customer</div>
+          <div class="em-rail-kv"><span class="k">Name</span><span class="v">${t.name}</span></div>
+          <div class="em-rail-kv"><span class="k">Lifetime</span><span class="v">${(ctx.ltv || '').split(' \u00b7 ')[0] || '\u2014'}</span></div>
+          <div class="em-rail-kv"><span class="k">Orders</span><span class="v">${(ctx.ltv || '').split(' \u00b7 ')[1] || '\u2014'}</span></div>
+          <div class="em-rail-kv"><span class="k">Prior tickets</span><span class="v">${ctx.priorTickets ?? 0}</span></div>
+          ${ctx.note ? `<div style="font-size:11px;color:#8a8f98;font-style:italic;margin-top:6px;">${ctx.note}</div>` : ''}
+        </div>
+
+        <div>
+          <div class="em-rail-section-label">Order</div>
+          <div class="em-rail-kv"><span class="k">ID</span><span class="v">${ctx.orderId || '\u2014'}</span></div>
+          <div class="em-rail-kv"><span class="k">Status</span><span class="v">${ctx.orderStatus || '\u2014'}</span></div>
+          <div class="em-rail-kv"><span class="k">Plan</span><span class="v" style="max-width:170px;text-align:right;">${ctx.orderSub || '\u2014'}</span></div>
+        </div>
+
+        <div>
+          <div class="em-rail-section-label">Actions</div>
+          ${isFail ? `
+          <button class="em-action-btn primary" onclick="(function(){ askAboutEdgeCases(); })()">
+            <span class="em-action-icon guard">+</span>
+            <div>
+              <div class="em-action-title">Add to guardrails</div>
+              <div class="em-action-sub">Patch the draft skill to handle this pattern</div>
+            </div>
+          </button>` : ''}
+          <button class="em-action-btn">
+            <span class="em-action-icon accept">\u2713</span>
+            <div>
+              <div class="em-action-title">${isFail ? 'Accept as-is' : 'Confirm passing'}</div>
+              <div class="em-action-sub">${isFail ? 'Mark this behavior as acceptable' : 'Looks right to me'}</div>
+            </div>
+          </button>
+          <button class="em-action-btn">
+            <span class="em-action-icon synth">\u26a1</span>
+            <div>
+              <div class="em-action-title">Add to synthetic set</div>
+              <div class="em-action-sub">Replay on every future skill version</div>
+            </div>
+          </button>
+          <button class="em-action-btn">
+            <span class="em-action-icon override">\u270e</span>
+            <div>
+              <div class="em-action-title">Override score</div>
+              <div class="em-action-sub">Disagree with the scorer</div>
+            </div>
+          </button>
+        </div>
+      `;
+
+      // ========= Conversation pane =========
+      const custInit = (t.name || '').split(' ').map(x=>x[0]).filter(Boolean).slice(0,2).join('').toUpperCase();
+      document.getElementById('evalPanelThread').innerHTML = `
+        <div class="em-thread-inner">
+          <div class="em-thread-subject">${ctx.subject || ''} \u00b7 ${ctx.tid || ''}</div>
+          <div class="em-thread-msg">
+            <div class="em-thread-avatar customer">${custInit}</div>
+            <div class="em-thread-bubble-wrap">
+              <div class="em-thread-meta"><strong>${t.name}</strong> \u00b7 ${ctx.time || ''} \u00b7 ${ctx.channel || ''}</div>
+              <div class="em-thread-bubble customer">${t.input}</div>
+            </div>
+          </div>
+          <div class="em-thread-divider">
+            <div class="em-thread-divider-line"></div>
+            <div class="em-thread-divider-label">Candidate responses</div>
+            <div class="em-thread-divider-line"></div>
+          </div>
+          <div class="em-thread-msg outbound">
+            <div class="em-thread-avatar agent">P</div>
+            <div class="em-thread-bubble-wrap">
+              <div class="em-thread-meta"><strong>Production</strong> \u00b7 what shipped</div>
+              <div class="em-thread-bubble production">${t.currentFull}</div>
+            </div>
+          </div>
+          <div class="em-thread-msg outbound">
+            <div class="em-thread-avatar agent">D</div>
+            <div class="em-thread-bubble-wrap">
+              <div class="em-thread-meta"><strong>Draft skill</strong> \u00b7 would have sent \u00b7 adherence ${s.adh.toFixed(2)}</div>
+              <div class="em-thread-bubble draft ${isFail ? 'fail' : ''}">${t.proposedFull[v]}</div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      // Reset to Review tab on open
+      switchEmTab('review');
+
+      // Open modal
       document.getElementById('evalBackdrop').classList.add('open');
       document.getElementById('evalSidePanel').classList.add('open');
     };
@@ -2504,10 +3526,20 @@
 
     const navigateEvalPanel = (direction) => {
       if (activePanelRow === null) return;
-      const next = activePanelRow + direction;
-      if (next < 0 || next >= evalTickets.length) return;
-      openEvalPanel(next, currentEvalVersion);
+      const indices = filteredTicketIndices();
+      const pos = indices.indexOf(activePanelRow);
+      if (pos === -1) return;
+      const nextPos = pos + direction;
+      if (nextPos < 0 || nextPos >= indices.length) return;
+      openEvalPanel(indices[nextPos], currentEvalVersion);
     };
+
+    // Keyboard nav inside the modal
+    document.addEventListener('keydown', (e) => {
+      if (activePanelRow === null) return;
+      if (e.key === 'ArrowRight') { navigateEvalPanel(1); }
+      if (e.key === 'ArrowLeft')  { navigateEvalPanel(-1); }
+    });
 
     // Close on Escape
     document.addEventListener('keydown', (e) => {
@@ -2522,7 +3554,21 @@
       if (activePanelRow !== null) closeEvalPanel();
       const v = version;
 
-      const rows = evalTickets.map((t, i) => {
+      const selectedScorers = state.selectedScorers || [];
+      const showTone = selectedScorers.includes('tone');
+      const showAccuracy = selectedScorers.includes('accuracy');
+
+      // Sort edge cases first in v1 so Review-first workflow is obvious.
+      const ordered = v === 'v1'
+        ? evalTickets.map((t, origIdx) => ({ t, origIdx })).sort((a, b) => {
+            const ax = a.t.type === 'edge' ? 0 : 1;
+            const bx = b.t.type === 'edge' ? 0 : 1;
+            return ax - bx;
+          })
+        : evalTickets.map((t, origIdx) => ({ t, origIdx }));
+
+      const rows = ordered.map(({ t, origIdx }) => {
+        const i = origIdx;
         const isEdge = t.type === 'edge';
         const rowClass = isEdge && v === 'v1' ? 'eval-summary-row edge-row' : 'eval-summary-row';
         const s = t.scores[v];
@@ -2539,8 +3585,8 @@
             <td class="center">${scorePill(s.adh)}</td>
             <td class="center">${scorePill(s.success)}</td>
             <td class="center">${scorePill(s.coverage)}</td>
-            <td class="scorer-cell">${scorePill(s.tone)}</td>
-            <td class="scorer-cell">${scorePill(s.accuracy)}</td>
+            ${showTone ? `<td class="scorer-cell">${scorePill(s.tone)}</td>` : ''}
+            ${showAccuracy ? `<td class="scorer-cell">${scorePill(s.accuracy)}</td>` : ''}
             <td class="center">${verdictIcon(t.verdict[v])}</td>
           </tr>`;
       }).join('');
@@ -2552,14 +3598,14 @@
       return `
         <div class="eval-version-bar">
           <div class="eval-version-card active">
-            <div class="vl">Proposed skill</div>
-            <div class="vv">${avgAdh}</div>
+            <div class="vl">Draft skill <span style="font-weight:500;color:#7E55F6;text-transform:none;letter-spacing:0;">· candidate to ship</span></div>
+            <div class="vv">${avgAdh} <span style="font-size:11px;font-weight:600;color:#147656;background:#d0f3e0;padding:2px 6px;border-radius:4px;vertical-align:middle;margin-left:4px;">+${(parseFloat(avgAdh) - 0.91).toFixed(2)}</span></div>
             <div class="vs">Avg. adherence across 847 tickets</div>
           </div>
           <div class="eval-version-card">
-            <div class="vl">Current skill</div>
+            <div class="vl">Production</div>
             <div class="vv">0.91</div>
-            <div class="vs">Baseline (no frequency detection)</div>
+            <div class="vs">Live today · no frequency detection</div>
           </div>
         </div>
         <div class="eval-table-wrap">
@@ -2567,13 +3613,13 @@
             <thead>
               <tr>
                 <th style="width:22%;">Ticket</th>
-                <th style="width:15%;">Current</th>
-                <th style="width:17%;">Proposed</th>
+                <th style="width:15%;">Production</th>
+                <th style="width:17%;">Draft skill</th>
                 <th class="center" style="width:9%;">Adh.</th>
                 <th class="center" style="width:9%;">Success</th>
                 <th class="center" style="width:9%;">Coverage</th>
-                <th class="scorer-th" style="width:9%;">Tone</th>
-                <th class="scorer-th" style="width:9%;">Accuracy</th>
+                ${showTone ? '<th class="scorer-th" style="width:9%;">Tone</th>' : ''}
+                ${showAccuracy ? '<th class="scorer-th" style="width:9%;">Accuracy</th>' : ''}
                 <th class="center" style="width:3%;"></th>
               </tr>
             </thead>
@@ -2582,14 +3628,37 @@
             </tbody>
           </table>
           <div class="eval-table-footer">
-            <span>Showing 8 of 847 \u00b7 Click a row to inspect</span>
-            <span><strong style="color:#147656;">${passCount} pass</strong> \u00b7 <strong style="color:${v === 'v1' ? '#b45309' : '#147656'}">${edgeCount} edge cases</strong> \u00b7 847 total</span>
+            <span>8 of 847 shown \u00b7 click a row to inspect</span>
+            <span><strong style="color:#147656;">${passCount} pass</strong> \u00b7 <strong style="color:${v === 'v1' ? '#b45309' : '#147656'}">${edgeCount} need review</strong> \u00b7 847 total</span>
           </div>
         </div>
         <div style="margin-top:12px;">
           <div style="font-size:11px;font-weight:600;color:#5c6370;letter-spacing:0.02em;margin-bottom:4px;">Score distribution (Adherence)</div>
           ${buildDistChart(v)}
         </div>`;
+    };
+
+    const animateCountUps = (root = document) => {
+      const els = root.querySelectorAll('.count-up[data-count-to]');
+      els.forEach(el => {
+        const to = parseFloat(el.dataset.countTo);
+        const prefix = el.dataset.countPrefix || '';
+        const suffix = el.dataset.countSuffix || '';
+        if (!isFinite(to) || to === 0) {
+          el.textContent = prefix + '0' + suffix;
+          return;
+        }
+        const duration = 900;
+        const start = performance.now();
+        const step = (now) => {
+          const t = Math.min(1, (now - start) / duration);
+          const eased = 1 - Math.pow(1 - t, 3);
+          const current = Math.round(to * eased);
+          el.textContent = prefix + current + suffix;
+          if (t < 1) requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
+      });
     };
 
     const renderBeat3Skeleton = () => {
@@ -2683,42 +3752,53 @@
       addStoryCard(`
         <div class="story-card" id="evalSummaryCard">
           <div class="regular-sm text-secondary" style="margin-bottom:8px;">Replayed 847 tickets \u00b7 Last 90 days</div>
-          <div class="eval-title-row">
-            <div class="story-title-xl">Evaluation results</div>
-            <span class="status-pill review" id="evalStatusPill">Ready for review</span>
-          </div>
-          <div class="eval-metrics-grid">
-            <div class="eval-metric-card">
-              <div class="eval-metric-label">Pass rate</div>
-              <div class="eval-metric-value">94%<span class="eval-metric-baseline">vs. 78%</span></div>
-              <div class="eval-metric-delta positive">
-                <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M5 2l3 4H2z" fill="currentColor"/></svg>
-                +16 pts
+          <div class="story-title-xl" style="margin-bottom:14px;">Evaluation results</div>
+
+          <div class="eval-hero">
+            <div class="eval-hero-main">
+              <div class="eval-hero-label">Pass rate \u00b7 draft vs. production</div>
+              <div class="eval-hero-value">
+                <span style="font-size:22px;font-weight:500;color:#5c6370;">78%</span>
+                <span style="font-size:18px;color:#a0a0b0;font-weight:400;">\u2192</span>
+                <span class="count-up" data-count-to="94" data-count-suffix="%">0%</span>
+                <span class="eval-hero-delta count-up" data-count-to="16" data-count-prefix="+" data-count-suffix=" pts">+0 pts</span>
               </div>
-            </div>
-            <div class="eval-metric-card">
-              <div class="eval-metric-label">Regressions</div>
-              <div class="eval-metric-value">0<span class="eval-metric-baseline">of 847</span></div>
-              <div class="eval-metric-delta positive">Pass \u2192 Pass</div>
-            </div>
-            <div class="eval-metric-card">
-              <div class="eval-metric-label">Improvements</div>
-              <div class="eval-metric-value">135<span class="eval-metric-baseline">of 847</span></div>
-              <div class="eval-metric-delta positive">Fail \u2192 Pass</div>
-            </div>
-            <div class="eval-metric-card warn">
-              <div class="eval-metric-label">New failures</div>
-              <div class="eval-metric-value">8<span class="eval-metric-baseline">of 847</span></div>
-              <div class="eval-metric-delta warn">Pass \u2192 Fail</div>
-              <button class="explain-link" onclick="askAboutEdgeCases()">Explain these edge cases <svg viewBox="0 0 10 10" fill="none"><path d="M3 2l3 3-3 3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+              <div class="eval-hero-sub">Across 847 replayed tickets \u00b7 last 90 days \u00b7 a ticket passes when adherence \u2265 0.90</div>
             </div>
           </div>
+
+          <div class="eval-strip">
+            <div class="eval-strip-stat">
+              <div class="eval-strip-label">No regressions</div>
+              <div class="eval-strip-value"><span class="count-up" data-count-to="0">0</span></div>
+              <div style="font-size:11px;color:#5c6370;margin-top:1px;">Nothing that passed before now fails</div>
+            </div>
+            <div class="eval-strip-stat">
+              <div class="eval-strip-label">Newly passing</div>
+              <div class="eval-strip-value"><span class="count-up" data-count-to="135">0</span></div>
+              <div style="font-size:11px;color:#5c6370;margin-top:1px;">Tickets the draft now handles correctly</div>
+            </div>
+            <div class="eval-strip-stat warn">
+              <div class="eval-strip-label">Needs review</div>
+              <div class="eval-strip-value warn"><span class="count-up" data-count-to="8">0</span></div>
+              <div style="font-size:11px;color:#b45309;margin-top:1px;">New edge cases \u2014 blocks ship</div>
+              <button class="eval-strip-explain" onclick="askAboutEdgeCases()">
+                <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M10.9219 2.92543C11.3361 2.92543 11.6719 3.26122 11.6719 3.67543C11.6718 4.08959 11.3361 4.42543 10.9219 4.42543H5.25C4.28369 4.42565 3.5 5.20907 3.5 6.17543V12.7106C3.50016 13.6768 4.28379 14.4604 5.25 14.4606H6.49902C7.06123 14.4606 7.59762 14.6976 7.97656 15.1129L9.06836 16.3092C9.26857 16.5287 9.61545 16.5256 9.8125 16.3034L10.8477 15.1344C11.2271 14.7059 11.7724 14.4608 12.3447 14.4606H13.583C14.5494 14.4606 15.3329 13.6769 15.333 12.7106V8.61879C15.3331 8.20491 15.6692 7.86918 16.083 7.86879C16.4972 7.86879 16.8329 8.20467 16.833 8.61879V12.7106C16.8329 14.5054 15.3778 15.9606 13.583 15.9606H12.3447C12.2019 15.9608 12.0654 16.0217 11.9707 16.1286L10.9355 17.2985C10.1475 18.188 8.76196 18.1979 7.96094 17.32L6.86914 16.1237C6.77441 16.0199 6.63953 15.9606 6.49902 15.9606H5.25C3.45536 15.9604 2.00016 14.5052 2 12.7106V6.17543C2 4.38064 3.45526 2.92565 5.25 2.92543H10.9219ZM12.333 10.694C12.7471 10.694 13.0828 11.03 13.083 11.444C13.0829 11.8581 12.7471 12.194 12.333 12.194H6.5C6.08587 12.194 5.75013 11.8581 5.75 11.444C5.75022 11.03 6.08592 10.694 6.5 10.694H12.333ZM12.333 6.95863C12.7472 6.95863 13.083 7.29442 13.083 7.70863C13.0829 8.12273 12.7471 8.45863 12.333 8.45863H6.5C6.08587 8.45863 5.75013 8.12273 5.75 7.70863C5.75 7.29442 6.08579 6.95863 6.5 6.95863H12.333ZM15.459 2.14613C15.5194 1.98869 15.7818 1.98838 15.8418 2.14613C16.0087 2.58588 16.2776 3.17562 16.6221 3.52016C16.9229 3.82086 17.4117 4.0621 17.8232 4.23012C17.883 4.2545 17.9404 4.28026 17.9961 4.30141C18.1536 4.36168 18.1536 4.62394 17.9961 4.68422L17.8232 4.75355C17.4117 4.92156 16.923 5.16372 16.6221 5.46449C16.2776 5.80892 16.0087 6.39873 15.8418 6.83851L15.8105 6.89027C15.7324 6.97932 15.5687 6.97898 15.4902 6.89027L15.459 6.83851C15.2921 6.39877 15.0222 5.80905 14.6777 5.46449C14.4193 5.20615 14.0227 4.99006 13.6553 4.82777L13.3037 4.68422C13.1459 4.62417 13.146 4.36164 13.3037 4.30141C13.7435 4.13445 14.3333 3.86457 14.6777 3.52016C15.0221 3.17558 15.2921 2.58583 15.459 2.14613Z" fill="currentColor"/></svg>
+                Review all 8 \u2192
+              </button>
+            </div>
+          </div>
+
           <div class="score-dist-inline">
+            <div class="eval-dist-takeaway">Most tickets now score <strong>0.9 or higher</strong> on adherence.</div>
             <div class="score-dist-label">Adherence score distribution</div>
             ${buildDistChart('v1')}
           </div>
         </div>
       `);
+
+      // Kick off count-up animation on the summary card's numbers once mounted.
+      requestAnimationFrame(() => animateCountUps(document.getElementById('evalSummaryCard')));
 
       addStoryCard(`
         <div class="story-card" id="evalTableCard" style="padding:16px;">
@@ -2942,19 +4022,19 @@
         <div class="story-card" style="border-color:#7E55F6;background:linear-gradient(180deg,#f8f5ff 0%,#fff 100%);">
           <span class="story-label experiment">Live Experiment</span>
           <div class="regular-sm text-secondary" style="margin-bottom:8px;">Cancel Subscription skill · 50/50 traffic split · 3 weeks</div>
-          <div class="story-title">Variant A (frequency-aware) vs. Variant B (current skill)</div>
+          <div class="story-title">Variant A (current skill) vs. Variant B (frequency-aware)</div>
           <div class="story-body" style="margin-bottom:16px;">Every incoming cancellation request will be randomly assigned to one of the two variants. All conversations will be evaluated against both standard metrics and your custom scorers.</div>
 
           <div style="display:flex;gap:16px;margin-bottom:16px;">
-            <div style="flex:1;padding:16px;background:#f1ecff;border-radius:8px;border:1px solid #e0d5ff;">
-              <div style="font-size:12px;font-weight:600;color:#7E55F6;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">Variant A</div>
-              <div style="font-size:13px;font-weight:600;color:#1e242e;margin-bottom:4px;">Frequency-aware</div>
-              <div style="font-size:12px;color:#5c6370;line-height:16px;">Detects frequency language, offers schedule change before cancelling.</div>
-            </div>
             <div style="flex:1;padding:16px;background:#f5f6f7;border-radius:8px;border:1px solid #e8e8ec;">
-              <div style="font-size:12px;font-weight:600;color:#5c6370;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">Variant B</div>
+              <div style="font-size:12px;font-weight:600;color:#5c6370;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">Variant A — Control</div>
               <div style="font-size:13px;font-weight:600;color:#1e242e;margin-bottom:4px;">Current skill</div>
               <div style="font-size:12px;color:#5c6370;line-height:16px;">Confirms intent and processes cancellation immediately.</div>
+            </div>
+            <div style="flex:1;padding:16px;background:#f1ecff;border-radius:8px;border:1px solid #e0d5ff;">
+              <div style="font-size:12px;font-weight:600;color:#7E55F6;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">Variant B — Treatment</div>
+              <div style="font-size:13px;font-weight:600;color:#1e242e;margin-bottom:4px;">Frequency-aware</div>
+              <div style="font-size:12px;color:#5c6370;line-height:16px;">Detects frequency language, offers schedule change before cancelling.</div>
             </div>
           </div>
 
@@ -2975,56 +4055,56 @@
       document.getElementById('rightPanel').innerHTML = '';
       addStoryCard(`
         <div class="story-card" style="border-color:#147656;background:linear-gradient(180deg,#f0fdf7 0%,#fff 100%);">
-          <span class="story-label result">Winner: Variant A</span>
+          <span class="story-label result">Winner: Variant B</span>
           <div class="regular-sm text-secondary" style="margin-bottom:8px;">Cancel Subscription skill · 3-week A/B test complete</div>
           <div class="story-title-xl">Frequency-aware variant wins across every metric</div>
           <div class="story-body" style="margin-bottom:16px;">8 of 27 frequency-identified customers accepted a schedule change instead of cancelling. Revenue retained: <strong>$416/mo</strong> (vs. $0 before). Only 1 of 8 re-cancelled within 30 days.</div>
 
           <div style="margin-bottom:16px;">
             <div style="display:flex;justify-content:flex-end;gap:24px;padding:0 14px 8px;font-size:11px;font-weight:600;letter-spacing:0.02em;">
-              <span style="color:#7E55F6;min-width:60px;text-align:center;">Variant A</span>
-              <span style="color:#5c6370;min-width:60px;text-align:center;">Variant B</span>
+              <span style="color:#5c6370;min-width:60px;text-align:center;">Variant A</span>
+              <span style="color:#7E55F6;min-width:60px;text-align:center;">Variant B</span>
             </div>
             <div class="result-row winner">
               <span class="result-metric-name">Adherence</span>
               <div class="result-values">
-                <span class="result-val a">96%</span>
-                <span class="result-val b">91%</span>
+                <span class="result-val a">91%</span>
+                <span class="result-val b">96%</span>
               </div>
             </div>
             <div class="result-row winner">
               <span class="result-metric-name">Success Rate</span>
               <div class="result-values">
-                <span class="result-val a">93%</span>
-                <span class="result-val b">89%</span>
+                <span class="result-val a">89%</span>
+                <span class="result-val b">93%</span>
               </div>
             </div>
             <div class="result-row winner">
               <span class="result-metric-name">Coverage Rate</span>
               <div class="result-values">
-                <span class="result-val a">97%</span>
-                <span class="result-val b">94%</span>
+                <span class="result-val a">94%</span>
+                <span class="result-val b">97%</span>
               </div>
             </div>
             <div class="result-row winner">
               <span class="result-metric-name">Customer Satisfaction</span>
               <div class="result-values">
-                <span class="result-val a">4.5/5</span>
-                <span class="result-val b">4.2/5</span>
+                <span class="result-val a">4.2/5</span>
+                <span class="result-val b">4.5/5</span>
               </div>
             </div>
             <div class="result-row winner">
               <span class="result-metric-name">Tone (custom)</span>
               <div class="result-values">
-                <span class="result-val a">94%</span>
-                <span class="result-val b">—</span>
+                <span class="result-val a">—</span>
+                <span class="result-val b">94%</span>
               </div>
             </div>
             <div class="result-row winner">
               <span class="result-metric-name">Accuracy (custom)</span>
               <div class="result-values">
-                <span class="result-val a">91%</span>
-                <span class="result-val b">—</span>
+                <span class="result-val a">—</span>
+                <span class="result-val b">91%</span>
               </div>
             </div>
           </div>
@@ -3036,45 +4116,80 @@
           <span class="story-label result">Business Outcomes</span>
           <div class="outcomes-hero">
             <div class="outcome-stat">
-              <div class="outcome-stat-label">Subscriptions saved</div>
-              <div class="outcome-stat-value">8<span class="outcome-stat-unit">of 27</span></div>
-              <div class="outcome-stat-sub">30% of flagged cancellations kept</div>
+              <div class="outcome-stat-label">Revenue retained</div>
+              <div class="outcome-stat-value">$416<span class="outcome-stat-unit">/mo</span></div>
+              <div class="outcome-stat-sub"><strong style="color:#1e242e;">$5K/yr</strong> annualized <span class="outcomes-annualized-pill">no discounts used</span></div>
             </div>
             <div class="outcome-stat-divider"></div>
             <div class="outcome-stat">
-              <div class="outcome-stat-label">Revenue retained</div>
-              <div class="outcome-stat-value">$416<span class="outcome-stat-unit">/mo</span></div>
-              <div class="outcome-stat-sub">~$5K/yr annualized \u00b7 no discounts used</div>
+              <div class="outcome-stat-label">Subscriptions saved</div>
+              <div class="outcome-stat-value">8<span class="outcome-stat-unit">of 27</span></div>
+              <div class="outcome-stat-sub">30% of flagged cancellations retained</div>
             </div>
           </div>
 
           <div class="outcomes-samples">
             <div class="outcomes-samples-header">
-              <div class="outcomes-samples-title">What the saves look like</div>
-              <div class="outcomes-samples-sub">3 of 8 conversations \u00b7 click to read the thread</div>
+              <div class="outcomes-samples-title">Recent saves</div>
+              <div class="outcomes-samples-sub">All flagged by Variant B\u2019s frequency detection \u2014 the current skill would have cancelled them.</div>
             </div>
-            <div class="ticket-list">
-              ${savedThreads.map((t, i) => `
+            <div class="ticket-list" id="savedThreadsList">
+              ${savedThreads.slice(0, 5).map((t, i) => `
                 <div class="ticket-card saved-card" data-saved-idx="${i}" onclick="openSavedPanel(${i})">
                   <div class="ticket-header">
                     <div class="ticket-header-avatar">${t.initials}</div>
                     <div class="ticket-header-left">
                       <div class="ticket-header-title-row">
-                        <div class="ticket-header-name">${t.name}</div>
+                        <div class="ticket-header-name">${t.name} <span style="color:#8a8f98;font-weight:400;">\u00b7 ${t.time}</span></div>
                       </div>
                       <div class="ticket-header-subject">${t.subject}</div>
                       <span class="outcome-tag"><span class="outcome-tag-dot"></span>${t.outcomeTag}</span>
-                    </div>
-                    <div class="ticket-header-right">
-                      <span class="ticket-time">${t.time}</span>
                     </div>
                   </div>
                 </div>
               `).join('')}
             </div>
+            <div class="outcomes-show-more" id="savedShowMoreWrap">
+              <button class="outcomes-show-more-btn" onclick="expandSavedThreads()">Show ${savedThreads.length - 5} more</button>
+            </div>
+          </div>
+
+          <div class="outcomes-cta-row">
+            <button class="outcomes-cta-secondary" onclick="handlePublishWinner(false)">Keep experiment running</button>
+            <button class="outcomes-cta-primary" onclick="handlePublishWinner(true)">Publish winning variant</button>
           </div>
         </div>
       `);
+    };
+
+    const expandSavedThreads = () => {
+      const list = document.getElementById('savedThreadsList');
+      const wrap = document.getElementById('savedShowMoreWrap');
+      if (!list) return;
+      const extra = savedThreads.slice(5).map((t, i) => `
+        <div class="ticket-card saved-card" data-saved-idx="${i + 5}" onclick="openSavedPanel(${i + 5})">
+          <div class="ticket-header">
+            <div class="ticket-header-avatar">${t.initials}</div>
+            <div class="ticket-header-left">
+              <div class="ticket-header-title-row">
+                <div class="ticket-header-name">${t.name} <span style="color:#8a8f98;font-weight:400;">\u00b7 ${t.time}</span></div>
+              </div>
+              <div class="ticket-header-subject">${t.subject}</div>
+              <span class="outcome-tag"><span class="outcome-tag-dot"></span>${t.outcomeTag}</span>
+            </div>
+          </div>
+        </div>
+      `).join('');
+      list.insertAdjacentHTML('beforeend', extra);
+      if (wrap) wrap.remove();
+    };
+
+    const handlePublishWinner = (publish) => {
+      if (publish) {
+        showSlackToast({ message: '\ud83d\ude80 <strong>Variant B</strong> (frequency-aware) is now live for 100% of Cancel Subscription traffic.' });
+      } else {
+        showSlackToast({ message: 'Experiment will continue running. I\u2019ll keep monitoring results.' });
+      }
     };
 
     const renderBeat8 = () => {

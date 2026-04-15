@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Gorgias AI Agent — Morning Briefing (Lite)</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Inter',sans-serif; background:#fafafa; height:100vh; display:flex; }
+.nav { width:48px; background:#fff; border-right:1px solid #ebecef; display:flex; flex-direction:column; align-items:center; padding:12px 0; gap:16px; }
+.nav-dot { width:28px; height:28px; border-radius:6px; display:flex; align-items:center; justify-content:center; cursor:pointer; }
+.nav-dot.active { background:#F1ECFF; }
+.nav-dot svg { width:16px; height:16px; }
+.left { flex:1; max-width:420px; border-right:1px solid rgba(0,0,0,0.08); background:#fff; display:flex; flex-direction:column; }
+.left-header { padding:20px 24px 12px; border-bottom:1px solid rgba(0,0,0,0.08); }
+.left-header h2 { font-size:16px; font-weight:600; color:#1e242e; }
+.left-header p { font-size:13px; color:#5c6370; margin-top:4px; }
+.task-list { padding:8px 12px; overflow-y:auto; flex:1; }
+.task { padding:12px; border-radius:8px; cursor:pointer; margin-bottom:4px; transition:background 0.15s; }
+.task:hover { background:#fafafa; }
+.task.active { background:#F1ECFF; }
+.task-badge { display:inline-block; padding:2px 8px; border-radius:4px; font-size:11px; font-weight:600; margin-bottom:6px; }
+.badge-green { background:#e9fbf5; color:#1a7a5a; }
+.badge-red { background:#fff1f2; color:#c4314b; }
+.badge-amber { background:#fffbeb; color:#b35c00; }
+.badge-purple { background:#F1ECFF; color:#7E55F6; }
+.task-title { font-size:14px; font-weight:500; color:#1e242e; margin-bottom:2px; }
+.task-desc { font-size:12px; color:#5c6370; }
+.right { flex:1; overflow-y:auto; padding:24px 32px; }
+.briefing-header { margin-bottom:24px; }
+.briefing-header h1 { font-size:22px; font-weight:700; color:#1e242e; margin-bottom:4px; }
+.briefing-header p { font-size:14px; color:#5c6370; }
+.stats { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:24px; }
+.stat { background:#fff; border:1px solid rgba(0,0,0,0.08); border-radius:8px; padding:14px; }
+.stat-val { font-size:22px; font-weight:700; color:#1e242e; }
+.stat-label { font-size:12px; color:#5c6370; margin-top:2px; }
+.stat-delta { font-size:11px; font-weight:600; margin-top:4px; }
+.delta-up { color:#1a7a5a; }
+.delta-down { color:#c4314b; }
+.story { background:#fff; border:1px solid rgba(0,0,0,0.08); border-radius:8px; padding:20px; margin-bottom:16px; }
+.story h3 { font-size:14px; font-weight:600; color:#1e242e; margin-bottom:8px; }
+.story p { font-size:13px; color:#5c6370; line-height:1.6; }
+.monitors { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:24px; }
+.monitor-pill { display:flex; align-items:center; gap:6px; padding:6px 12px; background:#fff; border:1px solid rgba(0,0,0,0.08); border-radius:20px; font-size:12px; color:#5c6370; }
+.monitor-dot { width:6px; height:6px; border-radius:50%; }
+.dot-green { background:#22c55e; }
+.dot-red { background:#c4314b; }
+.conv-view { display:none; }
+.conv-view.active { display:flex; flex-direction:column; height:100%; }
+.conv-header { padding:16px 24px; border-bottom:1px solid rgba(0,0,0,0.08); display:flex; align-items:center; gap:12px; }
+.back-btn { background:none; border:none; cursor:pointer; padding:4px; border-radius:4px; }
+.back-btn:hover { background:#fafafa; }
+.conv-messages { flex:1; overflow-y:auto; padding:16px 24px; }
+.msg { margin-bottom:16px; max-width:85%; }
+.msg-agent { font-size:14px; color:#1e242e; line-height:1.6; }
+.msg-user { margin-left:auto; }
+.msg-user span { display:inline-block; padding:8px 14px; background:#7E55F6; color:#fff; border-radius:16px 16px 4px 16px; font-size:14px; font-weight:500; }
+.prompt-btns { padding:12px 24px; border-top:1px solid rgba(0,0,0,0.08); display:flex; gap:8px; flex-wrap:wrap; }
+.prompt-btn { padding:0 12px; height:32px; background:#fff; color:#1e242e; border:1px solid #d0d4da; border-radius:6px; font-size:14px; font-weight:500; cursor:pointer; box-shadow:0 2px 3px rgba(0,0,0,0.05); transition:all 0.15s; }
+.prompt-btn:hover { background:#fafafa; border-color:#7E55F6; }
+.card { background:#fff; border:1px solid rgba(0,0,0,0.08); border-radius:8px; padding:16px; margin:12px 0; }
+.card-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.card-label { font-size:11px; font-weight:600; color:#6e7686; text-transform:uppercase; margin-bottom:8px; letter-spacing:0.5px; }
+.score-big { font-size:28px; font-weight:700; }
+.score-green { color:#1a7a5a; }
+.score-red { color:#c4314b; }
+.applied-card { background:#e9fbf5; border:1px solid #6dd4a8; border-radius:8px; padding:16px; margin:12px 0; }
+.applied-title { display:flex; align-items:center; gap:8px; color:#1a7a5a; font-weight:600; font-size:14px; margin-bottom:8px; }
+.right-panel-task { display:none; padding:24px 32px; }
+.right-panel-task.active { display:block; }
+</style>
+</head>
+<body>
+<div class="nav">
+  <div class="nav-dot active" onclick="showHome()">
+    <svg viewBox="0 0 16 16" fill="none"><path d="M2.5 6.5L8 2L13.5 6.5V13C13.5 13.28 13.28 13.5 13 13.5H3C2.72 13.5 2.5 13.28 2.5 13V6.5Z" stroke="#7E55F6" stroke-width="1.3" stroke-linecap="round"/><path d="M6 13.5V9H10V13.5" stroke="#7E55F6" stroke-width="1.3" stroke-linecap="round"/></svg>
+  </div>
+  <div class="nav-dot">
+    <svg viewBox="0 0 16 16" fill="none"><path d="M5.5 8.5V12.5M8 6V12.5M10.5 3.5V12.5" stroke="#8b8f97" stroke-width="1.3" stroke-linecap="round"/></svg>
+  </div>
+  <div class="nav-dot">
+    <svg viewBox="0 0 16 16" fill="none"><path d="M8 10A2 2 0 108 6a2 2 0 000 4z" stroke="#8b8f97" stroke-width="1.3"/></svg>
+  </div>
+</div>
+
+<div class="left" id="left-panel">
+  <!-- HOME VIEW -->
+  <div id="home-left">
+    <div class="left-header">
+      <h2>Good morning, Natasha</h2>
+      <p>4 tasks need your attention</p>
+    </div>
+    <div class="task-list">
+      <div class="task" onclick="openTask(0)">
+        <div class="task-badge badge-green">Auto-deployed</div>
+        <div class="task-title">Review: Shipping FAQ update</div>
+        <div class="task-desc">AI Agent improved a skill and deployed it overnight. Adherence +12%.</div>
+      </div>
+      <div class="task" onclick="openTask(1)">
+        <div class="task-badge badge-red">Alert</div>
+        <div class="task-title">Shipping delay tone drop</div>
+        <div class="task-desc">Monitor flagged adherence dropped to 71% on Shipping Delay skill.</div>
+      </div>
+      <div class="task" onclick="openTask(2)">
+        <div class="task-badge badge-purple">Recommendation</div>
+        <div class="task-title">New skill: Subscription management</div>
+        <div class="task-desc">AI Agent detected a pattern and recommends creating a new skill.</div>
+      </div>
+      <div class="task" onclick="openTask(3)">
+        <div class="task-badge badge-amber">Review</div>
+        <div class="task-title">Tone calibration needed</div>
+        <div class="task-desc">2 responses flagged by tone scorer. Quick review needed.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONVERSATION VIEW (hidden by default) -->
+  <div class="conv-view" id="conv-view">
+    <div class="conv-header">
+      <button class="back-btn" onclick="showHome()">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2.75 8L5.67 10.92M2.75 8L5.67 5.08M2.75 8H13.25" stroke="#1e242e" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <span id="conv-title" style="font-size:14px;font-weight:600;color:#1e242e"></span>
+    </div>
+    <div class="conv-messages" id="conv-messages"></div>
+    <div class="prompt-btns" id="conv-prompts"></div>
+  </div>
+</div>
+
+<div class="right" id="right-panel">
+  <!-- HOME BRIEFING -->
+  <div id="home-right">
+    <div class="briefing-header">
+      <h1>Morning Briefing</h1>
+      <p>Here's what happened while you were away</p>
+    </div>
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-val">94%</div>
+        <div class="stat-label">Adherence</div>
+        <div class="stat-delta delta-up">↑ 3% vs last week</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val">847</div>
+        <div class="stat-label">Tickets resolved</div>
+        <div class="stat-delta delta-up">↑ 12% vs last week</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val">$12.4k</div>
+        <div class="stat-label">Revenue influenced</div>
+        <div class="stat-delta delta-up">↑ 8% vs last week</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val">1.2m</div>
+        <div class="stat-label">Avg response time</div>
+        <div class="stat-delta delta-up">↓ 15% vs last week</div>
+      </div>
+    </div>
+    <div class="story">
+      <h3>Overnight Summary</h3>
+      <p><strong>AI Agent processed 847 tickets</strong> overnight with a 94% adherence score. It auto-deployed an improvement to the <strong>Shipping FAQ</strong> skill after running evaluations on 200 synthetic tickets — adherence jumped from 82% to 94%. One monitor alert was triggered: the <strong>Shipping Delay</strong> skill's tone score dropped to 71% after a carrier partner changed their delay messaging. AI Agent also identified a cluster of 34 subscription-related tickets that don't match any existing skill and recommends creating a new <strong>Subscription Management</strong> skill.</p>
+    </div>
+    <h3 style="font-size:13px;font-weight:600;color:#6e7686;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px">Active Monitors</h3>
+    <div class="monitors">
+      <div class="monitor-pill"><div class="monitor-dot dot-green"></div>Order Status</div>
+      <div class="monitor-pill"><div class="monitor-dot dot-green"></div>Returns & Exchanges</div>
+      <div class="monitor-pill"><div class="monitor-dot dot-red"></div>Shipping Delay</div>
+      <div class="monitor-pill"><div class="monitor-dot dot-green"></div>Shipping FAQ</div>
+      <div class="monitor-pill"><div class="monitor-dot dot-green"></div>Product Care</div>
+    </div>
+  </div>
+
+  <!-- TASK DETAIL PANELS -->
+  <div class="right-panel-task" id="right-task-0">
+    <h2 style="font-size:18px;font-weight:700;color:#1e242e;margin-bottom:16px">Shipping FAQ — Auto-Deploy Review</h2>
+    <div class="card">
+      <div class="card-label">Evaluation Results</div>
+      <div class="card-grid">
+        <div>
+          <div class="card-label">Before</div>
+          <div class="score-big score-red">82%</div>
+          <div style="font-size:12px;color:#5c6370;margin-top:4px">Adherence: 80% · Tone: 85% · Resolution: 82%</div>
+        </div>
+        <div>
+          <div class="card-label">After</div>
+          <div class="score-big score-green">94%</div>
+          <div style="font-size:12px;color:#5c6370;margin-top:4px">Adherence: 95% · Tone: 93% · Resolution: 94%</div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-label">What Changed</div>
+      <div class="card-grid">
+        <div>
+          <div class="card-label">Before</div>
+          <div style="font-size:13px;color:#5c6370;line-height:1.5">Generic response: "Your order will arrive in 3-5 business days."</div>
+        </div>
+        <div>
+          <div class="card-label">After</div>
+          <div style="font-size:13px;color:#5c6370;line-height:1.5">Personalized: pulls real tracking data + estimated date from carrier API.</div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-label">Deployment Timeline</div>
+      <div style="padding-left:16px;border-left:2px solid rgba(0,0,0,0.08)">
+        <div style="margin-bottom:12px"><div style="font-size:12px;font-weight:600;color:#1e242e">Improvement detected</div><div style="font-size:11px;color:#5c6370">11:42 PM</div></div>
+        <div style="margin-bottom:12px"><div style="font-size:12px;font-weight:600;color:#1e242e">Evaluation started (200 tickets)</div><div style="font-size:11px;color:#5c6370">11:45 PM</div></div>
+        <div style="margin-bottom:12px"><div style="font-size:12px;font-weight:600;color:#1e242e">Evaluation passed — 94% adherence</div><div style="font-size:11px;color:#5c6370">11:58 PM</div></div>
+        <div><div style="font-size:12px;font-weight:600;color:#1e242e">Auto-deployed to production</div><div style="font-size:11px;color:#5c6370">12:01 AM</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="right-panel-task" id="right-task-1">
+    <h2 style="font-size:18px;font-weight:700;color:#1e242e;margin-bottom:16px">Shipping Delay — Monitor Alert</h2>
+    <div class="card" style="background:#fff1f2;border-color:#f87171">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 4.5V7.5M7 9.5H7.005M1.5 11.5L7 2L12.5 11.5H1.5Z" stroke="#c4314b" stroke-width="1.2" stroke-linecap="round"/></svg>
+        <span style="font-size:13px;font-weight:600;color:#1e242e">Adherence dropped to 71%</span>
+      </div>
+      <div class="card-grid">
+        <div><div class="card-label">Previous</div><div class="score-big score-green">89%</div></div>
+        <div><div class="card-label">Current</div><div class="score-big score-red">71%</div></div>
+      </div>
+      <div style="margin-top:12px;font-size:13px;color:#5c6370;line-height:1.5"><strong style="color:#1e242e">Root cause:</strong> FedEx updated their delay notification format. The skill's response template references the old format, causing mismatched information in 23 tickets.</div>
+    </div>
+    <div class="card">
+      <div class="card-label">Example Affected Ticket</div>
+      <div style="padding:12px;background:#fafafa;border-radius:6px;border-left:3px solid #5c6370;font-size:13px;color:#5c6370;margin-bottom:12px">"My order was supposed to arrive yesterday but the tracking page shows a different date than what your agent told me."</div>
+      <div class="card-grid">
+        <div>
+          <div class="card-label">Agent Response (current)</div>
+          <div style="font-size:12px;color:#5c6370">References old FedEx format — shows wrong estimated date.</div>
+        </div>
+        <div>
+          <div class="card-label">Suggested Fix</div>
+          <div style="font-size:12px;color:#5c6370">Update template to parse new FedEx delay format. Pull live tracking data.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="right-panel-task" id="right-task-2">
+    <h2 style="font-size:18px;font-weight:700;color:#1e242e;margin-bottom:16px">New Skill Recommendation</h2>
+    <div class="card">
+      <div class="card-label">Pattern Detected</div>
+      <p style="font-size:13px;color:#5c6370;line-height:1.6;margin-bottom:12px">Over the past 7 days, <strong style="color:#1e242e">34 tickets</strong> related to subscription management were handled by the general fallback skill. Common intents include: pause subscription, change frequency, skip delivery, and cancel subscription.</p>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px">
+        <div style="text-align:center;padding:8px;background:#fafafa;border-radius:6px"><div style="font-size:16px;font-weight:700;color:#1e242e">34</div><div style="font-size:10px;color:#5c6370">tickets</div></div>
+        <div style="text-align:center;padding:8px;background:#fafafa;border-radius:6px"><div style="font-size:16px;font-weight:700;color:#1e242e">4</div><div style="font-size:10px;color:#5c6370">intents</div></div>
+        <div style="text-align:center;padding:8px;background:#fafafa;border-radius:6px"><div style="font-size:16px;font-weight:700;color:#1e242e">62%</div><div style="font-size:10px;color:#5c6370">current resolution</div></div>
+        <div style="text-align:center;padding:8px;background:#fafafa;border-radius:6px"><div style="font-size:16px;font-weight:700;color:#b35c00">~88%</div><div style="font-size:10px;color:#5c6370">est. with skill</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="right-panel-task" id="right-task-3">
+    <h2 style="font-size:18px;font-weight:700;color:#1e242e;margin-bottom:16px">Tone Calibration Review</h2>
+    <div class="card">
+      <div class="card-label">Flagged Responses</div>
+      <div style="margin-bottom:16px;padding:12px;background:#fff1f2;border-radius:6px;border-left:3px solid #c4314b">
+        <div style="font-size:12px;font-weight:600;color:#c4314b;margin-bottom:4px">Ticket #4521 — Too formal</div>
+        <div style="font-size:13px;color:#5c6370">"We regret to inform you that the item in question is currently unavailable for procurement."</div>
+        <div style="font-size:12px;color:#1a7a5a;margin-top:8px;font-weight:500">Suggested: "Sorry, that item is out of stock right now! We'll let you know as soon as it's back."</div>
+      </div>
+      <div style="padding:12px;background:#fff1f2;border-radius:6px;border-left:3px solid #c4314b">
+        <div style="font-size:12px;font-weight:600;color:#c4314b;margin-bottom:4px">Ticket #4538 — Missing empathy</div>
+        <div style="font-size:13px;color:#5c6370">"Your subscription has been cancelled. No further charges will be made."</div>
+        <div style="font-size:12px;color:#1a7a5a;margin-top:8px;font-weight:500">Suggested: "Your subscription is cancelled — you won't be charged again. We're sorry to see you go! If you change your mind, we're always here."</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const tasks = [
+  {
+    title: "Shipping FAQ — Auto-Deploy",
+    messages: [
+      { type:"agent", text:"Last night I detected that the <strong>Shipping FAQ</strong> skill could be improved. I ran an evaluation on 200 synthetic tickets and adherence jumped from <strong>82% → 94%</strong>. Since it passed your auto-deploy threshold (90%), I deployed it at 12:01 AM." },
+    ],
+    prompts: [
+      ["Show me what changed", [
+        { type:"user", text:"Show me what changed" },
+        { type:"agent", text:"The main change was in how shipping timelines are communicated. Before, the skill gave a generic \"3-5 business days\" response. Now it pulls <strong>real tracking data</strong> from the carrier API and gives customers a specific estimated delivery date. I also improved handling of express vs. standard shipping questions." }
+      ]],
+      ["Run evaluation again", [
+        { type:"user", text:"Run evaluation again" },
+        { type:"agent", text:"Running a fresh evaluation on 200 tickets now... ✓ Complete. <strong>Adherence: 94%</strong>, Tone: 93%, Resolution: 94%. Consistent with the overnight results. The improvement is stable." }
+      ]],
+      ["Looks good, keep it deployed", [
+        { type:"user", text:"Looks good, keep it deployed" },
+        { type:"agent", text:"Great! I'll keep it live and continue monitoring. The <strong>Shipping FAQ monitor</strong> is tracking adherence, tone, and resolution in real-time. I'll alert you if anything drops below your thresholds." }
+      ]]
+    ]
+  },
+  {
+    title: "Shipping Delay Alert",
+    messages: [
+      { type:"agent", text:"The <strong>Shipping Delay</strong> skill monitor triggered an alert. Adherence dropped from <strong>89% → 71%</strong> in the last 6 hours. I traced the root cause: <strong>FedEx updated their delay notification format</strong>, and the skill's response template references the old format — causing mismatched delivery dates in 23 tickets." },
+    ],
+    prompts: [
+      ["Show me an affected ticket", [
+        { type:"user", text:"Show me an affected ticket" },
+        { type:"agent", text:"Here's ticket #4487: Customer asked about their delayed order. The agent quoted \"estimated delivery: March 28\" from the old FedEx format, but the actual new estimate was March 31. The customer saw conflicting info on their tracking page." }
+      ]],
+      ["Fix it and run eval", [
+        { type:"user", text:"Fix it and run eval" },
+        { type:"agent", text:"I've updated the Shipping Delay skill to parse the new FedEx notification format. Running evaluation on 150 synthetic tickets... ✓ <strong>Adherence is back to 91%</strong>. The fix correctly handles both old and new FedEx formats." }
+      ]],
+      ["Deploy the fix", [
+        { type:"user", text:"Deploy the fix" },
+        { type:"agent", text:"Deployed! The <strong>Shipping Delay</strong> skill is now live with the updated FedEx parsing. Monitor is green again — I'll keep watching for any further carrier format changes." }
+      ]]
+    ]
+  },
+  {
+    title: "Subscription Management Skill",
+    messages: [
+      { type:"agent", text:"I noticed a pattern: <strong>34 tickets</strong> in the last 7 days were about subscription management — pause, change frequency, skip delivery, cancel. These are all hitting the general fallback skill with only <strong>62% resolution</strong>. I recommend creating a dedicated <strong>Subscription Management</strong> skill." },
+    ],
+    prompts: [
+      ["What intents would it cover?", [
+        { type:"user", text:"What intents would it cover?" },
+        { type:"agent", text:"Based on the ticket patterns, the skill would cover 4 intents: <strong>1)</strong> Pause subscription, <strong>2)</strong> Change delivery frequency, <strong>3)</strong> Skip next delivery, <strong>4)</strong> Cancel subscription. Each would integrate with your subscription platform's API for real actions." }
+      ]],
+      ["Create the skill", [
+        { type:"user", text:"Create the skill" },
+        { type:"agent", text:"I've drafted the <strong>Subscription Management</strong> skill with all 4 intents. I'll run an evaluation using the 34 historical tickets as test cases... ✓ <strong>Estimated adherence: 88%</strong> — a big improvement over the 62% fallback rate. Want me to deploy it?" }
+      ]],
+      ["Deploy with a monitor", [
+        { type:"user", text:"Deploy with a monitor" },
+        { type:"agent", text:"Done! The <strong>Subscription Management</strong> skill is now live with an auto-created monitor tracking adherence, resolution, and tone. I'll alert you if adherence drops below 85%." }
+      ]]
+    ]
+  },
+  {
+    title: "Tone Calibration",
+    messages: [
+      { type:"agent", text:"The tone scorer flagged <strong>2 responses</strong> in the last 24 hours. One was too formal for your brand voice, and one was missing empathy on a cancellation. Want to review them?" },
+    ],
+    prompts: [
+      ["Show me the flagged responses", [
+        { type:"user", text:"Show me the flagged responses" },
+        { type:"agent", text:"<strong>Ticket #4521:</strong> Agent said \"We regret to inform you that the item in question is currently unavailable for procurement.\" — Too formal. Should be: \"Sorry, that item is out of stock right now!\"<br><br><strong>Ticket #4538:</strong> Agent said \"Your subscription has been cancelled. No further charges will be made.\" — Missing empathy. Should add: \"We're sorry to see you go! If you change your mind, we're always here.\"" }
+      ]],
+      ["Apply the tone fixes", [
+        { type:"user", text:"Apply the tone fixes" },
+        { type:"agent", text:"Applied! I've updated the tone guidelines to avoid overly formal language and require empathy on cancellation-related responses. These corrections will also feed into future evaluations to prevent similar issues." }
+      ]]
+    ]
+  }
+];
+
+let currentTask = -1;
+let currentStep = {};
+
+function showHome() {
+  currentTask = -1;
+  document.getElementById('home-left').style.display = 'block';
+  document.getElementById('conv-view').classList.remove('active');
+  document.getElementById('home-right').style.display = 'block';
+  document.querySelectorAll('.right-panel-task').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.task').forEach(el => el.classList.remove('active'));
+}
+
+function openTask(idx) {
+  currentTask = idx;
+  currentStep[idx] = 0;
+  const task = tasks[idx];
+
+  // Highlight task
+  document.querySelectorAll('.task').forEach((el,i) => el.classList.toggle('active', i===idx));
+
+  // Show conversation view
+  document.getElementById('home-left').style.display = 'none';
+  const cv = document.getElementById('conv-view');
+  cv.classList.add('active');
+  document.getElementById('conv-title').textContent = task.title;
+
+  // Render initial messages
+  const msgContainer = document.getElementById('conv-messages');
+  msgContainer.innerHTML = '';
+  task.messages.forEach(m => {
+    const div = document.createElement('div');
+    div.className = 'msg' + (m.type === 'user' ? ' msg-user' : '');
+    if (m.type === 'user') {
+      div.innerHTML = '<span>' + m.text + '</span>';
+    } else {
+      div.innerHTML = '<div class="msg-agent">' + m.text + '</div>';
+    }
+    msgContainer.appendChild(div);
+  });
+
+  // Render prompts
+  renderPrompts(idx);
+
+  // Show right panel task detail
+  document.getElementById('home-right').style.display = 'none';
+  document.querySelectorAll('.right-panel-task').forEach(el => el.classList.remove('active'));
+  document.getElementById('right-task-' + idx).classList.add('active');
+}
+
+function renderPrompts(idx) {
+  const task = tasks[idx];
+  const step = currentStep[idx] || 0;
+  const promptContainer = document.getElementById('conv-prompts');
+  promptContainer.innerHTML = '';
+
+  if (step < task.prompts.length) {
+    task.prompts.slice(step).forEach((p, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'prompt-btn';
+      btn.textContent = p[0];
+      btn.onclick = () => handlePrompt(idx, step + i);
+      promptContainer.appendChild(btn);
+    });
+  }
+}
+
+function handlePrompt(idx, promptIdx) {
+  const task = tasks[idx];
+  const prompt = task.prompts[promptIdx];
+  const msgContainer = document.getElementById('conv-messages');
+
+  // Add messages from this prompt
+  prompt[1].forEach(m => {
+    const div = document.createElement('div');
+    div.className = 'msg' + (m.type === 'user' ? ' msg-user' : '');
+    div.style.opacity = '0';
+    div.style.transform = 'translateY(8px)';
+    if (m.type === 'user') {
+      div.innerHTML = '<span>' + m.text + '</span>';
+    } else {
+      div.innerHTML = '<div class="msg-agent">' + m.text + '</div>';
+    }
+    msgContainer.appendChild(div);
+    // Animate in
+    setTimeout(() => {
+      div.style.transition = 'opacity 0.35s ease, transform 0.35s ease';
+      div.style.opacity = '1';
+      div.style.transform = 'translateY(0)';
+    }, m.type === 'user' ? 0 : 400);
+  });
+
+  msgContainer.scrollTop = msgContainer.scrollHeight;
+
+  // Update step and prompts
+  currentStep[idx] = promptIdx + 1;
+  renderPrompts(idx);
+}
+</script>
+</body>
+</html>

@@ -1046,6 +1046,96 @@
         This prevents the problem instead of reacting to it. Want me to add this?</p>
       </div>
     </div>
+
+    <!-- Skill Review & Offline Evaluation -->
+    <div class="data-section">
+      <div class="data-section-title">Skill Review & Offline Evaluation</div>
+      <div class="beats" style="margin-bottom:36px">
+        <div class="beat">
+          <div class="beat-num">6</div>
+          <div class="beat-content">
+            <h4>Maya reviews the proposed skill instructions</h4>
+            <p>Before going live, Maya reads the agent's draft: when a customer is ordering a gift, ask if the recipient has pets. If yes, recommend pet-safe arrangements. Maya adjusts: "Only ask for gift orders, not self-purchases. And don't lead with 'Are there pets?' — weave it naturally: 'Would you like me to check that this arrangement is safe for any pets in the home?'"</p>
+          </div>
+        </div>
+        <div class="beat">
+          <div class="beat-num">7</div>
+          <div class="beat-content">
+            <h4>Offline evaluation — 124 historical gift-order tickets</h4>
+            <p>The agent replays every gift-order conversation from the past 2 months through the new pet-safety instructions. It's not testing on real customers yet — it's checking whether the new logic would have produced the right behavior on tickets that already happened.</p>
+          </div>
+        </div>
+        <div class="beat">
+          <div class="beat-num">8</div>
+          <div class="beat-content">
+            <h4>Results look strong — Maya fixes 2 edge cases and publishes</h4>
+            <p>118 of 124 handled correctly. 4 correctly escalated (ambiguous pet situations). 2 false positives — a customer named their kid "Kitty" and another mentioned "my pet project." Maya tightens the trigger language, re-runs. Adherence jumps from 95% to 98%, false positives drop to 0. She publishes the skill. It's live immediately.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="data-section">
+      <div class="data-section-title">Offline Evaluation — 124 Gift-Order Tickets</div>
+      <div class="metric-row">
+        <div class="metric-card">
+          <div class="metric-label">Tickets Evaluated</div>
+          <div class="metric-value">124</div>
+          <div class="metric-note">All gift-order conversations, last 2 months</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Adherence</div>
+          <div class="metric-value">95%</div>
+          <div class="metric-delta neutral">→ 98% after adjustment</div>
+          <div class="metric-note">Agent follows pet-safety instructions correctly</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Correct Pet Checks</div>
+          <div class="metric-value">118</div>
+          <div class="metric-note">Asked about pets at the right moment, recommended correctly</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">False Positives</div>
+          <div class="metric-value">2 → 0</div>
+          <div class="metric-note">Eliminated after trigger language adjustment</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="data-section">
+      <div class="data-section-title">Edge Cases Caught in Eval</div>
+      <div class="edge-case">
+        <strong>1.</strong> Customer said "I'm ordering for <mark>Kitty</mark>, she'll love tulips" — <strong>"Kitty" is the recipient's name, not a cat.</strong> Agent incorrectly triggered pet-safety check.
+      </div>
+      <div class="edge-case">
+        <strong>2.</strong> Customer mentioned "this is <mark>my pet project</mark> — I'm decorating the whole house with flowers" — <strong>"pet project" = personal project, not a pet.</strong> Agent incorrectly triggered.
+      </div>
+    </div>
+
+    <div class="data-section">
+      <div class="data-section-title">Skill Published</div>
+      <div class="results-card">
+        <h4>Pet Safety Check — Live ✓</h4>
+        <p style="font-size:14px;color:#166534;line-height:1.6">Maya reviewed, evaluated on 124 historical tickets, fixed 2 edge cases, and published — all in under 15 minutes. The agent now proactively checks pet safety on every gift order. No more toxic bouquets reaching homes with pets.</p>
+        <div class="metric-row" style="margin-top:12px;margin-bottom:0">
+          <div class="metric-card" style="background:white">
+            <div class="metric-label">Time to Publish</div>
+            <div class="metric-value">~15 min</div>
+            <div class="metric-note">Review + eval + fix + publish</div>
+          </div>
+          <div class="metric-card" style="background:white">
+            <div class="metric-label">Adherence</div>
+            <div class="metric-value">98%</div>
+            <div class="metric-note">After edge case adjustment</div>
+          </div>
+          <div class="metric-card" style="background:white">
+            <div class="metric-label">Est. Monthly Impact</div>
+            <div class="metric-value">~40 orders</div>
+            <div class="metric-note">Gift orders where pet check would activate</div>
+          </div>
+        </div>
+      </div>
+    </div>
   </section>
 
   <!-- ==================== JOURNEY 3 ==================== -->
