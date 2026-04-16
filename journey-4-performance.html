@@ -27,6 +27,121 @@
     .sidebar-item { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 8px; font-size: 13px; font-weight: 500; color: #5c6370; cursor: pointer; transition: all 120ms; border: none; background: none; width: 100%; text-align: left; font-family: 'Inter', sans-serif; white-space: nowrap; overflow: hidden; }
     .sidebar-item:hover { background: #f5f6f7; color: #1e242e; }
     .sidebar-item.active { background: #f1ecff; color: #7E55F6; }
+
+    /* Right panel header with tabs */
+    .right-header-tabs { display: flex; gap: 0; border-bottom: 1px solid #f0f0f4; padding: 0; }
+    .right-header-tab { padding: 8px 16px; font-size: 13px; font-weight: 500; color: #5c6370; cursor: pointer; border-bottom: 2px solid transparent; transition: all 120ms; white-space: nowrap; background: none; border-top: none; border-left: none; border-right: none; font-family: 'Inter', sans-serif; }
+    .right-header-tab:hover { color: #1e242e; }
+    .right-header-tab.active { color: #7E55F6; border-bottom-color: #7E55F6; font-weight: 600; }
+    .right-header-tab .tab-count { display: inline-flex; align-items: center; justify-content: center; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: #7E55F6; color: #fff; font-size: 11px; font-weight: 600; margin-left: 6px; }
+
+    /* Inbox view */
+    .inbox-view { padding: 0; margin: -32px -24px; }
+    .inbox-summary { background: #fafafa; border: 1px solid #f0f0f4; border-radius: 12px; padding: 20px; margin: 20px 24px 16px; }
+    .inbox-summary-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; font-size: 14px; font-weight: 600; color: #1e242e; }
+    .inbox-summary-header svg { width: 16px; height: 16px; color: #7E55F6; }
+    .inbox-summary-bullets { display: flex; flex-direction: column; gap: 6px; font-size: 13px; line-height: 18px; color: #5c6370; }
+    .inbox-summary-bullets li { list-style: disc; margin-left: 16px; }
+    .inbox-ask-wrap { padding: 0 24px 16px; }
+    .inbox-ask { width: 100%; padding: 10px 14px; border: 1px solid #e8e8ec; border-radius: 8px; font-size: 13px; color: #5c6370; background: #fff; font-family: 'Inter', sans-serif; display: flex; align-items: center; justify-content: space-between; }
+    .inbox-ask svg { width: 16px; height: 16px; color: #a0a0b0; }
+    .inbox-section-label { font-size: 14px; font-weight: 600; color: #1e242e; padding: 0 24px; margin-bottom: 8px; }
+    .inbox-alert { display: flex; align-items: center; gap: 12px; padding: 12px 16px; margin: 0 24px 16px; background: #fff; border: 1px solid #f0f0f4; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+    .inbox-alert-icon { width: 32px; height: 32px; border-radius: 50%; background: #fef3e2; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .inbox-alert-icon svg { width: 16px; height: 16px; color: #b45309; }
+    .inbox-alert-body { flex: 1; }
+    .inbox-alert-title { font-size: 13px; font-weight: 600; color: #1e242e; display: flex; align-items: center; gap: 8px; }
+    .inbox-alert-badge { display: inline-flex; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+    .inbox-alert-badge.active { background: #dcfce7; color: #147656; }
+    .inbox-alert-sub { font-size: 12px; color: #5c6370; margin-top: 2px; }
+    .inbox-alert-actions { display: flex; align-items: center; gap: 8px; }
+    .inbox-alert-resolve { padding: 6px 14px; border: 1px solid #e8e8ec; border-radius: 6px; font-size: 12px; font-weight: 500; color: #1e242e; background: #fff; cursor: pointer; font-family: 'Inter', sans-serif; }
+    .inbox-alert-chevron { width: 20px; height: 20px; color: #a0a0b0; cursor: pointer; }
+    .inbox-filters { display: flex; gap: 6px; padding: 0 24px; margin-bottom: 12px; flex-wrap: wrap; }
+    .inbox-filter-chip { padding: 4px 12px; border-radius: 16px; font-size: 12px; font-weight: 500; color: #5c6370; background: #f5f6f7; border: none; cursor: pointer; font-family: 'Inter', sans-serif; transition: all 120ms; }
+    .inbox-filter-chip.active { background: #7E55F6; color: #fff; }
+    .inbox-escalation-list { display: flex; flex-direction: column; }
+    .inbox-escalation-row { display: flex; align-items: center; gap: 12px; padding: 12px 24px; border-bottom: 1px solid #f5f6f7; cursor: pointer; transition: background 120ms; }
+    .inbox-escalation-row:hover { background: #fafafa; }
+    .inbox-escalation-row.highlighted { background: #fdf8ff; border-left: 3px solid #7E55F6; }
+    .inbox-escalation-avatar { width: 32px; height: 32px; border-radius: 50%; background: #f0f0f4; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; color: #5c6370; flex-shrink: 0; }
+    .inbox-escalation-body { flex: 1; min-width: 0; }
+    .inbox-escalation-name { font-size: 13px; font-weight: 600; color: #1e242e; display: flex; align-items: center; gap: 8px; }
+    .inbox-escalation-desc { font-size: 12px; color: #5c6370; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-top: 2px; }
+    .inbox-escalation-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+    .inbox-escalation-tag { font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 4px; background: #f5f6f7; color: #5c6370; }
+    .inbox-escalation-time { font-size: 11px; color: #a0a0b0; white-space: nowrap; }
+    .severity-badge { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; }
+    .severity-badge.critical { background: #fde8ec; color: #c4314b; }
+    .severity-badge.high { background: #fef3e2; color: #b45309; }
+    .severity-badge.medium { background: #fef9e7; color: #92690a; }
+
+    /* Skills view */
+    .skills-view { padding: 0; margin: -32px -24px; }
+    .skill-detail-header { display: flex; align-items: center; gap: 12px; padding: 16px 24px; border-bottom: 1px solid #f0f0f4; }
+    .skill-detail-back { width: 32px; height: 32px; border-radius: 8px; border: none; background: #f5f6f7; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #5c6370; font-size: 16px; font-family: 'Inter', sans-serif; transition: background 120ms; }
+    .skill-detail-back:hover { background: #e8e8ec; }
+    .skill-detail-title { font-size: 16px; font-weight: 600; color: #1e242e; flex: 1; }
+    .skill-detail-actions { display: flex; gap: 8px; }
+    .skill-detail-btn { padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: 500; font-family: 'Inter', sans-serif; cursor: pointer; }
+    .skill-detail-btn.primary { background: #1e242e; color: #fff; border: none; }
+    .skill-detail-btn.secondary { background: #fff; color: #1e242e; border: 1px solid #e8e8ec; }
+    .skill-detail-layout { display: flex; gap: 0; padding: 20px 24px; flex: 1; overflow-y: auto; }
+    .skill-detail-main { flex: 1; padding-right: 24px; }
+    .skill-detail-main-label { font-size: 14px; font-weight: 600; color: #1e242e; margin-bottom: 4px; }
+    .skill-detail-main-sub { font-size: 12px; color: #5c6370; margin-bottom: 12px; }
+    .skill-instructions-box { border: 1px solid #e8e8ec; border-radius: 8px; padding: 16px; background: #fff; font-size: 13px; line-height: 20px; color: #1e242e; }
+    .skill-info-panel { width: 260px; flex-shrink: 0; border-left: 1px solid #f0f0f4; padding-left: 24px; }
+    .skill-info-section { margin-bottom: 20px; }
+    .skill-info-section-title { font-size: 12px; font-weight: 600; color: #1e242e; margin-bottom: 8px; }
+    .skill-info-section-sub { font-size: 11px; color: #5c6370; margin-bottom: 8px; line-height: 15px; }
+    .skill-info-row { display: flex; justify-content: space-between; align-items: center; padding: 4px 0; }
+    .skill-info-label { font-size: 12px; color: #5c6370; }
+    .skill-info-value { font-size: 12px; font-weight: 500; color: #1e242e; }
+    .skill-info-value.purple { color: #7E55F6; }
+    .skill-info-tag { display: inline-flex; padding: 4px 10px; border-radius: 6px; border: 1px solid #e8e8ec; font-size: 12px; color: #1e242e; background: #fff; }
+    .skill-info-toggle { width: 36px; height: 20px; border-radius: 10px; background: #7E55F6; position: relative; display: inline-block; }
+    .skill-info-toggle::after { content: ''; position: absolute; width: 16px; height: 16px; border-radius: 50%; background: #fff; top: 2px; right: 2px; }
+    .skill-info-pills { display: flex; gap: 4px; }
+    .skill-info-pill { padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 500; border: 1px solid #e8e8ec; background: #fff; color: #5c6370; }
+    .skill-info-pill.active { background: #1e242e; color: #fff; border-color: #1e242e; }
+
+    /* Sidebar sub-nav (nested under Performance) */
+    .sidebar-sub-nav { display: flex; flex-direction: column; gap: 1px; overflow: hidden; max-height: 0; transition: max-height 250ms cubic-bezier(0.22, 1, 0.36, 1), opacity 200ms; opacity: 0; }
+    .sidebar-sub-nav.open { max-height: 80px; opacity: 1; }
+    .sidebar-sub-item { display: flex; align-items: center; gap: 10px; padding: 6px 12px 6px 38px; border-radius: 8px; font-size: 12px; font-weight: 500; color: #5c6370; cursor: pointer; transition: all 120ms; border: none; background: none; width: 100%; text-align: left; font-family: 'Inter', sans-serif; white-space: nowrap; overflow: hidden; }
+    .sidebar-sub-item:hover { background: #f5f6f7; color: #1e242e; }
+    .sidebar-sub-item.active { color: #7E55F6; font-weight: 600; }
+    .sidebar-sub-item::before { content: ''; width: 4px; height: 4px; border-radius: 50%; background: currentColor; opacity: 0.5; flex-shrink: 0; }
+    .sidebar-sub-item.active::before { background: #7E55F6; opacity: 1; }
+
+    /* Collapsed sidebar: sub-nav hidden by default, shown via hover popout */
+    .sidebar.collapsed .sidebar-sub-nav { max-height: 0; opacity: 0; padding: 0; }
+    .sidebar.collapsed .sidebar-sub-item { padding-left: 8px; justify-content: center; }
+    .sidebar.collapsed .sidebar-sub-item span { opacity: 0; width: 0; overflow: hidden; pointer-events: none; }
+
+    /* Hover popout for collapsed sidebar */
+    .sidebar-perf-group { position: relative; }
+    .sidebar.collapsed .sidebar-perf-group:hover .sidebar-popout { display: flex; }
+    .sidebar-popout { display: none; position: absolute; left: 100%; top: 0; background: #fff; border: 1px solid #e8e8ec; border-radius: 10px; box-shadow: 0 4px 16px rgba(0,0,0,0.10); padding: 6px; min-width: 160px; z-index: 100; flex-direction: column; gap: 2px; margin-left: 4px; }
+    .sidebar-popout-label { font-size: 11px; font-weight: 600; color: #a0a0b0; padding: 4px 10px 2px; letter-spacing: 0.03em; }
+    .sidebar-popout-item { display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 6px; font-size: 13px; font-weight: 500; color: #5c6370; cursor: pointer; transition: all 100ms; border: none; background: none; width: 100%; text-align: left; font-family: 'Inter', sans-serif; }
+    .sidebar-popout-item:hover { background: #f5f6f7; color: #1e242e; }
+    .sidebar-popout-item.active { background: #f1ecff; color: #7E55F6; }
+
+    /* Page transition */
+    @keyframes navFadeIn {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes navHeaderIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .nav-transition .right-body { animation: navFadeIn 450ms cubic-bezier(0.22, 1, 0.36, 1) both; animation-delay: 80ms; }
+    .nav-transition .right-header,
+    .nav-transition #rightSubNav { animation: navHeaderIn 300ms ease both; }
+
     .sidebar-item svg { width: 16px; height: 16px; flex-shrink: 0; }
     .sidebar-section-label { font-size: 11px; font-weight: 500; color: #a0a0b0; letter-spacing: 0.03em; padding: 16px 12px 6px; white-space: nowrap; transition: opacity 200ms; }
     .sidebar-recent { font-size: 13px; font-weight: 400; color: #5c6370; padding: 6px 12px; border-radius: 6px; cursor: pointer; transition: all 120ms; white-space: nowrap; overflow: hidden; }
@@ -424,7 +539,7 @@
     .tm-tab:hover { color: #1e242e; }
     .tm-tab.active { color: #1e242e; border-bottom-color: #1e242e; }
     .tm-content { flex: 1; overflow: hidden; display: flex; min-height: 0; }
-    .tm-pane { display: none; flex: 1; min-height: 0; }
+    .tm-pane { display: none; flex: 1; min-height: 0; flex-direction: column; }
     .tm-pane.active { display: flex; }
 
     /* Copilot pane */
@@ -446,6 +561,36 @@
     .tm-footnote { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #8a8f98; margin-top: 10px; }
     .tm-footnote svg { width: 13px; height: 13px; flex-shrink: 0; }
     .tm-footnote .tm-tab-inline { color: #5c6370; font-weight: 500; }
+
+    /* Summary pane — redesigned (was Copilot) */
+    .tm-repeat-buyer { font-size: 11px; font-weight: 500; padding: 3px 9px; border-radius: 6px; background: #f5f6f7; color: #5c6370; border: 1px solid #e8e8ec; }
+    .tm-section-label { font-size: 14px; font-weight: 600; color: #1e242e; margin-bottom: 8px; }
+    .tm-issue-list { display: flex; flex-direction: column; gap: 6px; }
+    .tm-issue-item { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; line-height: 20px; color: #1e242e; }
+    .tm-issue-item::before { content: '•'; color: #5c6370; font-weight: 700; flex-shrink: 0; margin-top: 0; }
+    .tm-outcome-section { margin-top: 4px; }
+    .tm-outcome-list { display: flex; flex-direction: column; gap: 6px; }
+    .tm-outcome-item { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; line-height: 20px; color: #1e242e; }
+    .tm-outcome-item .tm-outcome-icon { flex-shrink: 0; margin-top: 2px; }
+    .tm-actions-card { border: 1px solid #eef0f2; border-radius: 10px; overflow: hidden; margin-top: 4px; }
+    .tm-actions-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; cursor: pointer; }
+    .tm-actions-header-title { font-size: 14px; font-weight: 600; color: #1e242e; }
+    .tm-actions-header svg { width: 14px; height: 14px; color: #5c6370; }
+    .tm-actions-body { padding: 0 16px 16px; display: flex; flex-direction: column; gap: 10px; }
+    .tm-actions-card.collapsed .tm-actions-body { display: none; }
+    .tm-actions-card.collapsed .tm-actions-header svg { transform: rotate(-90deg); }
+    .tm-action-row { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; line-height: 20px; color: #1e242e; }
+    .tm-action-check { width: 18px; height: 18px; border-radius: 4px; background: #1e242e; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+    .tm-action-check svg { width: 11px; height: 11px; color: #fff; }
+    .tm-actions-buttons { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+    .tm-actions-btn { font-size: 13px; font-weight: 600; font-family: 'Inter', sans-serif; padding: 8px 16px; border-radius: 8px; border: none; cursor: pointer; transition: all 120ms; }
+    .tm-actions-btn.primary { background: #1e242e; color: #fff; }
+    .tm-actions-btn.primary:hover { background: #2d3440; }
+    .tm-actions-btn.secondary { background: #fff; color: #1e242e; border: 1px solid #e0e0e6; }
+    .tm-actions-btn.secondary:hover { background: #f5f6f7; }
+    .tm-bottom-input { padding: 14px 16px; border-top: 1px solid #eef0f2; display: flex; align-items: center; gap: 10px; flex-shrink: 0; background: #fff; }
+    .tm-bottom-input-text { flex: 1; font-size: 13px; color: #8a8f98; }
+    .tm-bottom-input svg { width: 16px; height: 16px; color: #8a8f98; flex-shrink: 0; }
 
     /* View ticket pane */
     .tm-viewticket { flex: 1; display: flex; min-height: 0; }
@@ -627,34 +772,87 @@
     .diff-block-remove { background: #fef2f2; border-left: 3px solid #dc2626; padding: 8px 12px; border-radius: 0 6px 6px 0; margin: 8px 0; opacity: 0.7; }
 
     /* Eval table — Braintrust-inspired */
+    /* Eval table — skills-table style */
+    .eval-perf-header { display: flex; gap: 40px; margin-bottom: 20px; }
+    .eval-perf-stat { display: flex; flex-direction: column; gap: 2px; }
+    .eval-perf-stat-label { font-size: 12px; font-weight: 400; color: #5c6370; }
+    .eval-perf-stat-value { font-size: 24px; font-weight: 600; color: #1e242e; line-height: 30px; }
+    .eval-perf-stat-value .unit { font-size: 14px; font-weight: 400; color: #8a8f98; }
+    .eval-search-bar { display: flex; align-items: center; gap: 8px; border: 1px solid #e0e0e6; border-radius: 8px; padding: 8px 12px; margin-bottom: 6px; }
+    .eval-search-bar svg { width: 14px; height: 14px; color: #8a8f98; flex-shrink: 0; }
+    .eval-search-bar input { border: none; outline: none; font-size: 13px; font-family: 'Inter', sans-serif; color: #1e242e; flex: 1; background: transparent; }
+    .eval-search-bar input::placeholder { color: #8a8f98; }
+    .eval-table-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 12px; color: #8a8f98; }
+
     .eval-table-wrap { border: 1px solid #e8e8ec; border-radius: 10px; overflow: hidden; margin-top: 0; }
-    .eval-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-    .eval-table thead th { position: sticky; top: 0; background: #fafafa; padding: 8px 10px; text-align: left; font-size: 10px; font-weight: 600; letter-spacing: 0.03em; text-transform: uppercase; color: #5c6370; border-bottom: 1px solid #e8e8ec; white-space: nowrap; }
-    .eval-table thead th.center { text-align: center; }
-    .eval-table thead th.scorer-th { text-align: center; background: #f8f5ff; color: #a0a0b0; }
+    .eval-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .eval-table thead th { position: sticky; top: 0; background: #fff; padding: 10px 14px; text-align: left; font-size: 12px; font-weight: 500; color: #5c6370; border-bottom: 1px solid #e8e8ec; white-space: nowrap; }
+    .eval-table thead th.right { text-align: right; }
+    .eval-table thead th.sortable { cursor: pointer; }
+    .eval-table thead th.sortable:hover { color: #1e242e; }
     .eval-table tbody tr.eval-summary-row { cursor: pointer; border-bottom: 1px solid #f0f0f4; transition: background 120ms; }
-    .eval-table tbody tr.eval-summary-row:hover { background: #f8f8fb; }
-    .eval-table tbody tr.eval-summary-row.edge-row { background: #fffbeb; }
-    .eval-table tbody tr.eval-summary-row.edge-row:hover { background: #fef3e2; }
+    .eval-table tbody tr.eval-summary-row:hover { background: #fafafa; }
+    .eval-table tbody tr.eval-summary-row:last-child { border-bottom: none; }
     .eval-table tbody tr.eval-summary-row.active-row { background: #f1ecff; }
     .eval-table tbody tr.eval-summary-row.active-row:hover { background: #ede6ff; }
-    .eval-table tbody tr.eval-summary-row.edge-row.active-row { background: #f1ecff; }
-    .eval-table tbody tr.eval-summary-row.edge-row.active-row:hover { background: #ede6ff; }
-    .eval-table tbody td { padding: 9px 10px; vertical-align: top; font-size: 12px; line-height: 17px; color: #1e242e; }
-    .eval-table tbody td.center { text-align: center; }
-    .eval-table tbody td.scorer-cell { text-align: center; background: #fcfaff; }
+    .eval-table tbody td { padding: 12px 14px; vertical-align: middle; font-size: 13px; line-height: 18px; color: #1e242e; }
+    .eval-table tbody td.right { text-align: right; }
 
-    .eval-ticket-name { font-weight: 600; font-size: 12px; margin-bottom: 1px; }
-    .eval-ticket-snippet { font-size: 11px; line-height: 15px; color: #5c6370; margin-top: 3px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-    .eval-ticket-snippet .freq-hl { background: #f0ecff; color: #7E55F6; padding: 0 2px; border-radius: 2px; font-weight: 500; }
-    .eval-ticket-type { font-size: 10px; font-weight: 500; letter-spacing: 0.02em; padding: 1px 6px; border-radius: 3px; display: inline-block; }
-    .eval-ticket-type.freq { background: #f0ecff; color: #7E55F6; }
-    .eval-ticket-type.non-freq { background: #f5f6f7; color: #5c6370; }
-    .eval-ticket-type.edge { background: #fef3e2; color: #b45309; }
+    .eval-ticket-name { font-weight: 600; font-size: 13px; }
+    .eval-ticket-snippet { font-size: 12px; line-height: 16px; color: #5c6370; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 220px; }
 
-    .eval-response { font-size: 11px; line-height: 16px; color: #5c6370; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    /* Type pills — journey-stage style */
+    .eval-type-pill { font-size: 11px; font-weight: 500; padding: 3px 10px; border-radius: 999px; display: inline-block; white-space: nowrap; }
+    .eval-type-pill.freq { background: #f0ecff; color: #7E55F6; }
+    .eval-type-pill.non-freq { background: #e8f4fd; color: #1d6fad; }
+    .eval-type-pill.edge { background: #fef3e2; color: #b45309; }
 
-    /* Numeric score pill */
+    /* Score display — clean numeric */
+    .eval-score { font-size: 13px; font-weight: 400; color: #1e242e; font-variant-numeric: tabular-nums; }
+
+    /* Status pill — Enabled/Review style */
+    .eval-status-pill { font-size: 12px; font-weight: 500; padding: 3px 10px; border-radius: 999px; display: inline-block; white-space: nowrap; border: 1px solid #e8e8ec; }
+    .eval-status-pill.pass { color: #147656; border-color: #d0f3e0; }
+    .eval-status-pill.review { color: #b45309; border-color: #f5d68a; }
+    .eval-review-score { font-size: 12px; font-weight: 600; padding: 3px 8px; border-radius: 5px; display: inline-block; }
+    .eval-review-score.good { color: #147656; background: #e9fbf5; }
+    .eval-review-score.ok { color: #92690a; background: #fef9e7; }
+    .eval-review-score.poor { color: #c4314b; background: #fde8ec; }
+
+    /* Inline review thumbs */
+    .eval-review-thumbs { display: flex; align-items: center; gap: 2px; justify-content: flex-end; }
+    .eval-thumb { width: 28px; height: 28px; border-radius: 6px; border: 1px solid transparent; background: transparent; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; color: #b0b4bc; transition: all 140ms; padding: 0; }
+    .eval-thumb:hover { background: #f5f6f7; color: #5c6370; border-color: #e8e8ec; }
+    .eval-thumb.selected-up { background: #e9fbf5; color: #147656; border-color: #bbf7d0; }
+    .eval-thumb.selected-down { background: #fde8ec; color: #c4314b; border-color: #fecaca; }
+    .eval-thumb svg { width: 14px; height: 14px; }
+
+    /* Inline response expand (Siena-style) */
+    .eval-response-cell { position: relative; }
+    .eval-response-cell .eval-response-text { font-size: 13px; line-height: 18px; color: #3a4048; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .eval-response-cell.expanded .eval-response-text { -webkit-line-clamp: unset; display: block; }
+    .eval-show-more { background: none; border: none; padding: 0; font-size: 12px; font-weight: 500; color: #8a8f98; cursor: pointer; margin-top: 4px; }
+    .eval-show-more:hover { color: #5c6370; text-decoration: underline; }
+    .eval-outcome-text { font-size: 12px; line-height: 17px; color: #5c6370; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+    /* AI metric icon + popover */
+    .metric-cell { position: relative; }
+    .metric-ai-icon { width: 18px; height: 18px; border-radius: 50%; background: #f0ecff; color: #7E55F6; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; margin-left: 6px; vertical-align: middle; border: none; padding: 0; transition: background 120ms; }
+    .metric-ai-icon:hover { background: #e4dcff; }
+    .metric-ai-icon svg { width: 11px; height: 11px; }
+    .metric-popover { position: absolute; top: calc(100% + 8px); left: 0; width: 280px; background: #fff; border: 1px solid #e8e8ec; border-radius: 10px; box-shadow: 0 4px 24px rgba(0,0,0,0.10); padding: 14px 16px; z-index: 100; display: none; animation: popoverIn 180ms ease-out; }
+    .metric-popover.open { display: block; }
+    @keyframes popoverIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+    .metric-popover-title { font-size: 12px; font-weight: 600; color: #1e242e; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+    .metric-popover-def { font-size: 12px; line-height: 18px; color: #5c6370; margin-bottom: 12px; }
+    .metric-popover-input-wrap { display: flex; gap: 6px; align-items: center; }
+    .metric-popover-input { flex: 1; border: 1px solid #e8e8ec; border-radius: 6px; padding: 7px 10px; font-size: 12px; font-family: 'Inter', sans-serif; outline: none; color: #1e242e; }
+    .metric-popover-input:focus { border-color: #7E55F6; box-shadow: 0 0 0 2px rgba(126,85,246,0.12); }
+    .metric-popover-send { width: 28px; height: 28px; border-radius: 6px; background: #7E55F6; color: #fff; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .metric-popover-send:hover { background: #6a42e0; }
+    .metric-popover-send svg { width: 14px; height: 14px; }
+
+    /* Legacy compat for score pills used elsewhere */
     .eval-score-pill { display: inline-flex; align-items: center; gap: 3px; padding: 2px 7px; border-radius: 4px; font-size: 11px; font-weight: 600; line-height: 16px; }
     .eval-score-pill.high { background: #e9fbf5; color: #147656; }
     .eval-score-pill.mid { background: #fef3e2; color: #b45309; }
@@ -667,6 +865,13 @@
     .eval-verdict.err { background: #fde8ec; color: #c4314b; }
 
     .eval-table-footer { padding: 10px 14px; background: #fafafa; border-top: 1px solid #e8e8ec; display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: #5c6370; }
+
+    /* Keep old ticket-type class for backward compat */
+    .eval-ticket-type { font-size: 10px; font-weight: 500; letter-spacing: 0.02em; padding: 1px 6px; border-radius: 3px; display: inline-block; }
+    .eval-ticket-type.freq { background: #f0ecff; color: #7E55F6; }
+    .eval-ticket-type.non-freq { background: #f5f6f7; color: #5c6370; }
+    .eval-ticket-type.edge { background: #fef3e2; color: #b45309; }
+    .eval-response { font-size: 11px; line-height: 16px; color: #5c6370; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 
     /* Side panel overlay — Notion-style */
     /* Eval modal — centered, mirrors the ticket-modal pattern */
@@ -1071,10 +1276,21 @@
           <svg viewBox="0 0 16 16" fill="none"><rect x="2.5" y="1.5" width="11" height="13" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M5.5 5h5M5.5 8h3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
           <span class="sidebar-label">Knowledge</span>
         </button>
-        <button class="sidebar-item" data-view="performance" onclick="navigateTo('home')">
-          <svg viewBox="0 0 16 16" fill="none"><path d="M2 11v3M6 8v6M10 5v9M14 2v12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
-          <span class="sidebar-label">Performance</span>
-        </button>
+        <div class="sidebar-perf-group">
+          <button class="sidebar-item" data-view="performance">
+            <svg viewBox="0 0 16 16" fill="none"><path d="M2 11v3M6 8v6M10 5v9M14 2v12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            <span class="sidebar-label">Performance</span>
+          </button>
+          <div class="sidebar-sub-nav" id="perfSubNav">
+            <button class="sidebar-sub-item" data-view="evaluations"><span>Evaluations</span></button>
+            <button class="sidebar-sub-item" data-view="experiments"><span>Experiments</span></button>
+          </div>
+          <div class="sidebar-popout">
+            <div class="sidebar-popout-label">Performance</div>
+            <button class="sidebar-popout-item" data-view="evaluations">Evaluations</button>
+            <button class="sidebar-popout-item" data-view="experiments">Experiments</button>
+          </div>
+        </div>
         <button class="sidebar-item" data-view="settings">
           <svg viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.3"/><path d="M8 1.5v2M8 12.5v2M2.5 5l1.7 1M11.8 10l1.7 1M1.5 8h2M12.5 8h2M2.5 11l1.7-1M11.8 6l1.7-1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
           <span class="sidebar-label">Settings</span>
@@ -1105,7 +1321,10 @@
       <div class="task-view hidden" id="taskView">
         <div class="right-panel">
           <div class="right-inner">
-            <div class="right-header"><h1 class="heading-xl" id="rightTitle">Performance</h1></div>
+            <div class="right-header" id="rightHeader">
+              <h1 class="heading-xl" id="rightTitle">Performance</h1>
+            </div>
+            <div id="rightSubNav"></div>
             <div class="right-body" id="rightPanel"></div>
           </div>
         </div>
@@ -1161,17 +1380,17 @@
       </div>
     </div>
     <div class="em-tabs">
-      <button class="em-tab active" data-emtab="review" onclick="switchEmTab('review')">Review</button>
-      <button class="em-tab" data-emtab="conversation" onclick="switchEmTab('conversation')">Conversation</button>
+      <button class="em-tab" data-emtab="review" onclick="switchEmTab('review')">Review</button>
+      <button class="em-tab active" data-emtab="conversation" onclick="switchEmTab('conversation')">Conversation</button>
     </div>
     <div class="eval-side-panel-body">
       <!-- Review pane: main + rail -->
-      <div class="em-pane active" data-empane="review" style="flex-direction:row;">
+      <div class="em-pane" data-empane="review" style="flex-direction:row;">
         <div class="em-main" id="evalPanelMain"></div>
         <aside class="em-rail" id="evalPanelRail"></aside>
       </div>
       <!-- Conversation pane -->
-      <div class="em-pane" data-empane="conversation">
+      <div class="em-pane active" data-empane="conversation">
         <div class="em-thread" id="evalPanelThread"></div>
       </div>
     </div>
@@ -1206,13 +1425,13 @@
       </div>
     </div>
     <div class="tm-tabs">
-      <button class="tm-tab active" data-tmtab="copilot" onclick="switchTicketModalTab('copilot')">Copilot</button>
+      <button class="tm-tab active" data-tmtab="copilot" onclick="switchTicketModalTab('copilot')">Summary</button>
       <button class="tm-tab" data-tmtab="view" onclick="switchTicketModalTab('view')">View ticket</button>
     </div>
     <div class="tm-content">
-      <!-- Copilot pane -->
+      <!-- Summary pane (was Copilot) -->
       <div class="tm-pane active" data-tmpane="copilot">
-        <div class="tm-copilot">
+        <div class="tm-copilot" style="padding-bottom:0;">
           <div class="tm-copilot-inner">
             <div class="tm-meta" id="tmMeta">Ticket #8412 · 2h ago</div>
             <div class="tm-title" id="tmTitle"></div>
@@ -1221,21 +1440,30 @@
                 <div class="tm-customer-avatar" id="tmCustAvatar"></div>
                 <div class="tm-customer-name" id="tmCustName"></div>
                 <span class="tm-vip" id="tmCustVip" style="display:none;">VIP</span>
+                <span class="tm-repeat-buyer" id="tmCustRepeat" style="display:none;">Repeat buyer</span>
               </div>
               <div class="tm-customer-summary" id="tmCustSummary"></div>
             </div>
             <div>
-              <div class="tm-section-heading">Customer mentioned delivery frequency</div>
-              <div class="tm-quote-wrap">
-                <div class="tm-quote-mark">“</div>
-                <div class="tm-quote" id="tmQuote"></div>
+              <div class="tm-section-label">Customer issue</div>
+              <div class="tm-issue-list" id="tmIssueList"></div>
+            </div>
+            <div class="tm-outcome-section">
+              <div class="tm-section-label">Current outcome</div>
+              <div class="tm-outcome-list" id="tmOutcomeList"></div>
+            </div>
+            <div class="tm-actions-card collapsed" id="tmActionsCard">
+              <div class="tm-actions-header" onclick="document.getElementById('tmActionsCard').classList.toggle('collapsed')">
+                <span class="tm-actions-header-title">Suggested actions</span>
+                <svg viewBox="0 0 14 14" fill="none" style="transition:transform 150ms ease"><path d="M4 6l3 3 3-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </div>
-              <div class="tm-footnote">
-                <svg viewBox="0 0 14 14" fill="none"><path d="M2 4h10M2 7h7M2 10h10" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
-                Excerpt from this ticket — switch to the <span class="tm-tab-inline">View ticket</span> tab to see the full conversation thread.
-              </div>
+              <div class="tm-actions-body" id="tmActionsBody"></div>
             </div>
           </div>
+        </div>
+        <div class="tm-bottom-input">
+          <span class="tm-bottom-input-text">Need to know more? Ask AI Agent about this ticket</span>
+          <svg viewBox="0 0 16 16" fill="none"><path d="M3 13V3l10 5-10 5z" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
       </div>
       <!-- View ticket pane -->
@@ -1471,7 +1699,7 @@
               <div class="landing-insight-main">
                 <div class="landing-insight-title">Update Cancel Subscription skill — cadence, not quality, is driving cancellations</div>
                 <div class="landing-insight-stat">5 of 14 cancellations this week mention delivery frequency</div>
-                <div class="landing-insight-body">Customers are saying “too often,” “can’t keep up,” and “every two weeks is too much.” Frequency-language cancellations have doubled over the last 6 weeks — and the current skill treats them all as product cancellations.</div>
+                <div class="landing-insight-body">Customers are saying "too often," "can’t keep up," and "every two weeks is too much." Frequency-language cancellations have doubled over the last 6 weeks — and the current skill treats them all as product cancellations.</div>
               </div>
               <div class="landing-insight-chart">
                 <svg viewBox="0 0 200 72" preserveAspectRatio="none" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1568,7 +1796,7 @@
       header.innerHTML = `
         <div style="display:flex;align-items:center;gap:8px;">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1.75l1.8 4.05 4.45.4-3.37 2.95 1.02 4.35L8 11.15 4.1 13.5l1.02-4.35L1.75 6.2l4.45-.4L8 1.75z" stroke="#7E55F6" stroke-width="1.3" stroke-linejoin="round"/></svg>
-          <span style="font-size:13px;font-weight:600;color:#7E55F6;letter-spacing:0.02em;">Copilot</span>
+          <span style="font-size:13px;font-weight:600;color:#7E55F6;letter-spacing:0.02em;">Summary</span>
         </div>
         <div class="heading-md" style="margin-top:2px;">${task.title}</div>
         <div class="regular-md text-secondary">${task.desc}</div>
@@ -2130,10 +2358,10 @@
           renderBeat1();
           startTypewriter(agentMsg, () => {
             const btns = createPromptButtons(
-              ['Propose a skill update', 'Show more conversations'],
+              ['Show me a fix', 'Remind me later'],
               (text) => {
-                if (text === 'Propose a skill update') selectPrompt('Propose a skill update', 2);
-                else selectPrompt('Show more conversations', 2);
+                if (text === 'Show me a fix') selectPrompt('Show me a fix', 2);
+                else selectPrompt('Remind me later', 2);
               }
             );
             conv.appendChild(btns);
@@ -2511,13 +2739,13 @@
 
         setTimeout(() => {
           const agentMsg = createConversationMessage(
-            'Yes — 3 misclassifications. The worst one: a customer said <strong>"too many wilted flowers"</strong> and the agent offered a schedule change instead of routing to Delivery Issues. That\u2019s a quality complaint, not a frequency complaint. I\u2019m proposing a follow-up experiment to improve detection accuracy.'
+            'Yes — 3 misclassifications. The worst one: a customer said <strong>"too many wilted flowers"</strong> and AI Agent offered a schedule change instead of routing to Delivery Issues. That\u2019s a quality complaint, not a frequency complaint. I\u2019m proposing a follow-up experiment to improve detection accuracy.'
           );
           conv.appendChild(agentMsg);
           renderBeat8();
           startTypewriter(agentMsg, () => {
             const btns = createPromptButtons(
-              ['What else could the agent surface like this?'],
+              ['What else could AI Agent surface like this?'],
               (text) => selectPrompt(text, 9)
             );
             conv.appendChild(btns);
@@ -2534,7 +2762,7 @@
 
         setTimeout(() => {
           const agentMsg = createConversationMessage(
-            'The frequency insight is just the beginning. I\u2019m already seeing patterns that span teams — <strong>returns driving product quality feedback</strong> for your buying team, <strong>support conversations informing marketing segmentation</strong>, and <strong>churn signals that could trigger win-back campaigns</strong>. Every conversation is data the agent can learn from.'
+            'The frequency insight is just the beginning. I\u2019m already seeing patterns that span teams — <strong>returns driving product quality feedback</strong> for your buying team, <strong>support conversations informing marketing segmentation</strong>, and <strong>churn signals that could trigger win-back campaigns</strong>. Every conversation is data AI Agent can learn from.'
           );
           conv.appendChild(agentMsg);
           startTypewriter(agentMsg, () => {
@@ -2553,6 +2781,7 @@
        =========================== */
 
     const renderBeat0 = () => {
+      setActiveNav('home');
       document.getElementById('rightTitle').textContent = 'Delivery frequency is driving cancellations';
       document.getElementById('rightPanel').innerHTML = '';
       addStoryCard(`
@@ -2597,9 +2826,9 @@
         summary: 'Loyal bi-weekly subscriber since 2024. Loves the product but feels overwhelmed by current cadence — asking to cancel rather than adjust frequency.',
         pullQuote: 'every two weeks is just too much for me',
         subject: '"every two weeks is just too much for me"',
-        customerMsg: 'Hi — I love the flowers honestly but <span class="highlight">every two weeks is just too much for me</span>. They\u2019re <span class="highlight">piling up</span> and I feel bad throwing them out. I think I need to cancel.',
+        customerMsg: 'Hi — I love the flowers honestly but <span class="highlight">every two weeks is just too much for me</span>. They\u2019re piling up and I feel bad throwing them out. I think I need to cancel.',
         customerTime: 'Today, 9:42 AM',
-        currentResponse: 'Hi Lena, I\u2019ve processed your <span class="diff-remove">cancellation</span> effective immediately. You won\u2019t be charged again. Thanks for being a subscriber!',
+        currentResponse: 'Hi Lena, I\u2019ve processed your cancellation effective immediately. You won\u2019t be charged again. Thanks for being a subscriber!',
         currentTime: 'Today, 9:43 AM',
         proposedResponse: 'Hi Lena — I hear you, every two weeks can be a lot! Before we cancel, would you like to try <span class="diff-add">every 3 weeks or monthly</span> instead? That way you can still enjoy the flowers without them piling up. Or if you\u2019d prefer to cancel, I\u2019m happy to do that too.'
       },
@@ -2609,9 +2838,9 @@
         summary: 'Weekly subscriber for 8 months. Enjoys the product but current cadence feels unmanageable — cancelling instead of asking to slow down.',
         pullQuote: 'I just can\u2019t keep up with weekly deliveries anymore',
         subject: '"I just can\u2019t keep up with weekly deliveries"',
-        customerMsg: 'Hey, I need to cancel my subscription. I <span class="highlight">just can\u2019t keep up</span> with <span class="highlight">weekly deliveries</span> anymore. It\u2019s a lot.',
+        customerMsg: 'Hey, I need to cancel my subscription. I <span class="highlight">just can\u2019t keep up with weekly deliveries anymore</span>. It\u2019s a lot.',
         customerTime: 'Today, 7:18 AM',
-        currentResponse: 'Your subscription has been <span class="diff-remove">cancelled</span>. You won\u2019t receive any further deliveries.',
+        currentResponse: 'Your subscription has been cancelled. You won\u2019t receive any further deliveries.',
         currentTime: 'Today, 7:19 AM',
         proposedResponse: 'I totally get that — weekly is a lot! What if we switched you to <span class="diff-add">every other week or monthly</span>? That way you still get fresh flowers without it feeling overwhelming.'
       },
@@ -2621,38 +2850,151 @@
         summary: 'Long-time VIP, weekly cadence. Loves the product but says deliveries arrive faster than she can enjoy them — cancelling rather than spacing them out.',
         pullQuote: 'getting flowers too often — they\u2019re dying before I can enjoy them all',
         subject: '"getting flowers too often, they\u2019re dying before I can enjoy them"',
-        customerMsg: 'I\u2019m <span class="highlight">getting flowers too often</span> — they\u2019re dying before I can enjoy them all. I\u2019d love to keep getting them, just not <span class="highlight">every single week</span>. Can you cancel my subscription?',
+        customerMsg: 'I\u2019m <span class="highlight">getting flowers too often</span> — they\u2019re dying before I can enjoy them all. I\u2019d love to keep getting them, just not every single week. Can you cancel my subscription?',
         customerTime: 'Yesterday, 11:20 PM',
-        currentResponse: 'I understand. I\u2019ve <span class="diff-remove">cancelled your subscription</span> as requested.',
+        currentResponse: 'I understand. I\u2019ve cancelled your subscription as requested.',
         currentTime: 'Yesterday, 11:21 PM',
         proposedResponse: 'That makes total sense! Let\u2019s space them out so you can enjoy every bouquet. Would <span class="diff-add">every 3 weeks or monthly</span> work better for you?'
       }
     ];
 
     const renderBeat1 = () => {
-      const rows = ticketThreads.map((t, i) => `
-        <div class="ticket-card" data-ticket-idx="${i}" onclick="openTicketModal(${i})">
-          <div class="ticket-header">
-            <div class="ticket-header-avatar">${t.initials}</div>
-            <div class="ticket-header-left">
-              <div class="ticket-header-title-row">
-                <div class="ticket-header-name">${t.name}</div>
-              </div>
-              <div class="ticket-header-subject">${t.subject}</div>
+      setActiveNav('inbox');
+      document.getElementById('rightPanel').innerHTML = '';
+
+      // Escalation summary
+      addStoryCard(`
+        <div class="inbox-view">
+          <div class="inbox-summary">
+            <div class="inbox-summary-header">
+              <svg viewBox="0 0 16 16" fill="none"><path d="M8 1l1.5 3.4 3.7.3-2.8 2.4.85 3.6L8 9.05 4.75 10.7l.85-3.6L2.8 4.7l3.7-.3L8 1z" stroke="#7E55F6" stroke-width="1.2" stroke-linejoin="round" fill="#f1ecff"/></svg>
+              Escalation summary
             </div>
-            <div class="ticket-header-right">
-              <span class="ticket-tag">VIP</span>
-              <span class="ticket-time">${t.time}</span>
+            <ul class="inbox-summary-bullets">
+              <li><strong>14 escalated tickets</strong> — 4 linked to a pet-safety skill gap, 10 individual cases across delivery, billing, and product issues</li>
+              <li><strong>1 incorrect AI response</strong> flagged — a pet toxicity answer was sent without skill coverage, affecting a repeat buyer</li>
+              <li>Delivery failures and wrong-item issues make up the majority of individual escalations, with <strong>3 marked Critical</strong></li>
+              <li>Billing disputes include a post-cancellation charge and a duplicate subscription — both awaiting review</li>
+            </ul>
+          </div>
+
+          <div class="inbox-ask-wrap">
+            <div class="inbox-ask">
+              <span>Ask about your escalations...</span>
+              <svg viewBox="0 0 16 16" fill="none"><path d="M14.5 14.5l-4-4M6.5 11a4.5 4.5 0 110-9 4.5 4.5 0 010 9z" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+            </div>
+          </div>
+
+          <div class="inbox-section-label">Alerts</div>
+          <div class="inbox-alert" id="freqAlert" onclick="openTicketModal(0)" style="cursor:pointer;">
+            <div class="inbox-alert-icon"><svg viewBox="0 0 16 16" fill="none"><path d="M8 1.5L1 13.5h14L8 1.5z" stroke="#b45309" stroke-width="1.2" stroke-linejoin="round"/><path d="M8 6.5v3M8 11.5v.5" stroke="#b45309" stroke-width="1.3" stroke-linecap="round"/></svg></div>
+            <div class="inbox-alert-body">
+              <div class="inbox-alert-title">Frequency cancellations — skill gap detected <span class="inbox-alert-badge active">Active</span></div>
+              <div class="inbox-alert-sub">3 tickets flagged, $2,700/mo at risk</div>
+            </div>
+            <div class="inbox-alert-actions">
+              <button class="inbox-alert-resolve">Review</button>
+              <svg class="inbox-alert-chevron" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
+
+          <div class="inbox-section-label">Individual escalations</div>
+          <div class="inbox-filters">
+            <button class="inbox-filter-chip active">All</button>
+            <button class="inbox-filter-chip">VIP</button>
+            <button class="inbox-filter-chip">Subscriber</button>
+            <button class="inbox-filter-chip">Business account</button>
+            <button class="inbox-filter-chip">Repeat buyer</button>
+            <button class="inbox-filter-chip">New customer</button>
+            <button class="inbox-filter-chip">First-time buyer</button>
+          </div>
+
+          <div class="inbox-escalation-list">
+            <div class="inbox-escalation-row" onclick="openTicketModal(0)">
+              <div class="inbox-escalation-avatar">SH</div>
+              <div class="inbox-escalation-body">
+                <div class="inbox-escalation-name">Sam Hopper <span class="severity-badge critical">Critical</span></div>
+                <div class="inbox-escalation-desc">Order stuck in depot — leaving for weekend in 2hrs</div>
+              </div>
+              <div class="inbox-escalation-right">
+                <span class="inbox-escalation-tag">VIP</span>
+                <span class="inbox-escalation-time">1h ago</span>
+              </div>
+            </div>
+            <div class="inbox-escalation-row highlighted" onclick="openTicketModal(0)">
+              <div class="inbox-escalation-avatar">LM</div>
+              <div class="inbox-escalation-body">
+                <div class="inbox-escalation-name">Lena Morrison <span class="severity-badge high">High</span></div>
+                <div class="inbox-escalation-desc">"every two weeks is just too much for me" — frequency cancellation</div>
+              </div>
+              <div class="inbox-escalation-right">
+                <span class="inbox-escalation-tag">VIP</span>
+                <span class="inbox-escalation-time">2h ago</span>
+              </div>
+            </div>
+            <div class="inbox-escalation-row">
+              <div class="inbox-escalation-avatar">MC</div>
+              <div class="inbox-escalation-body">
+                <div class="inbox-escalation-name">Maya Chen <span class="severity-badge high">High</span></div>
+                <div class="inbox-escalation-desc">Claiming order never arrived — delivery confirmed by carrier</div>
+              </div>
+              <div class="inbox-escalation-right">
+                <span class="inbox-escalation-tag">VIP</span>
+                <span class="inbox-escalation-tag">High CLV</span>
+                <span class="inbox-escalation-time">2h ago</span>
+              </div>
+            </div>
+            <div class="inbox-escalation-row highlighted" onclick="openTicketModal(1)">
+              <div class="inbox-escalation-avatar">JO</div>
+              <div class="inbox-escalation-body">
+                <div class="inbox-escalation-name">James Okafor <span class="severity-badge medium">Medium</span></div>
+                <div class="inbox-escalation-desc">"can't keep up with weekly deliveries" — frequency cancellation</div>
+              </div>
+              <div class="inbox-escalation-right">
+                <span class="inbox-escalation-tag">Subscriber</span>
+                <span class="inbox-escalation-time">3h ago</span>
+              </div>
+            </div>
+            <div class="inbox-escalation-row">
+              <div class="inbox-escalation-avatar">PP</div>
+              <div class="inbox-escalation-body">
+                <div class="inbox-escalation-name">Priya Patel <span class="severity-badge critical">Critical</span></div>
+                <div class="inbox-escalation-desc">Anniversary flowers haven't arrived</div>
+              </div>
+              <div class="inbox-escalation-right">
+                <span class="inbox-escalation-tag">Repeat buyer</span>
+                <span class="inbox-escalation-time">4h ago</span>
+              </div>
+            </div>
+            <div class="inbox-escalation-row highlighted" onclick="openTicketModal(2)">
+              <div class="inbox-escalation-avatar">MC</div>
+              <div class="inbox-escalation-body">
+                <div class="inbox-escalation-name">Maria Chen <span class="severity-badge high">High</span></div>
+                <div class="inbox-escalation-desc">"getting flowers too often" — frequency cancellation, VIP</div>
+              </div>
+              <div class="inbox-escalation-right">
+                <span class="inbox-escalation-tag">VIP</span>
+                <span class="inbox-escalation-time">5h ago</span>
+              </div>
+            </div>
+            <div class="inbox-escalation-row">
+              <div class="inbox-escalation-avatar">TN</div>
+              <div class="inbox-escalation-body">
+                <div class="inbox-escalation-name">Tom Nguyen <span class="severity-badge medium">Medium</span></div>
+                <div class="inbox-escalation-desc">Return request for corporate order</div>
+              </div>
+              <div class="inbox-escalation-right">
+                <span class="inbox-escalation-tag">Business account</span>
+                <span class="inbox-escalation-time">5h ago</span>
+              </div>
             </div>
           </div>
         </div>
-      `).join('');
-      addStoryCard(`
-        <div class="story-card">
-          <div class="story-title-xl" style="margin-bottom:16px;">Conversations where customers mentioned delivery frequency</div>
-          <div class="ticket-list">${rows}</div>
-        </div>
       `);
+
+      // Auto-open the first frequency ticket modal after a brief pause
+      // so the user sees the Inbox context before focus shifts to the conversation
+      setTimeout(() => { openTicketModal(0); }, 1800);
     };
 
     // Right-panel entry points that trigger a conversational turn on the left.
@@ -2745,15 +3087,41 @@
       priEl.textContent = t.vip ? 'High priority' : 'Medium priority';
       priEl.className = 'tm-badge crit';
 
-      // --- Copilot tab ---
-      document.getElementById('tmMeta').textContent = `Ticket #${ticketId} · ${t.time} · ${t.channel}`;
+      // --- Summary tab (was Copilot) ---
+      document.getElementById('tmMeta').textContent = `Ticket #${ticketId} · ${t.time}`;
       document.getElementById('tmTitle').textContent = (t.subject || '').replace(/^"|"$/g,'');
       document.getElementById('tmCustAvatar').textContent = t.initials;
       document.getElementById('tmCustName').textContent = t.name;
       document.getElementById('tmCustVip').style.display = t.vip ? 'inline-flex' : 'none';
+      document.getElementById('tmCustRepeat').style.display = !t.vip ? 'inline-flex' : 'none';
       document.getElementById('tmCustSummary').textContent = t.summary || '';
-      const quote = t.pullQuote || (t.subject || '').replace(/^"|"$/g,'');
-      document.getElementById('tmQuote').innerHTML = `<span class="q-highlight">${escapeHtml(quote)}</span>`;
+
+      // Customer issue bullets
+      const issues = t.customerIssues || [
+        `${t.name.split(' ')[0]} asked to cancel their subscription, citing delivery frequency as the reason.`,
+        `The AI Agent processed the cancellation immediately without exploring alternatives — the current Cancel Subscription skill has no frequency-detection step.`
+      ];
+      document.getElementById('tmIssueList').innerHTML = issues.map(i => `<div class="tm-issue-item">${escapeHtml(i)}</div>`).join('');
+
+      // Current outcome bullets
+      const outcomes = t.currentOutcomes || [
+        `The subscription was cancelled immediately. The current Cancel Subscription skill treats all cancellation requests identically — it confirms and cancels with no retention step.`,
+        `${t.name.split(' ')[0]} showed clear frequency language ("${t.pullQuote}") suggesting they wanted to adjust cadence, not leave entirely.`,
+        `This represents a missed save opportunity. Updating the Cancel Subscription skill to detect frequency signals and offer schedule adjustment could have retained this subscriber.`
+      ];
+      document.getElementById('tmOutcomeList').innerHTML = outcomes.map(o => `<div class="tm-outcome-item"><svg class="tm-outcome-icon" width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#b45309" stroke-width="1.2"/><path d="M7 4.5v3M7 9.5v.01" stroke="#b45309" stroke-width="1.3" stroke-linecap="round"/></svg><span>${escapeHtml(o)}</span></div>`).join('');
+
+      // Suggested actions
+      const actions = [
+        'Update the Cancel Subscription skill to detect frequency language before processing cancellation',
+        'Add a frequency-adjustment step — offer every 3 weeks or monthly as alternatives',
+        `Reach out to ${t.name.split(' ')[0]} to offer reactivation with an adjusted schedule`,
+        'Flag this pattern to the team — 35% of cancellations mention frequency, not product dissatisfaction'
+      ];
+      const checkSvg = '<svg viewBox="0 0 11 11" fill="none"><path d="M2 5.5l2.5 2.5L9 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      document.getElementById('tmActionsBody').innerHTML =
+        actions.map(a => `<div class="tm-action-row"><div class="tm-action-check">${checkSvg}</div><span>${escapeHtml(a)}</span></div>`).join('') +
+        `<div class="tm-actions-buttons"><button class="tm-actions-btn primary">Approve actions</button><button class="tm-actions-btn secondary">Dismiss</button></div>`;
 
       // --- View ticket tab ---
       document.getElementById('tmRailChannel').textContent = t.channel;
@@ -2793,17 +3161,17 @@
             <div class="thread-bubble agent-current">${t.currentResponse}</div>
           </div>
         </div>
-        <div class="thread-divider"><div class="thread-divider-line"></div><span class="thread-divider-label">Coaching suggestion</span><div class="thread-divider-line"></div></div>
-        <div class="coaching-block">
-          <div class="coaching-header">
-            <svg class="coaching-icon" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="#147656" stroke-width="1.5" stroke-linecap="round"/></svg>
-            What the agent could have said
+        <div class="thread-divider"><div class="thread-divider-line"></div><span class="thread-divider-label">Recommendation</span><div class="thread-divider-line"></div></div>
+        <div class="thread-msg outbound">
+          <div class="thread-avatar agent" style="background:#e9fbf5;color:#147656;">AI</div>
+          <div class="thread-bubble-wrap">
+            <div class="thread-meta-row"><span>Recommended</span><span class="thread-meta-author">AI Agent</span></div>
+            <div class="thread-bubble agent-current" style="background:#f0fbf6;border:1px solid #b8ecd8;">${t.proposedResponse}</div>
           </div>
-          <div class="coaching-text">${t.proposedResponse}</div>
         </div>
       `;
 
-      // Default to Copilot on open
+      // Default to Summary on open
       switchTicketModalTab('copilot');
 
       // Nav state
@@ -2859,13 +3227,13 @@
             <div class="thread-bubble agent-current">${t.currentResponse}</div>
           </div>
         </div>
-        <div class="thread-divider"><div class="thread-divider-line"></div><span class="thread-divider-label">Coaching suggestion</span><div class="thread-divider-line"></div></div>
-        <div class="coaching-block">
-          <div class="coaching-header">
-            <svg class="coaching-icon" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="#147656" stroke-width="1.5" stroke-linecap="round"/></svg>
-            What the agent could have said
+        <div class="thread-divider"><div class="thread-divider-line"></div><span class="thread-divider-label">Recommendation</span><div class="thread-divider-line"></div></div>
+        <div class="thread-msg outbound">
+          <div class="thread-avatar agent" style="background:#e9fbf5;color:#147656;">AI</div>
+          <div class="thread-bubble-wrap">
+            <div class="thread-meta-row"><span>Recommended</span><span class="thread-meta-author">AI Agent</span></div>
+            <div class="thread-bubble agent-current" style="background:#f0fbf6;border:1px solid #b8ecd8;">${t.proposedResponse}</div>
           </div>
-          <div class="coaching-text">${t.proposedResponse}</div>
         </div>
       `;
       // highlight active row
@@ -2906,6 +3274,9 @@
     const rechargeSvg = `<svg class="tag-icon" viewBox="0 0 14 14" fill="none"><rect width="14" height="14" rx="3" fill="#1E1F25"/><path d="M4.5 10.5V3.5H7.8C8.4 3.5 8.9 3.7 9.2 4.05C9.55 4.4 9.7 4.85 9.7 5.3C9.7 5.75 9.55 6.15 9.25 6.5C8.95 6.8 8.55 7 8.05 7.05L9.8 10.5H8.5L6.9 7.2H6V10.5H4.5ZM6 6H7.6C7.85 6 8.05 5.92 8.2 5.78C8.35 5.63 8.42 5.45 8.42 5.22C8.42 5 8.35 4.82 8.2 4.67C8.05 4.52 7.85 4.45 7.6 4.45H6V6Z" fill="#fff"/></svg>`;
 
     const renderBeat2 = () => {
+      setActiveNav('skills');
+      document.getElementById('rightPanel').innerHTML = '';
+
       const toolbarHtml = `
         <div class="skill-editor-toolbar">
           <div class="toolbar-btn">B</div>
@@ -2919,86 +3290,75 @@
         </div>`;
 
       addStoryCard(`
-        <div class="story-card" style="padding:20px;">
-          <div class="story-title-xl" style="margin-bottom:20px;">Update Cancel Subscription skill with frequency detection</div>
-
-          <div class="skill-editor-wrap">
-            <!-- BEFORE -->
-            <div class="skill-editor">
-              <div class="skill-editor-tab">
-                <span class="skill-editor-tab-label before">Current version</span>
-                <span class="skill-editor-tab-badge current">Live</span>
-              </div>
-              ${toolbarHtml}
-              <div class="skill-editor-body">
-                <div class="step-heading">1. Customer identification</div>
-                <p><span class="kw">IF</span> the customer doesn\u2019t mention a specific subscription, <span class="kw">THEN</span> look up their active subscriptions by email.</p>
-
-                <div class="step-heading">2. Confirm cancellation intent</div>
-                <p><span class="kw">IF</span> <span class="action-tag variable">{Subscription}</span> is active, <span class="kw">THEN:</span></p>
-                <p>Confirm the customer wants to cancel their subscription.</p>
-                <p>Ask for a brief reason (optional).</p>
-
-                <div class="step-heading" style="opacity:1;"><span class="diff-highlight-remove">3. Process cancellation</span></div>
-                <div class="diff-block-remove">
-                  <p><span class="action-tag integration">${rechargeSvg} Cancel Subscription</span> immediately.</p>
-                  <p>Send cancellation confirmation email to <span class="action-tag variable">{Customer Email}</span>.</p>
-                </div>
-
-                <div class="step-heading">4. Follow-up</div>
-                <p>Thank the customer and let them know they can resubscribe anytime.</p>
-              </div>
+        <div class="skills-view">
+          <div class="skill-detail-header">
+            <button class="skill-detail-back"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+            <div class="skill-detail-title">Cancel Subscription</div>
+            <div class="skill-detail-actions">
+              <button class="skill-detail-btn primary">Enable skill</button>
+              <button class="skill-detail-btn secondary">Test</button>
             </div>
-
-            <!-- AFTER -->
-            <div class="skill-editor">
-              <div class="skill-editor-tab">
-                <span class="skill-editor-tab-label after">Proposed version</span>
-                <span class="skill-editor-tab-badge updated">Updated</span>
-              </div>
-              ${toolbarHtml}
-              <div class="skill-editor-body">
+          </div>
+          <div class="skill-detail-layout">
+            <div class="skill-detail-main">
+              <div class="skill-detail-main-label">Instructions</div>
+              <div class="skill-detail-main-sub">Describe the steps AI Agent should follow in clear, specific phrases.<br>Type '/' or '@' to insert variables and actions.</div>
+              <div class="skill-instructions-box">
                 <div class="step-heading">1. Customer identification</div>
-                <p><span class="kw">IF</span> the customer doesn\u2019t mention a specific subscription, <span class="kw">THEN</span> look up their active subscriptions by email.</p>
+                <p style="margin-bottom:10px;"><span class="kw">IF</span> the customer doesn\u2019t mention a specific subscription, <span class="kw">THEN</span> look up their active subscriptions by email.</p>
 
                 <div class="step-heading">2. Confirm cancellation intent</div>
-                <p><span class="kw">IF</span> <span class="action-tag variable">{Subscription}</span> is active, <span class="kw">THEN:</span></p>
-                <p>Confirm the customer wants to cancel their subscription.</p>
-                <p>Ask for a brief reason (optional).</p>
+                <p style="margin-bottom:10px;"><span class="kw">IF</span> <span class="action-tag variable">{Subscription}</span> is active, <span class="kw">THEN:</span></p>
+                <p style="margin-bottom:4px;">Confirm the customer wants to cancel their subscription.</p>
+                <p style="margin-bottom:10px;">Ask for a brief reason (optional).</p>
 
-                <div class="step-heading"><span class="diff-highlight-add">3. Frequency detection</span></div>
-                <div class="diff-block-add">
+                <div class="step-heading"><span class="diff-highlight-add">3. Frequency detection</span> <span style="font-size:11px;font-weight:500;color:#147656;background:#e9fbf5;padding:1px 6px;border-radius:4px;margin-left:6px;">NEW</span></div>
+                <div class="diff-block-add" style="margin-bottom:10px;">
                   <p><span class="kw">IF</span> the customer\u2019s message contains frequency language (\u201ctoo many,\u201d \u201ccan\u2019t keep up,\u201d \u201cevery week is too much,\u201d \u201coverwhelming\u201d), <span class="kw">THEN:</span></p>
-                  <ul>
-                    <li>Acknowledge their concern warmly</li>
-                    <li><span class="action-tag integration">${rechargeSvg} Offer Schedule Change</span> \u2014 suggest every 3 weeks or monthly</li>
-                    <li><span class="kw">IF</span> customer accepts \u2192 <span class="action-tag integration">${rechargeSvg} Update Frequency</span> on <span class="action-tag variable">{Subscription}</span></li>
+                  <ul style="margin:6px 0 0 16px;">
+                    <li style="margin-bottom:4px;">Acknowledge their concern warmly</li>
+                    <li style="margin-bottom:4px;"><span class="action-tag integration">${rechargeSvg} Offer Schedule Change</span> \u2014 suggest every 3 weeks or monthly</li>
+                    <li style="margin-bottom:4px;"><span class="kw">IF</span> customer accepts \u2192 <span class="action-tag integration">${rechargeSvg} Update Frequency</span> on <span class="action-tag variable">{Subscription}</span></li>
                     <li><span class="kw">IF</span> customer declines \u2192 proceed to step 4</li>
                   </ul>
                 </div>
 
                 <div class="step-heading">4. Process cancellation</div>
-                <p><span class="action-tag integration">${rechargeSvg} Cancel Subscription</span> and send confirmation email to <span class="action-tag variable">{Customer Email}</span>.</p>
+                <p style="margin-bottom:10px;"><span class="action-tag integration">${rechargeSvg} Cancel Subscription</span> and send confirmation email to <span class="action-tag variable">{Customer Email}</span>.</p>
 
                 <div class="step-heading">5. Follow-up</div>
                 <p>Thank the customer and let them know they can resubscribe anytime.</p>
+
+                ${toolbarHtml}
+              </div>
+            </div>
+            <div class="skill-info-panel">
+              <div class="skill-info-section">
+                <div class="skill-info-section-title">Details</div>
+                <div class="skill-info-row"><span class="skill-info-label">Status</span><span class="skill-info-value">Draft</span></div>
+                <div class="skill-info-row"><span class="skill-info-label">Journey stage</span><span class="skill-info-value purple">Retention</span></div>
+                <div class="skill-info-row"><span class="skill-info-label">Created</span><span class="skill-info-value">Mar 8, 2026</span></div>
+                <div class="skill-info-row"><span class="skill-info-label">Last updated</span><span class="skill-info-value">A few seconds ago</span></div>
+              </div>
+              <div class="skill-info-section">
+                <div class="skill-info-section-title">Triggers</div>
+                <div class="skill-info-section-sub">When AI Agent detects this event or notices shopper behavior, this skill is activated.</div>
+                <div class="skill-info-tag">Cancel request</div>
+              </div>
+              <div class="skill-info-section">
+                <div class="skill-info-section-title">Test set</div>
+                <div class="skill-info-section-sub">Stratified sample from subscription tickets.</div>
+                <div style="font-size:12px;font-weight:500;color:#1e242e;">847 tickets · last 90 days</div>
+              </div>
+              <div class="skill-info-section">
+                <div class="skill-info-section-title">Knowledge</div>
+                <div style="display:flex;align-items:center;justify-content:space-between;">
+                  <span class="skill-info-section-sub" style="margin:0;">AI Agent uses your knowledge to complement skill instructions when needed.</span>
+                  <span class="skill-info-toggle"></span>
+                </div>
               </div>
             </div>
           </div>
-
-          <div class="test-set-card">
-            <div class="test-set-header">
-              <div class="test-set-title">Test set</div>
-              <div class="test-set-meta">847 tickets · stratified sample, last 90 days</div>
-            </div>
-            <div class="test-set-bars">
-              <div class="test-set-bar"><span class="test-set-bar-fill" style="width:35.4%;background:#7E55F6;"></span><span class="test-set-bar-label">Cancellations</span><span class="test-set-bar-count">300</span></div>
-              <div class="test-set-bar"><span class="test-set-bar-fill" style="width:27.3%;background:#b45309;"></span><span class="test-set-bar-label">Frequency complaints</span><span class="test-set-bar-count">231</span></div>
-              <div class="test-set-bar"><span class="test-set-bar-fill" style="width:25.5%;background:#147656;"></span><span class="test-set-bar-label">Other subscription changes</span><span class="test-set-bar-count">216</span></div>
-              <div class="test-set-bar"><span class="test-set-bar-fill" style="width:11.8%;background:#5c6370;"></span><span class="test-set-bar-label">Known edge cases</span><span class="test-set-bar-count">100</span></div>
-            </div>
-          </div>
-
         </div>
       `, { anchor: true });
     };
@@ -3509,8 +3869,8 @@
         </div>
       `;
 
-      // Reset to Review tab on open
-      switchEmTab('review');
+      // Default to Conversation tab so reviewer sees the thread first
+      switchEmTab('conversation');
 
       // Open modal
       document.getElementById('evalBackdrop').classList.add('open');
@@ -3522,6 +3882,135 @@
       document.getElementById('evalSidePanel').classList.remove('open');
       document.querySelectorAll('.eval-summary-row.active-row').forEach(r => r.classList.remove('active-row'));
       activePanelRow = null;
+    };
+
+    // Inline review from table row thumbs
+    const reviewedTickets = {};
+    const reviewTicket = (idx, verdict, version) => {
+      const prev = reviewedTickets[idx];
+      // Toggle off if same thumb clicked again
+      if (prev === verdict) {
+        delete reviewedTickets[idx];
+      } else {
+        reviewedTickets[idx] = verdict;
+      }
+
+      // Update thumb button states
+      const upBtn = document.getElementById(`eval-up-${idx}`);
+      const downBtn = document.getElementById(`eval-down-${idx}`);
+      if (upBtn) { upBtn.classList.toggle('selected-up', reviewedTickets[idx] === 'up'); }
+      if (downBtn) { downBtn.classList.toggle('selected-down', reviewedTickets[idx] === 'down'); }
+
+      // Update status pill
+      const statusPill = document.getElementById(`eval-status-${idx}`);
+      if (statusPill) {
+        if (reviewedTickets[idx]) {
+          statusPill.textContent = 'Reviewed';
+          statusPill.className = 'eval-status-pill pass';
+        } else {
+          const t = evalTickets[idx];
+          const wasUnreviewed = t.verdict[version] === 'flag';
+          statusPill.textContent = wasUnreviewed ? 'Unreviewed' : 'Reviewed';
+          statusPill.className = `eval-status-pill ${wasUnreviewed ? 'review' : 'pass'}`;
+        }
+      }
+
+      // Update the unreviewed badge count
+      updateUnreviewedBadge(version);
+    };
+
+    const updateUnreviewedBadge = (version) => {
+      const badge = document.getElementById('evalUnreviewed');
+      if (!badge) return;
+      const originalUnreviewed = evalTickets.filter(t => t.verdict[version] === 'flag').map((_, i) => i);
+      // Subtract tickets that have been manually reviewed
+      const stillUnreviewed = evalTickets.reduce((count, t, i) => {
+        if (t.verdict[version] === 'flag' && !reviewedTickets[i]) return count + 1;
+        return count;
+      }, 0);
+
+      if (stillUnreviewed === 0) {
+        badge.textContent = '0 Unreviewed';
+        badge.style.cssText = 'flex-shrink:0;font-size:12px;font-weight:600;color:#147656;background:#e9fbf5;padding:4px 10px;border-radius:6px;white-space:nowrap;';
+      } else {
+        badge.textContent = `${stillUnreviewed} Unreviewed`;
+        badge.style.cssText = 'flex-shrink:0;font-size:12px;font-weight:600;color:#b45309;background:#fef3e2;padding:4px 10px;border-radius:6px;white-space:nowrap;cursor:pointer;';
+      }
+    };
+
+    // ── Metric popover + copilot integration ──
+    let openPopoverId = null;
+    const toggleMetricPopover = (metricId) => {
+      // Close any open popover first
+      if (openPopoverId && openPopoverId !== metricId) {
+        const prev = document.getElementById(`popover-${openPopoverId}`);
+        if (prev) prev.classList.remove('open');
+      }
+      const el = document.getElementById(`popover-${metricId}`);
+      if (!el) return;
+      const isOpen = el.classList.toggle('open');
+      openPopoverId = isOpen ? metricId : null;
+      if (isOpen) {
+        setTimeout(() => {
+          const input = document.getElementById(`popover-input-${metricId}`);
+          if (input) input.focus();
+        }, 50);
+      }
+    };
+
+    // Close popover on outside click
+    document.addEventListener('click', (e) => {
+      if (!openPopoverId) return;
+      const popover = document.getElementById(`popover-${openPopoverId}`);
+      const icon = popover?.parentElement?.querySelector('.metric-ai-icon');
+      if (popover && !popover.contains(e.target) && e.target !== icon && !icon?.contains(e.target)) {
+        popover.classList.remove('open');
+        openPopoverId = null;
+      }
+    });
+
+    const metricLabels = { passrate: 'Pass rate', adherence: 'Adherence', regressions: 'Regressions', improvements: 'Improvements' };
+
+    const sendMetricQuestion = (metricId) => {
+      const input = document.getElementById(`popover-input-${metricId}`);
+      if (!input || !input.value.trim()) return;
+      const question = input.value.trim();
+      input.value = '';
+
+      // Close the popover
+      const popover = document.getElementById(`popover-${metricId}`);
+      if (popover) popover.classList.remove('open');
+      openPopoverId = null;
+
+      // Add a collapsed card in the copilot thread (left panel)
+      const threadEl = document.getElementById('leftContent');
+      if (threadEl) {
+        const card = document.createElement('div');
+        card.style.cssText = 'background:#fff;border:1px solid #e8e8ec;border-radius:10px;padding:12px 16px;margin:8px 16px;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,0.04);animation:fadeInUp 300ms ease-out;';
+        card.innerHTML = `
+          <div style="display:flex;align-items:center;gap:8px;">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex-shrink:0;"><path d="M8 2L9.5 6.5L14 8L9.5 9.5L8 14L6.5 9.5L2 8L6.5 6.5L8 2Z" fill="#7E55F6"/></svg>
+            <div style="flex:1;min-width:0;">
+              <div style="font-size:12px;font-weight:600;color:#1e242e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Asked about ${metricLabels[metricId] || metricId}</div>
+              <div style="font-size:11px;color:#5c6370;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">"${question}"</div>
+            </div>
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="flex-shrink:0;color:#8a8f98;"><path d="M5 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>`;
+        threadEl.appendChild(card);
+        // Scroll copilot panel to bottom
+        const leftBody = document.getElementById('leftBody');
+        if (leftBody) setTimeout(() => leftBody.scrollTop = leftBody.scrollHeight, 100);
+      }
+    };
+
+    // Siena-style inline expand for response cells
+    const toggleResponseExpand = (idx, type, version) => {
+      const cellId = type === 'current' ? `eval-current-${idx}` : `eval-draft-${idx}`;
+      const cell = document.getElementById(cellId);
+      if (!cell) return;
+      const isExpanded = cell.classList.toggle('expanded');
+      const btn = cell.querySelector('.eval-show-more');
+      btn.textContent = isExpanded ? 'Show less' : 'Show more';
     };
 
     const navigateEvalPanel = (direction) => {
@@ -3552,6 +4041,8 @@
     const buildEvalTable = (version) => {
       currentEvalVersion = version;
       if (activePanelRow !== null) closeEvalPanel();
+      // Clear inline reviews when switching versions
+      Object.keys(reviewedTickets).forEach(k => delete reviewedTickets[k]);
       const v = version;
 
       const selectedScorers = state.selectedScorers || [];
@@ -3569,72 +4060,79 @@
 
       const rows = ordered.map(({ t, origIdx }) => {
         const i = origIdx;
-        const isEdge = t.type === 'edge';
-        const rowClass = isEdge && v === 'v1' ? 'eval-summary-row edge-row' : 'eval-summary-row';
         const s = t.scores[v];
-        const pShort = t.proposedShort[v];
+        const isFlagged = t.verdict[v] === 'flag';
+        const statusLabel = isFlagged ? 'Needs review' : 'Intended outcome';
+        const statusCls = isFlagged ? 'review' : 'pass';
+        const outcomeText = t.proposedShort[v] || t.currentShort;
         return `
-          <tr class="${rowClass}" id="eval-row-${i}" onclick="toggleEvalRow(${i}, '${v}')">
+          <tr class="eval-summary-row" id="eval-row-${i}" onclick="toggleEvalRow(${i}, '${v}')">
             <td>
               <div class="eval-ticket-name">${t.name}</div>
-              <span class="eval-ticket-type ${t.type}">${t.typeLabel}</span>
               <div class="eval-ticket-snippet">${t.snippet}</div>
             </td>
-            <td><div class="eval-response">${t.currentShort}</div></td>
-            <td><div class="eval-response">${pShort}</div></td>
-            <td class="center">${scorePill(s.adh)}</td>
-            <td class="center">${scorePill(s.success)}</td>
-            <td class="center">${scorePill(s.coverage)}</td>
-            ${showTone ? `<td class="scorer-cell">${scorePill(s.tone)}</td>` : ''}
-            ${showAccuracy ? `<td class="scorer-cell">${scorePill(s.accuracy)}</td>` : ''}
-            <td class="center">${verdictIcon(t.verdict[v])}</td>
+            <td>
+              <div class="eval-response-cell" id="eval-current-${i}">
+                <div class="eval-response-text">${t.currentFull}</div>
+                <button class="eval-show-more" onclick="event.stopPropagation(); toggleResponseExpand(${i}, 'current')">Show more</button>
+              </div>
+            </td>
+            <td>
+              <div class="eval-response-cell" id="eval-draft-${i}">
+                <div class="eval-response-text">${t.proposedFull[v] || t.currentFull}</div>
+                <button class="eval-show-more" onclick="event.stopPropagation(); toggleResponseExpand(${i}, 'draft', '${v}')">Show more</button>
+              </div>
+            </td>
+            <td><div class="eval-outcome-text">${outcomeText}</div></td>
+            <td><span class="eval-status-pill ${statusCls}">${statusLabel}</span></td>
+            <td class="right"><span class="eval-score">${s.adh.toFixed(2)}</span></td>
+            <td class="right">
+              <div class="eval-review-thumbs" onclick="event.stopPropagation()">
+                <button class="eval-thumb" id="eval-up-${i}" onclick="reviewTicket(${i}, 'up', '${v}')" title="Looks good">
+                  <svg viewBox="0 0 16 16" fill="none"><path d="M5 14V7.5M2 8.5v4c0 .83.67 1.5 1.5 1.5h7.23c.66 0 1.24-.44 1.42-1.08l1.35-4.5A1.5 1.5 0 0 0 12.06 7H9.5V3.5A1.5 1.5 0 0 0 8 2L5 7.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <button class="eval-thumb" id="eval-down-${i}" onclick="reviewTicket(${i}, 'down', '${v}')" title="Needs work">
+                  <svg viewBox="0 0 16 16" fill="none"><path d="M11 2v6.5m3-5.5v4c0 .83-.67 1.5-1.5 1.5H5.27c-.66 0-1.24-.44-1.42-1.08L2.5 2.92A1.5 1.5 0 0 1 3.94 1H6.5v3.5A1.5 1.5 0 0 0 8 6l3-5.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" transform="rotate(180 8 8)"/></svg>
+                </button>
+              </div>
+            </td>
           </tr>`;
       }).join('');
 
       const passCount = v === 'v1' ? 798 : 835;
       const edgeCount = v === 'v1' ? 49 : 12;
       const avgAdh = v === 'v1' ? '0.94' : '0.97';
+      const totalShown = evalTickets.length;
+
+      const reviewCount = evalTickets.filter(t => t.verdict[v] === 'flag').length;
+      const passCountShown = totalShown - reviewCount;
 
       return `
-        <div class="eval-version-bar">
-          <div class="eval-version-card active">
-            <div class="vl">Draft skill <span style="font-weight:500;color:#7E55F6;text-transform:none;letter-spacing:0;">· candidate to ship</span></div>
-            <div class="vv">${avgAdh} <span style="font-size:11px;font-weight:600;color:#147656;background:#d0f3e0;padding:2px 6px;border-radius:4px;vertical-align:middle;margin-left:4px;">+${(parseFloat(avgAdh) - 0.91).toFixed(2)}</span></div>
-            <div class="vs">Avg. adherence across 847 tickets</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span style="display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border:1px solid #e8e8ec;border-radius:6px;font-size:12px;color:#5c6370;font-family:'Inter',sans-serif;"><strong style="color:#1e242e;">Review status</strong>&nbsp;is any</span>
+            <span style="font-size:12px;font-weight:600;color:#5c6370;cursor:pointer;">+ Filter</span>
           </div>
-          <div class="eval-version-card">
-            <div class="vl">Production</div>
-            <div class="vv">0.91</div>
-            <div class="vs">Live today · no frequency detection</div>
-          </div>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="cursor:pointer;color:#5c6370;"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><circle cx="5" cy="4" r="1.5" fill="#fff" stroke="currentColor" stroke-width="1"/><circle cx="11" cy="8" r="1.5" fill="#fff" stroke="currentColor" stroke-width="1"/><circle cx="7" cy="12" r="1.5" fill="#fff" stroke="currentColor" stroke-width="1"/></svg>
         </div>
-        <div class="eval-table-wrap">
-          <table class="eval-table">
+        <div style="font-size:14px;font-weight:600;color:#1e242e;margin-bottom:10px;">${totalShown} conversations</div>
+        <div class="eval-table-wrap" style="overflow-x:auto;">
+          <table class="eval-table" style="min-width:900px;">
             <thead>
               <tr>
-                <th style="width:22%;">Ticket</th>
-                <th style="width:15%;">Production</th>
-                <th style="width:17%;">Draft skill</th>
-                <th class="center" style="width:9%;">Adh.</th>
-                <th class="center" style="width:9%;">Success</th>
-                <th class="center" style="width:9%;">Coverage</th>
-                ${showTone ? '<th class="scorer-th" style="width:9%;">Tone</th>' : ''}
-                ${showAccuracy ? '<th class="scorer-th" style="width:9%;">Accuracy</th>' : ''}
-                <th class="center" style="width:3%;"></th>
+                <th style="min-width:140px;">Conversation</th>
+                <th style="min-width:180px;">Current response</th>
+                <th style="min-width:180px;">Draft response</th>
+                <th style="min-width:120px;">Outcome</th>
+                <th style="min-width:110px;">Status</th>
+                <th class="right sortable" style="min-width:90px;">Adherence \u2193</th>
+                <th class="right" style="min-width:70px;">Review</th>
               </tr>
             </thead>
             <tbody>
               ${rows}
             </tbody>
           </table>
-          <div class="eval-table-footer">
-            <span>8 of 847 shown \u00b7 click a row to inspect</span>
-            <span><strong style="color:#147656;">${passCount} pass</strong> \u00b7 <strong style="color:${v === 'v1' ? '#b45309' : '#147656'}">${edgeCount} need review</strong> \u00b7 847 total</span>
-          </div>
-        </div>
-        <div style="margin-top:12px;">
-          <div style="font-size:11px;font-weight:600;color:#5c6370;letter-spacing:0.02em;margin-bottom:4px;">Score distribution (Adherence)</div>
-          ${buildDistChart(v)}
         </div>`;
     };
 
@@ -3662,8 +4160,8 @@
     };
 
     const renderBeat3Skeleton = () => {
+      setActiveNav('performance', 'evaluations');
       document.getElementById('rightPanel').innerHTML = '';
-      document.getElementById('rightTitle').textContent = 'Offline Evaluation';
 
       // Loading header with spinner + progress
       addStoryCard(`
@@ -3747,72 +4245,89 @@
 
     const renderBeat3 = () => {
       document.getElementById('rightPanel').innerHTML = '';
-      document.getElementById('rightTitle').textContent = 'Offline Evaluation';
 
       addStoryCard(`
-        <div class="story-card" id="evalSummaryCard">
-          <div class="regular-sm text-secondary" style="margin-bottom:8px;">Replayed 847 tickets \u00b7 Last 90 days</div>
-          <div class="story-title-xl" style="margin-bottom:14px;">Evaluation results</div>
-
-          <div class="eval-hero">
-            <div class="eval-hero-main">
-              <div class="eval-hero-label">Pass rate \u00b7 draft vs. production</div>
-              <div class="eval-hero-value">
-                <span style="font-size:22px;font-weight:500;color:#5c6370;">78%</span>
-                <span style="font-size:18px;color:#a0a0b0;font-weight:400;">\u2192</span>
-                <span class="count-up" data-count-to="94" data-count-suffix="%">0%</span>
-                <span class="eval-hero-delta count-up" data-count-to="16" data-count-prefix="+" data-count-suffix=" pts">+0 pts</span>
+        <div class="story-card" id="evalSummaryCard" style="padding:20px 24px;">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px;">
+            <div>
+              <div style="font-size:13px;font-weight:600;color:#1e242e;margin-bottom:4px;">Cancel Subscription · Frequency-aware draft</div>
+              <div style="font-size:12px;color:#5c6370;line-height:18px;">Detect frequency language and offer schedule change before processing cancellation.</div>
+            </div>
+            <span id="evalUnreviewed" style="flex-shrink:0;font-size:12px;font-weight:600;color:#b45309;background:#fef3e2;padding:4px 10px;border-radius:6px;white-space:nowrap;cursor:pointer;" onclick="askAboutEdgeCases()">8 Unreviewed</span>
+          </div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;">
+            <span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:5px;font-size:11px;font-weight:500;color:#5c6370;background:#f5f6f7;"><strong style="color:#1e242e;">Draft</strong>&nbsp;vs. Production</span>
+            <span style="display:inline-flex;padding:3px 10px;border-radius:5px;font-size:11px;font-weight:500;color:#5c6370;background:#f5f6f7;">Last 90 days</span>
+            <span style="display:inline-flex;padding:3px 10px;border-radius:5px;font-size:11px;font-weight:500;color:#5c6370;background:#f5f6f7;">847 conversations</span>
+          </div>
+          <div id="evalMetricsRow" style="display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid #e8e8ec;border-radius:10px;overflow:visible;margin-bottom:0;">
+            <div class="metric-cell" style="padding:14px 16px;border-right:1px solid #f0f0f4;">
+              <div style="font-size:11px;font-weight:500;color:#5c6370;margin-bottom:2px;">Pass rate<button class="metric-ai-icon" onclick="event.stopPropagation(); toggleMetricPopover('passrate')" title="What is this?"><svg viewBox="0 0 16 16" fill="none"><path d="M8 2L9.5 6.5L14 8L9.5 9.5L8 14L6.5 9.5L2 8L6.5 6.5L8 2Z" fill="currentColor"/></svg></button></div>
+              <div style="display:flex;align-items:baseline;gap:6px;">
+                <span style="font-size:22px;font-weight:700;color:#1e242e;" class="count-up" data-count-to="94" data-count-suffix="%">0%</span>
+                <span style="font-size:12px;font-weight:600;color:#147656;background:#e9fbf5;padding:2px 6px;border-radius:4px;" class="count-up" data-count-to="16" data-count-prefix="+" data-count-suffix="pp">+0pp</span>
               </div>
-              <div class="eval-hero-sub">Across 847 replayed tickets \u00b7 last 90 days \u00b7 a ticket passes when adherence \u2265 0.90</div>
+              <div class="metric-popover" id="popover-passrate">
+                <div class="metric-popover-title"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 2L9.5 6.5L14 8L9.5 9.5L8 14L6.5 9.5L2 8L6.5 6.5L8 2Z" fill="#7E55F6"/></svg> Pass rate</div>
+                <div class="metric-popover-def">Percentage of replayed conversations where the draft skill's response met all evaluation criteria. A pass means the response was appropriate, on-topic, and followed the skill instructions correctly.</div>
+                <div class="metric-popover-input-wrap">
+                  <input class="metric-popover-input" id="popover-input-passrate" placeholder="Ask a question about this metric\u2026" onkeydown="if(event.key==='Enter'){sendMetricQuestion('passrate'); event.preventDefault();}">
+                  <button class="metric-popover-send" onclick="sendMetricQuestion('passrate')"><svg viewBox="0 0 16 16" fill="none"><path d="M2 8l5-5M2 8l5 5M2 8h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" transform="rotate(180 8 8)"/></svg></button>
+                </div>
+              </div>
             </div>
-          </div>
-
-          <div class="eval-strip">
-            <div class="eval-strip-stat">
-              <div class="eval-strip-label">No regressions</div>
-              <div class="eval-strip-value"><span class="count-up" data-count-to="0">0</span></div>
-              <div style="font-size:11px;color:#5c6370;margin-top:1px;">Nothing that passed before now fails</div>
+            <div class="metric-cell" style="padding:14px 16px;border-right:1px solid #f0f0f4;">
+              <div style="font-size:11px;font-weight:500;color:#5c6370;margin-bottom:2px;">Adherence avg<button class="metric-ai-icon" onclick="event.stopPropagation(); toggleMetricPopover('adherence')" title="What is this?"><svg viewBox="0 0 16 16" fill="none"><path d="M8 2L9.5 6.5L14 8L9.5 9.5L8 14L6.5 9.5L2 8L6.5 6.5L8 2Z" fill="currentColor"/></svg></button></div>
+              <span style="font-size:22px;font-weight:700;color:#1e242e;">0.94</span>
+              <div class="metric-popover" id="popover-adherence">
+                <div class="metric-popover-title"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 2L9.5 6.5L14 8L9.5 9.5L8 14L6.5 9.5L2 8L6.5 6.5L8 2Z" fill="#7E55F6"/></svg> Adherence</div>
+                <div class="metric-popover-def">How closely the draft response follows the skill's written instructions, scored 0\u20131. An adherence of 0.94 means the AI followed 94% of the defined behavior. This is your north-star eval metric.</div>
+                <div class="metric-popover-input-wrap">
+                  <input class="metric-popover-input" id="popover-input-adherence" placeholder="Ask a question about this metric\u2026" onkeydown="if(event.key==='Enter'){sendMetricQuestion('adherence'); event.preventDefault();}">
+                  <button class="metric-popover-send" onclick="sendMetricQuestion('adherence')"><svg viewBox="0 0 16 16" fill="none"><path d="M2 8l5-5M2 8l5 5M2 8h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" transform="rotate(180 8 8)"/></svg></button>
+                </div>
+              </div>
             </div>
-            <div class="eval-strip-stat">
-              <div class="eval-strip-label">Newly passing</div>
-              <div class="eval-strip-value"><span class="count-up" data-count-to="135">0</span></div>
-              <div style="font-size:11px;color:#5c6370;margin-top:1px;">Tickets the draft now handles correctly</div>
+            <div class="metric-cell" style="padding:14px 16px;border-right:1px solid #f0f0f4;">
+              <div style="font-size:11px;font-weight:500;color:#5c6370;margin-bottom:2px;">Regressions<button class="metric-ai-icon" onclick="event.stopPropagation(); toggleMetricPopover('regressions')" title="What is this?"><svg viewBox="0 0 16 16" fill="none"><path d="M8 2L9.5 6.5L14 8L9.5 9.5L8 14L6.5 9.5L2 8L6.5 6.5L8 2Z" fill="currentColor"/></svg></button></div>
+              <span style="font-size:22px;font-weight:700;color:#147656;">0</span>
+              <div class="metric-popover" id="popover-regressions">
+                <div class="metric-popover-title"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 2L9.5 6.5L14 8L9.5 9.5L8 14L6.5 9.5L2 8L6.5 6.5L8 2Z" fill="#7E55F6"/></svg> Regressions</div>
+                <div class="metric-popover-def">Conversations where the draft skill would perform worse than the current production response. Zero regressions means the new skill never makes things worse \u2014 it either matches or improves on every conversation.</div>
+                <div class="metric-popover-input-wrap">
+                  <input class="metric-popover-input" id="popover-input-regressions" placeholder="Ask a question about this metric\u2026" onkeydown="if(event.key==='Enter'){sendMetricQuestion('regressions'); event.preventDefault();}">
+                  <button class="metric-popover-send" onclick="sendMetricQuestion('regressions')"><svg viewBox="0 0 16 16" fill="none"><path d="M2 8l5-5M2 8l5 5M2 8h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" transform="rotate(180 8 8)"/></svg></button>
+                </div>
+              </div>
             </div>
-            <div class="eval-strip-stat warn">
-              <div class="eval-strip-label">Needs review</div>
-              <div class="eval-strip-value warn"><span class="count-up" data-count-to="8">0</span></div>
-              <div style="font-size:11px;color:#b45309;margin-top:1px;">New edge cases \u2014 blocks ship</div>
-              <button class="eval-strip-explain" onclick="askAboutEdgeCases()">
-                <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M10.9219 2.92543C11.3361 2.92543 11.6719 3.26122 11.6719 3.67543C11.6718 4.08959 11.3361 4.42543 10.9219 4.42543H5.25C4.28369 4.42565 3.5 5.20907 3.5 6.17543V12.7106C3.50016 13.6768 4.28379 14.4604 5.25 14.4606H6.49902C7.06123 14.4606 7.59762 14.6976 7.97656 15.1129L9.06836 16.3092C9.26857 16.5287 9.61545 16.5256 9.8125 16.3034L10.8477 15.1344C11.2271 14.7059 11.7724 14.4608 12.3447 14.4606H13.583C14.5494 14.4606 15.3329 13.6769 15.333 12.7106V8.61879C15.3331 8.20491 15.6692 7.86918 16.083 7.86879C16.4972 7.86879 16.8329 8.20467 16.833 8.61879V12.7106C16.8329 14.5054 15.3778 15.9606 13.583 15.9606H12.3447C12.2019 15.9608 12.0654 16.0217 11.9707 16.1286L10.9355 17.2985C10.1475 18.188 8.76196 18.1979 7.96094 17.32L6.86914 16.1237C6.77441 16.0199 6.63953 15.9606 6.49902 15.9606H5.25C3.45536 15.9604 2.00016 14.5052 2 12.7106V6.17543C2 4.38064 3.45526 2.92565 5.25 2.92543H10.9219ZM12.333 10.694C12.7471 10.694 13.0828 11.03 13.083 11.444C13.0829 11.8581 12.7471 12.194 12.333 12.194H6.5C6.08587 12.194 5.75013 11.8581 5.75 11.444C5.75022 11.03 6.08592 10.694 6.5 10.694H12.333ZM12.333 6.95863C12.7472 6.95863 13.083 7.29442 13.083 7.70863C13.0829 8.12273 12.7471 8.45863 12.333 8.45863H6.5C6.08587 8.45863 5.75013 8.12273 5.75 7.70863C5.75 7.29442 6.08579 6.95863 6.5 6.95863H12.333ZM15.459 2.14613C15.5194 1.98869 15.7818 1.98838 15.8418 2.14613C16.0087 2.58588 16.2776 3.17562 16.6221 3.52016C16.9229 3.82086 17.4117 4.0621 17.8232 4.23012C17.883 4.2545 17.9404 4.28026 17.9961 4.30141C18.1536 4.36168 18.1536 4.62394 17.9961 4.68422L17.8232 4.75355C17.4117 4.92156 16.923 5.16372 16.6221 5.46449C16.2776 5.80892 16.0087 6.39873 15.8418 6.83851L15.8105 6.89027C15.7324 6.97932 15.5687 6.97898 15.4902 6.89027L15.459 6.83851C15.2921 6.39877 15.0222 5.80905 14.6777 5.46449C14.4193 5.20615 14.0227 4.99006 13.6553 4.82777L13.3037 4.68422C13.1459 4.62417 13.146 4.36164 13.3037 4.30141C13.7435 4.13445 14.3333 3.86457 14.6777 3.52016C15.0221 3.17558 15.2921 2.58583 15.459 2.14613Z" fill="currentColor"/></svg>
-                Review all 8 \u2192
-              </button>
+            <div class="metric-cell" style="padding:14px 16px;">
+              <div style="font-size:11px;font-weight:500;color:#5c6370;margin-bottom:2px;">Improvements<button class="metric-ai-icon" onclick="event.stopPropagation(); toggleMetricPopover('improvements')" title="What is this?"><svg viewBox="0 0 16 16" fill="none"><path d="M8 2L9.5 6.5L14 8L9.5 9.5L8 14L6.5 9.5L2 8L6.5 6.5L8 2Z" fill="currentColor"/></svg></button></div>
+              <span style="font-size:22px;font-weight:700;color:#1e242e;" class="count-up" data-count-to="135">0</span>
+              <div class="metric-popover" id="popover-improvements">
+                <div class="metric-popover-title"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 2L9.5 6.5L14 8L9.5 9.5L8 14L6.5 9.5L2 8L6.5 6.5L8 2Z" fill="#7E55F6"/></svg> Improvements</div>
+                <div class="metric-popover-def">Conversations where the draft skill would produce a meaningfully better outcome than production \u2014 e.g., saving a subscription that production would have cancelled, or detecting a frequency issue that production missed.</div>
+                <div class="metric-popover-input-wrap">
+                  <input class="metric-popover-input" id="popover-input-improvements" placeholder="Ask a question about this metric\u2026" onkeydown="if(event.key==='Enter'){sendMetricQuestion('improvements'); event.preventDefault();}">
+                  <button class="metric-popover-send" onclick="sendMetricQuestion('improvements')"><svg viewBox="0 0 16 16" fill="none"><path d="M2 8l5-5M2 8l5 5M2 8h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" transform="rotate(180 8 8)"/></svg></button>
+                </div>
+              </div>
             </div>
-          </div>
-
-          <div class="score-dist-inline">
-            <div class="eval-dist-takeaway">Most tickets now score <strong>0.9 or higher</strong> on adherence.</div>
-            <div class="score-dist-label">Adherence score distribution</div>
-            ${buildDistChart('v1')}
           </div>
         </div>
       `);
 
-      // Kick off count-up animation on the summary card's numbers once mounted.
       requestAnimationFrame(() => animateCountUps(document.getElementById('evalSummaryCard')));
 
       addStoryCard(`
-        <div class="story-card" id="evalTableCard" style="padding:16px;">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding:0 4px;">
-            <div>
-              <div class="heading-sm">Ticket-level evaluation</div>
-            </div>
-          </div>
+        <div class="story-card" id="evalTableCard" style="padding:20px 24px;">
           ${buildEvalTable('v1')}
         </div>
       `);
     };
 
     const renderBeat3_5 = () => {
+      setActiveNav('skills');
+      document.getElementById('rightPanel').innerHTML = '';
       addStoryCard(`
         <div class="story-card" id="refinementCard">
           <div class="regular-sm text-secondary" style="margin-bottom:8px;">Targeted refinement \u00b7 Layered on top of v2</div>
@@ -3911,53 +4426,39 @@
     };
 
     const renderBeat4 = () => {
-      // Fully re-render the eval table card to v2 (avoids layout breakage from partial DOM surgery)
+      // Re-render the eval table card to v2
       const tableCard = document.getElementById('evalTableCard');
       if (tableCard) {
-        tableCard.innerHTML = `
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding:0 4px;">
-            <div>
-              <div class="heading-sm">Ticket-level evaluation</div>
-              <div class="regular-sm text-secondary" style="margin-top:2px;">Re-run with 3 added guardrails \u00b7 edge cases resolved</div>
-            </div>
-          </div>
-          ${buildEvalTable('v2')}
-        `;
+        tableCard.innerHTML = `${buildEvalTable('v2')}`;
       }
 
+      // Update summary card metrics to v2 numbers
       const summaryCard = document.getElementById('evalSummaryCard');
       if (summaryCard) {
-        const subEl = summaryCard.querySelector('.regular-sm.text-secondary');
-        if (subEl) subEl.textContent = 'Re-run with 3 guardrails applied \u00b7 847 tickets';
-        const titleEl = summaryCard.querySelector('.story-title-xl');
-        if (titleEl) titleEl.innerHTML = 'Evaluation results';
-        const pill = summaryCard.querySelector('#evalStatusPill');
-        if (pill) {
-          pill.className = 'status-pill ok';
-          pill.textContent = 'Safe to publish';
-        }
-        const metricsGrid = summaryCard.querySelector('.eval-metrics-grid');
-        if (metricsGrid) {
-          metricsGrid.innerHTML = `
-            <div class="eval-metric-card">
-              <div class="eval-metric-label">Pass rate</div>
-              <div class="eval-metric-value">97%<span class="eval-metric-baseline">vs. 78%</span></div>
-              <div class="eval-metric-delta positive">+19 pts</div>
+        const unreviewed = summaryCard.querySelector('#evalUnreviewed');
+        if (unreviewed) { unreviewed.textContent = '0 Unreviewed'; unreviewed.style.cssText = 'flex-shrink:0;font-size:12px;font-weight:600;color:#147656;background:#e9fbf5;padding:4px 10px;border-radius:6px;white-space:nowrap;'; }
+        const metricsRow = summaryCard.querySelector('#evalMetricsRow');
+        if (metricsRow) {
+          const aiIcon = `<button class="metric-ai-icon" onclick="event.stopPropagation(); toggleMetricPopover(this.dataset.metric)" title="What is this?"><svg viewBox="0 0 16 16" fill="none"><path d="M8 2L9.5 6.5L14 8L9.5 9.5L8 14L6.5 9.5L2 8L6.5 6.5L8 2Z" fill="currentColor"/></svg></button>`;
+          metricsRow.innerHTML = `
+            <div class="metric-cell" style="padding:14px 16px;border-right:1px solid #f0f0f4;">
+              <div style="font-size:11px;font-weight:500;color:#5c6370;margin-bottom:2px;">Pass rate<button class="metric-ai-icon" data-metric="passrate" onclick="event.stopPropagation(); toggleMetricPopover('passrate')" title="What is this?"><svg viewBox="0 0 16 16" fill="none"><path d="M8 2L9.5 6.5L14 8L9.5 9.5L8 14L6.5 9.5L2 8L6.5 6.5L8 2Z" fill="currentColor"/></svg></button></div>
+              <div style="display:flex;align-items:baseline;gap:6px;">
+                <span style="font-size:22px;font-weight:700;color:#1e242e;">97%</span>
+                <span style="font-size:12px;font-weight:600;color:#147656;background:#e9fbf5;padding:2px 6px;border-radius:4px;">+19pp</span>
+              </div>
             </div>
-            <div class="eval-metric-card">
-              <div class="eval-metric-label">Regressions</div>
-              <div class="eval-metric-value">0<span class="eval-metric-baseline">of 847</span></div>
-              <div class="eval-metric-delta positive">Pass \u2192 Pass</div>
+            <div class="metric-cell" style="padding:14px 16px;border-right:1px solid #f0f0f4;">
+              <div style="font-size:11px;font-weight:500;color:#5c6370;margin-bottom:2px;">Adherence avg<button class="metric-ai-icon" data-metric="adherence" onclick="event.stopPropagation(); toggleMetricPopover('adherence')" title="What is this?"><svg viewBox="0 0 16 16" fill="none"><path d="M8 2L9.5 6.5L14 8L9.5 9.5L8 14L6.5 9.5L2 8L6.5 6.5L8 2Z" fill="currentColor"/></svg></button></div>
+              <span style="font-size:22px;font-weight:700;color:#1e242e;">0.97</span>
             </div>
-            <div class="eval-metric-card">
-              <div class="eval-metric-label">Improvements</div>
-              <div class="eval-metric-value">168<span class="eval-metric-baseline">of 847</span></div>
-              <div class="eval-metric-delta positive">Fail \u2192 Pass</div>
+            <div class="metric-cell" style="padding:14px 16px;border-right:1px solid #f0f0f4;">
+              <div style="font-size:11px;font-weight:500;color:#5c6370;margin-bottom:2px;">Regressions<button class="metric-ai-icon" data-metric="regressions" onclick="event.stopPropagation(); toggleMetricPopover('regressions')" title="What is this?"><svg viewBox="0 0 16 16" fill="none"><path d="M8 2L9.5 6.5L14 8L9.5 9.5L8 14L6.5 9.5L2 8L6.5 6.5L8 2Z" fill="currentColor"/></svg></button></div>
+              <span style="font-size:22px;font-weight:700;color:#147656;">0</span>
             </div>
-            <div class="eval-metric-card">
-              <div class="eval-metric-label">New failures</div>
-              <div class="eval-metric-value">0<span class="eval-metric-baseline">of 847</span></div>
-              <div class="eval-metric-delta positive">Pass \u2192 Fail</div>
+            <div class="metric-cell" style="padding:14px 16px;">
+              <div style="font-size:11px;font-weight:500;color:#5c6370;margin-bottom:2px;">Improvements<button class="metric-ai-icon" data-metric="improvements" onclick="event.stopPropagation(); toggleMetricPopover('improvements')" title="What is this?"><svg viewBox="0 0 16 16" fill="none"><path d="M8 2L9.5 6.5L14 8L9.5 9.5L8 14L6.5 9.5L2 8L6.5 6.5L8 2Z" fill="currentColor"/></svg></button></div>
+              <span style="font-size:22px;font-weight:700;color:#1e242e;">168</span>
             </div>`;
         }
       }
@@ -3990,7 +4491,7 @@
               <div class="scorer-icon standard">\u2705</div>
               <div class="scorer-content">
                 <div class="scorer-name">Adherence</div>
-                <div class="scorer-desc">Is the agent following its skill instructions correctly?</div>
+                <div class="scorer-desc">Is AI Agent following its skill instructions correctly?</div>
               </div>
               <span class="scorer-badge standard">Standard</span>
             </div>
@@ -4016,7 +4517,7 @@
     };
 
     const renderBeat6 = () => {
-      document.getElementById('rightTitle').textContent = 'A/B Experiment';
+      setActiveNav('performance', 'experiments');
       document.getElementById('rightPanel').innerHTML = '';
       addStoryCard(`
         <div class="story-card" style="border-color:#7E55F6;background:linear-gradient(180deg,#f8f5ff 0%,#fff 100%);">
@@ -4051,7 +4552,7 @@
     };
 
     const renderBeat7 = () => {
-      document.getElementById('rightTitle').textContent = 'Experiment Results';
+      setActiveNav('performance', 'experiments');
       document.getElementById('rightPanel').innerHTML = '';
       addStoryCard(`
         <div class="story-card" style="border-color:#147656;background:linear-gradient(180deg,#f0fdf7 0%,#fff 100%);">
@@ -4196,8 +4697,8 @@
       addStoryCard(`
         <div class="story-card" style="border-color:#c4314b;">
           <span class="story-label critique">Self-Critique</span>
-          <div class="story-title">3 misclassifications the agent caught</div>
-          <div class="story-body" style="margin-bottom:12px;">The agent evaluated its own performance and flagged conversations where detection failed.</div>
+          <div class="story-title">3 misclassifications AI Agent caught</div>
+          <div class="story-body" style="margin-bottom:12px;">AI Agent evaluated its own performance and flagged conversations where detection failed.</div>
           <div style="display:flex;flex-direction:column;gap:8px;">
             <div class="edge-case" style="background:#fde8ec;">
               <div class="edge-case-icon">\u274c</div>
@@ -4233,8 +4734,8 @@
       addStoryCard(`
         <div class="story-card" style="border-color:#7E55F6;background:linear-gradient(180deg,#f8f5ff 0%,#fff 100%);">
           <span class="story-label opportunity">The Platform</span>
-          <div class="story-title">What the agent sees across the full funnel</div>
-          <div class="story-body" style="margin-bottom:16px;">The frequency insight is one pattern. The agent reads every conversation and can surface cross-team insights that no single department would catch.</div>
+          <div class="story-title">What AI Agent sees across the full funnel</div>
+          <div class="story-body" style="margin-bottom:16px;">The frequency insight is one pattern. AI Agent reads every conversation and can surface cross-team insights that no single department would catch.</div>
           <div style="display:flex;flex-direction:column;gap:10px;">
             <div style="display:flex;gap:12px;align-items:flex-start;padding:14px;background:#fff;border-radius:8px;border:1px solid #00000014;">
               <div style="width:28px;height:28px;border-radius:6px;background:#f1ecff;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;">\ud83d\udce6</div>
@@ -4259,7 +4760,7 @@
             </div>
           </div>
           <div style="margin-top:16px;padding:14px;background:#f1ecff;border-radius:8px;">
-            <div style="font-size:13px;line-height:20px;color:#7E55F6;"><strong>This is the moat.</strong> The agent finds business problems that span teams, validates its own solutions, and self-corrects. That\u2019s not a support tool — that\u2019s a commerce platform.</div>
+            <div style="font-size:13px;line-height:20px;color:#7E55F6;"><strong>This is the moat.</strong> AI Agent finds business problems that span teams, validates its own solutions, and self-corrects. That\u2019s not a support tool — that\u2019s a commerce platform.</div>
           </div>
         </div>
       `);
@@ -4278,6 +4779,79 @@
 
     const navigateTo = (view) => {
       if (view === 'home') backToHome();
+    };
+
+    // Contextual navigation — updates sidebar active state and right panel header
+    const setActiveNav = (section, subTab) => {
+      // Update sidebar active item (sidebar stays collapsed)
+      document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+      const target = document.querySelector(`.sidebar-item[data-view="${section}"]`);
+      if (target) target.classList.add('active');
+
+      // Collapse performance sub-nav when navigating away
+      const perfSubNav = document.getElementById('perfSubNav');
+      if (perfSubNav && section !== 'performance') {
+        perfSubNav.classList.remove('open');
+        document.querySelectorAll('.sidebar-sub-item').forEach(i => i.classList.remove('active'));
+        document.querySelectorAll('.sidebar-popout-item').forEach(i => i.classList.remove('active'));
+      }
+
+      // Trigger page transition animation
+      const rightInner = document.querySelector('.right-inner');
+      if (rightInner) {
+        rightInner.classList.remove('nav-transition');
+        void rightInner.offsetWidth; // force reflow to restart animation
+        rightInner.classList.add('nav-transition');
+      }
+
+      const subNav = document.getElementById('rightSubNav');
+      subNav.innerHTML = '';
+
+      const header = document.getElementById('rightHeader');
+
+      if (section === 'inbox') {
+        header.innerHTML = `
+          <div class="right-header-tabs">
+            <button class="right-header-tab active">Escalations<span class="tab-count">14</span></button>
+            <button class="right-header-tab">All conversations</button>
+            <button class="right-header-tab">VIPs</button>
+            <button class="right-header-tab">Order questions</button>
+            <button class="right-header-tab">Product questions</button>
+            <button class="right-header-tab">Unhappy customers</button>
+          </div>`;
+        header.style.cssText = 'padding: 0; height: auto; display: block;';
+      } else if (section === 'skills') {
+        header.innerHTML = '';
+        header.style.cssText = 'padding: 0; height: 0; display: none;';
+      } else if (section === 'performance') {
+        const isExperiments = subTab === 'experiments';
+        header.innerHTML = `
+          <div style="display:flex;flex-direction:column;gap:2px;">
+            <div style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:500;color:#8a8f98;">
+              <span style="cursor:pointer;" onclick="setActiveNav('performance','evaluations')">${isExperiments ? 'Experiments' : 'Evaluations'}</span>
+              ${!isExperiments ? `<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M4.5 3l3 3-3 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span style="color:#1e242e;">Cancel Subscription</span>` : ''}
+            </div>
+            <h1 class="heading-xl" id="rightTitle" style="margin:0;font-size:20px;">${isExperiments ? 'Experiments' : 'Cancel Subscription'}</h1>
+          </div>`;
+        header.style.cssText = 'padding: 20px 24px; height: auto; display: flex; align-items: flex-start;';
+
+        // Expand sub-nav in sidebar
+        const perfSubNav = document.getElementById('perfSubNav');
+        if (perfSubNav) perfSubNav.classList.add('open');
+
+        // Highlight active sub-item
+        document.querySelectorAll('.sidebar-sub-item').forEach(i => i.classList.remove('active'));
+        document.querySelectorAll('.sidebar-popout-item').forEach(i => i.classList.remove('active'));
+        const activeSub = subTab || 'evaluations';
+        const subItem = document.querySelector(`.sidebar-sub-item[data-view="${activeSub}"]`);
+        if (subItem) subItem.classList.add('active');
+        const popItem = document.querySelector(`.sidebar-popout-item[data-view="${activeSub}"]`);
+        if (popItem) popItem.classList.add('active');
+      } else {
+        header.innerHTML = `<h1 class="heading-xl" id="rightTitle">${section.charAt(0).toUpperCase() + section.slice(1)}</h1>`;
+        header.style.cssText = 'padding: 24px; height: 80px; display: flex; align-items: center;';
+      }
     };
 
     // Sidebar nav handled via onclick in HTML
