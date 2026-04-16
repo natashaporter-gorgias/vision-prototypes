@@ -273,7 +273,7 @@
     .impact-value { font-size: 22px; font-weight: 600; color: #1e242e; line-height: 28px; }
     .impact-label { font-size: 12px; color: #5c6370; }
 
-    /* Eval metric cards (pass rate / regressions / improvements / new failures) */
+    /* Eval metric cards (pass rate / adherence / intended outcome / regressions) */
     .eval-metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 16px; }
     .eval-metric-card { background: #fff; border: 1px solid #e8e8ec; border-radius: 10px; padding: 12px 14px; display: flex; flex-direction: column; gap: 4px; }
     .eval-metric-card.warn { background: #fef6e7; border-color: #f5d68a; }
@@ -2402,7 +2402,7 @@
         setTimeout(() => {
           // Phase 1: Show "running" message + skeleton loader
           const runMsg = createConversationMessage(
-            'Replaying all <strong>847 tickets</strong> through the updated skill and comparing to the current baseline. Tracking pass rate, regressions, and any new failure modes...'
+            'Replaying all <strong>847 tickets</strong> through the updated skill and comparing to the current baseline. Tracking pass rate, intended outcome, regressions, and any new failure modes...'
           );
           conv.appendChild(runMsg);
           renderBeat3Skeleton();
@@ -2412,7 +2412,7 @@
             setTimeout(() => {
               renderBeat3();
               const doneMsg = createConversationMessage(
-                'Done. Pass rate jumped from <strong>78% \u2192 94%</strong>, with <strong>0 regressions</strong> \u2014 nothing gets worse. But <strong>8 tickets</strong> fail in ways the current skill doesn\u2019t. You can publish now and monitor, or refine the skill on those edge cases and re-run.'
+                'Done. Pass rate jumped from <strong>78% \u2192 94%</strong> and intended outcome hit <strong>87%</strong>, with <strong>0 regressions</strong> \u2014 nothing gets worse. But <strong>8 tickets</strong> fail in ways the current skill doesn\u2019t. You can publish now and monitor, or refine the skill on those edge cases and re-run.'
               );
               conv.appendChild(doneMsg);
               startTypewriter(doneMsg, () => {
@@ -2538,7 +2538,7 @@
               renderBeat3();
               renderBeat4();
               const doneMsg = createConversationMessage(
-                'Pass rate is now <strong>97%</strong> with <strong>0 regressions</strong> and <strong>0 new failures</strong>. The 8 edge cases are now routed correctly. Safe to publish.'
+                'Pass rate is now <strong>97%</strong>, intended outcome <strong>96%</strong>, with <strong>0 regressions</strong> and <strong>0 new failures</strong>. The 8 edge cases are now routed correctly. Safe to publish.'
               );
               conv.appendChild(doneMsg);
               startTypewriter(doneMsg, () => {
@@ -2661,13 +2661,9 @@
         }, 300);
       }
 
-      /* ---- BEAT 7: Results ---- */
+      /* ---- BEAT 7: Digest Home (experiment complete) ---- */
       else if (beat === 7) {
-        const msg = createConversationMessage(state.lastSelectedText, true);
-        conv.appendChild(msg);
-        scrollConv();
-
-        // Fire the Slack toast first \u2014 Daniel gets pinged that the experiment is done.
+        // Show Slack toast
         showSlackToast({
           channel: '#ai-agent',
           sender: 'Gorgias AI Agent',
@@ -2676,28 +2672,31 @@
           message: '\u2705 <strong>Cancel Subscription</strong> experiment complete. <strong>Variant B won</strong> across every metric. Click to review results.',
           duration: 5000
         });
+        // Transition to digest home after a short delay
+        setTimeout(() => renderDigestHome(), 1200);
+      }
 
-        setTimeout(() => {
-          const agentMsg = createConversationMessage(
-            'The experiment is complete. <strong>Variant B wins across every metric.</strong> The frequency-aware skill saved 8 of 27 subscriptions that would have been cancelled \u2014 that\u2019s $416/mo in retained revenue, and the saves held: 7 of 8 customers are still subscribed at 30 days.'
-          );
-          conv.appendChild(agentMsg);
-          renderBeat7();
-          startTypewriter(agentMsg, () => {
-            const btns = createPromptButtons(
-              ['Publish winning variant', 'What did it get wrong?'],
-              (text) => {
-                if (text === 'Publish winning variant') {
-                  selectPrompt(text, 7.5);
-                } else {
-                  selectPrompt(text, 8);
-                }
+      /* ---- BEAT 7.1: Full Results (from insight card click) ---- */
+      else if (beat === 7.1) {
+        const agentMsg = createConversationMessage(
+          'The experiment is complete. <strong>Variant B wins across every metric.</strong> The frequency-aware skill saved 8 of 27 subscriptions that would have been cancelled \u2014 that\u2019s $416/mo in retained revenue, and the saves held: 7 of 8 customers are still subscribed at 30 days.'
+        );
+        conv.appendChild(agentMsg);
+        renderBeat7();
+        startTypewriter(agentMsg, () => {
+          const btns = createPromptButtons(
+            ['Publish winning variant', 'What did it get wrong?'],
+            (text) => {
+              if (text === 'Publish winning variant') {
+                selectPrompt(text, 7.5);
+              } else {
+                selectPrompt(text, 8);
               }
-            );
-            conv.appendChild(btns);
-            scrollConv();
-          });
-        }, 1500);
+            }
+          );
+          conv.appendChild(btns);
+          scrollConv();
+        });
       }
 
       /* ---- BEAT 7.5: Publish the winning variant ---- */
@@ -3969,7 +3968,7 @@
       }
     });
 
-    const metricLabels = { passrate: 'Pass rate', adherence: 'Adherence', regressions: 'Regressions', improvements: 'Improvements' };
+    const metricLabels = { passrate: 'Pass rate', adherence: 'Adherence', regressions: 'Regressions', intendedoutcome: 'Intended outcome' };
 
     const sendMetricQuestion = (metricId) => {
       const input = document.getElementById(`popover-input-${metricId}`);
@@ -4301,14 +4300,17 @@
               </div>
             </div>
             <div class="metric-cell" style="padding:14px 16px;">
-              <div style="font-size:11px;font-weight:500;color:#5c6370;margin-bottom:2px;">Improvements<button class="metric-ai-icon" onclick="event.stopPropagation(); toggleMetricPopover('improvements')" title="What is this?"><svg viewBox="0 0 16 16" fill="none"><path d="M8 2L9.5 6.5L14 8L9.5 9.5L8 14L6.5 9.5L2 8L6.5 6.5L8 2Z" fill="currentColor"/></svg></button></div>
-              <span style="font-size:22px;font-weight:700;color:#1e242e;" class="count-up" data-count-to="135">0</span>
-              <div class="metric-popover" id="popover-improvements">
-                <div class="metric-popover-title"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 2L9.5 6.5L14 8L9.5 9.5L8 14L6.5 9.5L2 8L6.5 6.5L8 2Z" fill="#7E55F6"/></svg> Improvements</div>
-                <div class="metric-popover-def">Conversations where the draft skill would produce a meaningfully better outcome than production \u2014 e.g., saving a subscription that production would have cancelled, or detecting a frequency issue that production missed.</div>
+              <div style="font-size:11px;font-weight:500;color:#5c6370;margin-bottom:2px;">Intended outcome<button class="metric-ai-icon" onclick="event.stopPropagation(); toggleMetricPopover('intendedoutcome')" title="What is this?"><svg viewBox="0 0 16 16" fill="none"><path d="M8 2L9.5 6.5L14 8L9.5 9.5L8 14L6.5 9.5L2 8L6.5 6.5L8 2Z" fill="currentColor"/></svg></button></div>
+              <div style="display:flex;align-items:baseline;gap:6px;">
+                <span style="font-size:22px;font-weight:700;color:#1e242e;" class="count-up" data-count-to="87" data-count-suffix="%">0%</span>
+                <span style="font-size:12px;font-weight:600;color:#147656;background:#e9fbf5;padding:2px 6px;border-radius:4px;" class="count-up" data-count-to="22" data-count-prefix="+" data-count-suffix="pp">+0pp</span>
+              </div>
+              <div class="metric-popover" id="popover-intendedoutcome">
+                <div class="metric-popover-title"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 2L9.5 6.5L14 8L9.5 9.5L8 14L6.5 9.5L2 8L6.5 6.5L8 2Z" fill="#7E55F6"/></svg> Intended outcome</div>
+                <div class="metric-popover-def">Percentage of conversations where the draft skill reached the correct resolution for the scenario \u2014 e.g., offering a frequency change to a customer who mentioned cadence issues, or correctly processing a cancellation when no frequency signal was detected.</div>
                 <div class="metric-popover-input-wrap">
-                  <input class="metric-popover-input" id="popover-input-improvements" placeholder="Ask a question about this metric\u2026" onkeydown="if(event.key==='Enter'){sendMetricQuestion('improvements'); event.preventDefault();}">
-                  <button class="metric-popover-send" onclick="sendMetricQuestion('improvements')"><svg viewBox="0 0 16 16" fill="none"><path d="M2 8l5-5M2 8l5 5M2 8h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" transform="rotate(180 8 8)"/></svg></button>
+                  <input class="metric-popover-input" id="popover-input-intendedoutcome" placeholder="Ask a question about this metric\u2026" onkeydown="if(event.key==='Enter'){sendMetricQuestion('intendedoutcome'); event.preventDefault();}">
+                  <button class="metric-popover-send" onclick="sendMetricQuestion('intendedoutcome')"><svg viewBox="0 0 16 16" fill="none"><path d="M2 8l5-5M2 8l5 5M2 8h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" transform="rotate(180 8 8)"/></svg></button>
                 </div>
               </div>
             </div>
@@ -4457,8 +4459,11 @@
               <span style="font-size:22px;font-weight:700;color:#147656;">0</span>
             </div>
             <div class="metric-cell" style="padding:14px 16px;">
-              <div style="font-size:11px;font-weight:500;color:#5c6370;margin-bottom:2px;">Improvements<button class="metric-ai-icon" data-metric="improvements" onclick="event.stopPropagation(); toggleMetricPopover('improvements')" title="What is this?"><svg viewBox="0 0 16 16" fill="none"><path d="M8 2L9.5 6.5L14 8L9.5 9.5L8 14L6.5 9.5L2 8L6.5 6.5L8 2Z" fill="currentColor"/></svg></button></div>
-              <span style="font-size:22px;font-weight:700;color:#1e242e;">168</span>
+              <div style="font-size:11px;font-weight:500;color:#5c6370;margin-bottom:2px;">Intended outcome<button class="metric-ai-icon" data-metric="intendedoutcome" onclick="event.stopPropagation(); toggleMetricPopover('intendedoutcome')" title="What is this?"><svg viewBox="0 0 16 16" fill="none"><path d="M8 2L9.5 6.5L14 8L9.5 9.5L8 14L6.5 9.5L2 8L6.5 6.5L8 2Z" fill="currentColor"/></svg></button></div>
+              <div style="display:flex;align-items:baseline;gap:6px;">
+                <span style="font-size:22px;font-weight:700;color:#1e242e;">96%</span>
+                <span style="font-size:12px;font-weight:600;color:#147656;background:#e9fbf5;padding:2px 6px;border-radius:4px;">+31pp</span>
+              </div>
             </div>`;
         }
       }
@@ -4549,6 +4554,156 @@
           </div>
         </div>
       `);
+    };
+
+    /* ─── Digest Home: shows after Slack toast, before results ─── */
+    const renderDigestHome = () => {
+      // Switch to home view
+      document.getElementById('homeView').classList.remove('hidden');
+      document.getElementById('taskView').classList.add('hidden');
+      document.querySelector('.sidebar').classList.remove('collapsed');
+      setActiveNav('home');
+
+      const container = document.getElementById('homeContent');
+      container.innerHTML = `
+        <div class="home-header">
+          <h1 class="heading-xxl">Good morning, Daniel!</h1>
+          <div class="landing-date">
+            <svg viewBox="0 0 16 16" fill="none"><path d="M12.67 2.67H3.33C2.6 2.67 2 3.26 2 4v9.33c0 .74.6 1.34 1.33 1.34h9.34c.73 0 1.33-.6 1.33-1.34V4c0-.74-.6-1.33-1.33-1.33zM10.67 1.33V4M5.33 1.33V4M2 6.67h12" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            May 4, 2026 \u00b7 9:15 AM
+          </div>
+        </div>
+
+        <div class="home-audio">
+          <button class="audio-pill">
+            <svg viewBox="0 0 16 16" fill="none"><path d="M2 6.67v2.66M5.33 4v8M8 2v12M10.67 4v8M14 6.67v2.66" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
+            Listen daily digest
+            <span class="audio-pill-time">02:10</span>
+          </button>
+        </div>
+
+        <div class="home-ask-wrap">
+          <div class="ask-input-wrap">
+            <input class="ask-input" type="text" placeholder="Ask anything..." readonly />
+            <div class="ask-input-icons">
+              <button class="ask-input-icon">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M14 10v2.67A1.33 1.33 0 0112.67 14H3.33A1.33 1.33 0 012 12.67V10M11.33 5.33L8 2M8 2L4.67 5.33M8 2v8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <button class="ask-input-icon">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1.33a2.67 2.67 0 00-2.67 2.67v4a2.67 2.67 0 105.34 0V4A2.67 2.67 0 008 1.33z" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M12.67 6.67v1.33a4.67 4.67 0 01-9.34 0V6.67M8 12.67V14.67M5.33 14.67h5.34" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="home-divider"></div>
+
+        <div class="home-metrics">
+          <div class="dash-metric" style="animation-delay:0ms">
+            <div class="dash-metric-label">Adherence</div>
+            <div class="dash-metric-value">93%</div>
+            <div class="dash-metric-delta positive">${trendUpSvg('#147656')} 2pp vs last week</div>
+          </div>
+          <div class="dash-metric" style="animation-delay:60ms">
+            <div class="dash-metric-label">Success rate</div>
+            <div class="dash-metric-value">82%</div>
+            <div class="dash-metric-delta positive">${trendUpSvg('#147656')} 4pp vs last week</div>
+          </div>
+          <div class="dash-metric" style="animation-delay:120ms">
+            <div class="dash-metric-label">Coverage rate</div>
+            <div class="dash-metric-value">68%</div>
+            <div class="dash-metric-delta positive">${trendUpSvg('#147656')} 4pp vs last week</div>
+          </div>
+          <div class="dash-metric" style="animation-delay:180ms">
+            <div class="dash-metric-label">Customer satisfaction</div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="11" fill="none" stroke="#e8e8ec" stroke-width="3.5"/><circle cx="14" cy="14" r="11" fill="none" stroke="#f59e0b" stroke-width="3.5" stroke-dasharray="17.3 51.8" stroke-dashoffset="-34.5" stroke-linecap="round"/><circle cx="14" cy="14" r="11" fill="none" stroke="#22c55e" stroke-width="3.5" stroke-dasharray="34.5 34.6" stroke-dashoffset="0" stroke-linecap="round"/><circle cx="14" cy="14" r="11" fill="none" stroke="#ef4444" stroke-width="3.5" stroke-dasharray="5.8 63.3" stroke-dashoffset="-52" stroke-linecap="round"/></svg>
+              <span class="dash-metric-value">4.5/5</span>
+            </div>
+            <div class="dash-metric-delta positive">${trendUpSvg('#147656')} from frequency experiment</div>
+          </div>
+        </div>
+
+        <div class="home-insights-header">
+          <div class="section-heading">
+            <span class="section-heading-title">Insights</span>
+            <span class="section-heading-count">1</span>
+          </div>
+        </div>
+        <div class="home-insights">
+          <div class="landing-insight" style="animation-delay:250ms;border-left:3px solid #147656;cursor:pointer;" onclick="openResultsFromDigest()">
+            <div class="landing-insight-badges">
+              <span class="landing-insight-badge" style="background:#e9fbf5;color:#147656;">Experiment complete</span>
+            </div>
+            <div class="landing-insight-split">
+              <div class="landing-insight-main">
+                <div class="landing-insight-title">Frequency-aware variant wins across every metric</div>
+                <div class="landing-insight-stat">8 of 27 flagged customers kept their subscription \u2014 $416/mo retained</div>
+                <div class="landing-insight-body">The 3-week A/B test on the Cancel Subscription skill is complete. Variant B (frequency-aware) outperforms on adherence, success rate, coverage, and customer satisfaction. Custom scorers confirm good tone (94%) and accurate detection (91%). Only 1 of 8 saved customers re-cancelled within 30 days.</div>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:8px;flex-shrink:0;min-width:120px;align-items:flex-end;">
+                <div style="text-align:right;">
+                  <div style="font-size:11px;font-weight:500;color:#5c6370;">Revenue saved</div>
+                  <div style="font-size:22px;font-weight:700;color:#147656;line-height:1.2;">$416<span style="font-size:13px;font-weight:400;color:#5c6370;">/mo</span></div>
+                </div>
+                <div style="text-align:right;">
+                  <div style="font-size:11px;font-weight:500;color:#5c6370;">Adherence</div>
+                  <div style="font-size:22px;font-weight:700;color:#1e242e;line-height:1.2;">96%</div>
+                </div>
+              </div>
+            </div>
+            <div class="landing-insight-time">3-week A/B test \u00b7 Completed today</div>
+          </div>
+        </div>
+      `;
+    };
+
+    /* ─── Open results from digest insight card ─── */
+    const openResultsFromDigest = () => {
+      // Switch back to task view
+      document.getElementById('homeView').classList.add('hidden');
+      document.getElementById('taskView').classList.remove('hidden');
+      document.querySelector('.sidebar').classList.add('collapsed');
+
+      // Reset conversation for results
+      state.conversationBeat = 7.1;
+
+      const header = document.getElementById('leftHeader');
+      header.style.cssText = 'flex-direction:column;align-items:flex-start;gap:6px;height:auto;padding:20px 24px 16px;';
+      header.innerHTML = `
+        <div style="display:flex;align-items:center;gap:8px;">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1.75l1.8 4.05 4.45.4-3.37 2.95 1.02 4.35L8 11.15 4.1 13.5l1.02-4.35L1.75 6.2l4.45-.4L8 1.75z" stroke="#7E55F6" stroke-width="1.3" stroke-linejoin="round"/></svg>
+          <span style="font-size:13px;font-weight:600;color:#7E55F6;letter-spacing:0.02em;">Results</span>
+        </div>
+        <div class="heading-md" style="margin-top:2px;">Cancel Subscription — Frequency Optimization</div>
+        <div class="regular-md text-secondary">3-week A/B test complete</div>
+      `;
+
+      const leftBody = document.getElementById('leftBody');
+      leftBody.innerHTML = `
+        <div class="left-body-top"></div>
+        <div class="left-body-content" id="leftContent">
+          <div style="flex:1;overflow-y:auto;display:flex;flex-direction:column;justify-content:flex-end;">
+            <div class="conversation" id="conversation"></div>
+          </div>
+        </div>
+        <div class="left-body-input">
+          <div class="input-card">
+            <div class="input-card-text">Ask anything</div>
+            <div class="input-card-buttons">
+              <button class="input-icon-btn light">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3.5 8H8M8 8H12.5M8 8V12.5M8 8V3.5" stroke="#1E242E" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <button class="input-icon-btn dark">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2.75L5.08 5.67M8 2.75L10.92 5.67M8 2.75V13.25" stroke="white" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+
+      // Trigger the results beat
+      advanceConversation();
     };
 
     const renderBeat7 = () => {
